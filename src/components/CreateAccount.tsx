@@ -1,10 +1,13 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { address } from '../../public/serverAddress';
+import { getAddress } from '../utils/serverAddress';
 
 function CreateAccount() {
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(event.target.value);
@@ -18,11 +21,22 @@ function CreateAccount() {
     event.preventDefault();
 
     try {
-      const response = await axios.post(address, {
-        nickname: nickname,
+      type Data = {
+        done: boolean;
+        message: string;
+      };
+
+      const response = await axios.post(getAddress('/signup'), {
+        name: nickname,
         password: password,
       });
-      console.log('Account created successfully:', response.data);
+      console.log('Account created successfully:');
+      const data: Data = response.data;
+      if (data.done === false) {
+        setError(data.message);
+      } else {
+        navigate('/');
+      }
     } catch (error) {
       console.error('Error creating account:', error);
     }
@@ -32,6 +46,7 @@ function CreateAccount() {
     <>
       <h1>Hello</h1>
       <form onSubmit={handleSubmit}>
+        {error !== '' ? <p>{error}</p> : ''}
         <div>
           <label>Nickname:</label>
           <input
@@ -52,6 +67,13 @@ function CreateAccount() {
         </div>
         <button type='submit'>Create Account</button>
       </form>
+      <button
+        onClick={() => {
+          navigate('/');
+        }}
+      >
+        Go to main Page
+      </button>
     </>
   );
 }

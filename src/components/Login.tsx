@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Assuming you're using React Router for navigation
+import { useNavigate } from 'react-router-dom';
+import { getAddress } from '../utils/serverAddress';
+import { saveToken } from '../utils/tokenHandler';
 import axios from 'axios';
 
-interface LoginProps {
-  onLoginSuccess: () => void; // Callback function to execute after successful login
-}
-
-const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
-  const [nickname, setNickname] = useState('');
+const Login = () => {
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNickname(event.target.value);
+    setName(event.target.value);
   };
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,17 +21,27 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    type Data = {
+      done:boolean,
+      message:string
+      token:string
+    }
+
     try {
-      const response = await axios.post('YOUR_LOGIN_ENDPOINT', {
-        nickname: nickname,
+      const response = await axios.post(getAddress('/login'), {
+        username: name,
         password: password,
       });
+      const data:Data = response.data;
       console.log('Login successful:', response.data);
-      // Handle successful login, such as storing authentication token
-      onLoginSuccess();
+       if (data.done === false) {
+         setError(data.message);
+       } else {
+        saveToken(data.token)
+         navigate('/');
+       }
     } catch (error) {
       console.error('Login failed:', error);
-      // Handle login failure, such as displaying an error message to the user
     }
   };
 
@@ -44,11 +53,12 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     <>
       <h1>Login</h1>
       <form onSubmit={handleLogin}>
+        {error !== '' ? <p>{error}</p> : ''}
         <div>
           <label>Nickname:</label>
           <input
             type='text'
-            value={nickname}
+            value={name}
             onChange={handleNicknameChange}
             required
           />
@@ -64,10 +74,15 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
         </div>
         <button type='submit'>Login</button>
       </form>
-      <p>
-        Don't have an account?{' '}
-        <button onClick={redirectToCreateAccount}>Create Account</button>
-      </p>
+      <p>Don't have an account? </p>
+      <button onClick={redirectToCreateAccount}>Create Account</button>
+      <button
+        onClick={() => {
+          navigate('/');
+        }}
+      >
+        Go to main Page
+      </button>
     </>
   );
 };
