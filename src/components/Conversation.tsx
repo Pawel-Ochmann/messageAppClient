@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {  useState } from 'react';
 
 type Message = {
   author: string;
@@ -6,7 +6,9 @@ type Message = {
   date: Date;
 };
 
-const Conversation = ({ messages }: { messages: Message[]}) => {
+type SendMessageHandler = (message:Message) => void;
+
+const Conversation = ({ messages, sendMessage }: { messages: Message[], sendMessage:SendMessageHandler}) => {
   const [newMessage, setNewMessage] = useState<Message>({
     author: '',
     content: '',
@@ -22,11 +24,10 @@ const Conversation = ({ messages }: { messages: Message[]}) => {
     });
   };
 
-  const handleSendMessage = () => {
-    if (newMessage.content.trim() !== '') {
-      setNewMessage({ author: '', content: '', date: new Date() });
-    }
-  };
+ const newMessageHandler = ()=> {
+  sendMessage(newMessage);
+  setNewMessage({ author: '', content: '', date: new Date() });
+ }
 
   return (
     <div>
@@ -57,7 +58,7 @@ const Conversation = ({ messages }: { messages: Message[]}) => {
         />
       </div>
       <div>
-        <button onClick={handleSendMessage}>Send Message</button>
+        <button onClick={newMessageHandler}>Send Message</button>
       </div>
     </div>
   );
