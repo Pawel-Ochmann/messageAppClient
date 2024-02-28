@@ -25,6 +25,7 @@ const Conversation = ({ messages, sendMessage }: { messages: Message[], sendMess
   };
 
  const newMessageHandler = ()=> {
+  console.log('sending message: ', newMessage);
   sendMessage(newMessage);
   setNewMessage({ author: '', content: '', date: new Date() });
  }

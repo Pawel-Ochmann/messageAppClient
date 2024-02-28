@@ -15,12 +15,11 @@ type Message = {
 export default function App() {
   const [user, setUser] = useState({});
   const [messages, setMessages] = useState<Message[]>([]);
-  const [socket, setSocket] = useState<Socket>();
+  const [socket, setSocket] = useState<Socket | null>();
   const navigate = useNavigate();
 
-useEffect(() => {
-  const checkLoggedIn = async () => {
-    try {
+  useEffect(() => {
+    const checkLoggedIn = async () => {
       const token = getToken();
 
       if (!token) {
@@ -32,39 +31,39 @@ useEffect(() => {
       await axios.get(getAddress('/'));
       setUser('Connecting to the server...');
 
-      // Establish Socket.IO connection and set socket state
-      const newSocket = io(getAddress('/'));
-      setSocket(newSocket);
+      return () => {
+        if (socket) {
+          socket.off('messages');
+          socket.disconnect();
+        }
+      };
+    };
 
-      // Emit 'join' event to server
+    checkLoggedIn();
+  }, [navigate, socket]);
+
+  const connectToSocket = async () => {
+    try {
+      const newSocket = io('http://localhost:4000');
+      setSocket(newSocket);
+      console.log(newSocket);
+
       if (newSocket) {
-        newSocket.emit('join');
+        await newSocket.emit('join');
+        console.log(newSocket);
       }
 
-      // Event listener for 'messages' event from server
       if (newSocket) {
         newSocket.on('messages', (receivedMessages: Message[]) => {
-          // Update state with received messages
           setMessages(receivedMessages);
         });
       }
 
-      // Clean up Socket.IO event listener when component unmounts
-      return () => {
-        if (newSocket) {
-          newSocket.off('messages');
-          newSocket.disconnect(); // Disconnect the socket when component unmounts
-        }
-      };
+      console.log('Socket connected!');
     } catch (error) {
-      console.error('Error during socket initialization:', error);
-      navigate('/login');
+      console.error('Error connecting to socket:', error);
     }
   };
-
-  checkLoggedIn();
-}, [navigate]);
-
 
   const goToSignup = () => {
     navigate('/sign');
@@ -76,7 +75,15 @@ useEffect(() => {
 
   // Inside the App component
   const sendMessage = (message: Message) => {
-     socket ? socket.emit('newMessage', message) : ''
+    socket ? socket.emit('newMessage', message) : '';
+  };
+
+  const handleDisconnect = () => {
+    if (socket) {
+      console.log('disconnecting');
+      socket.disconnect(); // Disconnect from the socket
+      setSocket(null); // Clear the socket state
+    }
   };
 
   return (
@@ -84,6 +91,8 @@ useEffect(() => {
       <h1>You have been logged!</h1>
       <p>{user.toString()}</p>
       <Conversation messages={messages} sendMessage={sendMessage} />
+      <button onClick={connectToSocket}>Connect</button>
+      <button onClick={handleDisconnect}>Disconnect</button>
       <button onClick={goToSignup}>Go to Signup</button>
       <button onClick={goToLogin}>Go to Login</button>
     </>
