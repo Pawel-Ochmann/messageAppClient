@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { getToken } from '../utils/tokenHandler';
 import { getAddress } from '../utils/serverAddress';
 import Conversation from './Conversation';
@@ -28,9 +28,18 @@ export default function App() {
       }
 
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      await axios.get(getAddress('/'));
-      setUser('Connecting to the server...');
-
+      try {
+        const response = await axios.get(getAddress('/'));
+        console.log(response.data)
+        const  username  = response.data;
+        setUser(username);
+      } catch (error) {
+        if ( error instanceof AxiosError &&error.response && error.response.status === 401) {
+          navigate('/login');
+          return;
+        }
+        console.error('Error:', error);
+      }
       return () => {
         if (socket) {
           socket.off('messages');
