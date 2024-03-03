@@ -4,6 +4,7 @@ import axios, { AxiosError } from 'axios';
 import { getToken } from '../utils/tokenHandler';
 import { getAddress } from '../utils/serverAddress';
 import Conversation from './Conversation';
+import UserImage from './UserImage';
 import { io, Socket } from 'socket.io-client';
 
 type Message = {
@@ -98,6 +99,8 @@ export default function App() {
   return (
     <>
       <h1>You have been logged!</h1>
+      <div></div>
+      <UserImage userName={user.toString()}/>
       <p>{user.toString()}</p>
       <Conversation messages={messages} sendMessage={sendMessage} />
       <button onClick={connectToSocket}>Connect</button>

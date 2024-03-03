@@ -58,6 +58,9 @@ const Conversation = ({ messages, sendMessage }: { messages: Message[], sendMess
           onChange={handleInputChange}
         />
       </div>
+      <div><input type="file" /><button>Add a file</button></div>
+      <div><button>Add an emote</button></div>
+      <div><button>Add a gif</button></div>
       <div>
         <button onClick={newMessageHandler}>Send Message</button>
       </div>
