@@ -3,27 +3,25 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const UserImage = ({ userName }: { userName: string }) => {
-  const imagePath = getAddress(`/${userName}/avatar`);
-  const [imageAddress, setImageAddress] = useState<string | null>(null);
+  const [imageAvatar, setImageAvatar] = useState<File | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     const fetchImage = async () => {
       try {
-        const response = await axios.get(imagePath);
-        if (response.status === 200) {
-          setImageAddress(imagePath);
-        } else {
-          throw new Error('Image not found');
-        }
+        const response = await axios.get(getAddress(`/${userName}/avatar`), {
+          responseType: 'blob', // Ensure response type is blob to handle files
+        });
+
+        setImageAvatar(response.data); // Store the fetched image file
       } catch (error) {
         console.error('Error fetching image:', error);
-        setImageAddress(null);
+        setImageAvatar(null);
       }
     };
 
     fetchImage();
-  }, [imagePath]);
+  }, [userName]);
 
   const openImageDialog = () => {
     setOpenDialog(!openDialog);
@@ -66,7 +64,12 @@ const UserImage = ({ userName }: { userName: string }) => {
         <h2>Image Form</h2>
         <form onSubmit={handleSubmit} encType='multipart/form-data'>
           <div>
-            <input type='file' name='avatar' onChange={handleFileChange} />
+            <input
+              type='file'
+              name='avatar'
+              accept='image/jpeg, image/png, image/gif'
+              onChange={handleFileChange}
+            />
           </div>
           <div>
             <button type='submit'>
@@ -78,10 +81,14 @@ const UserImage = ({ userName }: { userName: string }) => {
     );
   };
 
-  return imageAddress ? (
+  return imageAvatar ? (
     <>
       <button onClick={openImageDialog}>
-        <img src={imageAddress} alt={`${userName}'s profile`} />
+        <img
+          src={URL.createObjectURL(imageAvatar)}
+          alt={`${userName}'s profile`}
+          style={{ maxWidth: '200px' }}
+        />
       </button>
       <ImageForm />
     </>
