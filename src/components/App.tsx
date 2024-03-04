@@ -99,7 +99,6 @@ export default function App() {
   return (
     <>
       <h1>You have been logged!</h1>
-      <div></div>
       <UserImage userName={user.toString()}/>
       <p>{user.toString()}</p>
       <Conversation messages={messages} sendMessage={sendMessage} />

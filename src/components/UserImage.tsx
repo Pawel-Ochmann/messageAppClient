@@ -48,11 +48,13 @@ const UserImage = ({ userName }: { userName: string }) => {
               'Content-Type': 'multipart/form-data',
             },
           });
+          location.reload();
         } else {
           await axios.post(getAddress(`/${userName}/avatar`), null);
         }
 
         setFile(null);
+        location.reload();
       } catch (error) {
         console.error('Error submitting form:', error);
       }
