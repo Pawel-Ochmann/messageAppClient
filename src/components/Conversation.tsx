@@ -8,7 +8,7 @@ type Message = {
   date: Date;
 };
 
-type SendMessageHandler = (message: Message) => void;
+type SendMessageHandler = (message:string) => void;
 
 const Conversation = ({
   messages,
@@ -17,11 +17,7 @@ const Conversation = ({
   messages: Message[];
   sendMessage: SendMessageHandler;
 }) => {
-  const [newMessage, setNewMessage] = useState<Message>({
-    author: '',
-    content: '',
-    date: new Date(),
-  });
+  const [newMessage, setNewMessage] = useState('');
   const [extrasOpen, setExtrasOpen] = useState(0);
 
   const renderExtras = () => {
@@ -38,16 +34,12 @@ const Conversation = ({
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setNewMessage({
-      ...newMessage,
-      [e.target.name]: e.target.value,
-    });
+    setNewMessage(e.target.value);
   };
 
   const newMessageHandler = () => {
-    console.log('sending message: ', newMessage);
     sendMessage(newMessage);
-    setNewMessage({ author: '', content: '', date: new Date() });
+    setNewMessage('');
   };
 
   return (
@@ -63,19 +55,10 @@ const Conversation = ({
           ))}
       </ul>
       <div>
-        <input
-          type='text'
-          name='author'
-          placeholder='Author'
-          value={newMessage.author}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div>
         <textarea
           name='content'
           placeholder='Message'
-          value={newMessage.content}
+          value={newMessage}
           onChange={handleInputChange}
         />
       </div>

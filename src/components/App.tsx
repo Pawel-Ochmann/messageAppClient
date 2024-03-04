@@ -84,8 +84,13 @@ export default function App() {
   };
 
   // Inside the App component
-  const sendMessage = (message: Message) => {
-    socket ? socket.emit('newMessage', message) : '';
+  const sendMessage = (message:string) => {
+    const messageToSend:Message = {
+      author:user.toString(),
+      content:message,
+      date:new Date()
+    }
+    socket ? socket.emit('newMessage', messageToSend) : '';
   };
 
   const handleDisconnect = () => {
