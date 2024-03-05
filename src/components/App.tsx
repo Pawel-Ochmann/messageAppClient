@@ -6,12 +6,7 @@ import { getAddress } from '../utils/serverAddress';
 import Conversation from './Conversation';
 import UserImage from './UserImage';
 import { io, Socket } from 'socket.io-client';
-
-type Message = {
-  author: string;
-  content: string;
-  date: Date;
-};
+import {Message, MessageParam} from '../types/index'
 
 export default function App() {
   const [user, setUser] = useState({});
@@ -83,13 +78,13 @@ export default function App() {
     navigate('/login');
   };
 
-  // Inside the App component
-  const sendMessage = (message:string) => {
-    const messageToSend:Message = {
-      author:user.toString(),
-      content:message,
-      date:new Date()
-    }
+  const sendMessage = (message:MessageParam) => {
+    const messageToSend: Message = {
+      author: user.toString(),
+      content: message.content,
+      type: message.type,
+      date: new Date(),
+    };
     socket ? socket.emit('newMessage', messageToSend) : '';
   };
 

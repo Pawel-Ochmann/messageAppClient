@@ -1,18 +1,14 @@
-import { useEffect, useState } from 'react';
+import { MouseEventHandler, useEffect, useState } from 'react';
 import axios from 'axios';
+import { SendMessageHandler, Gif } from '../types/index';
 
 const GiphyAPIKey = 'yj95txvwzdxGDuFA4J2CeomczmxZRQ1D&s';
 
-type Gif = {
-  id: string;
-  images: {
-    original: {
-      url: string;
-    };
-  };
-};
-
-export default function Gifs({ message, setMessage }) {
+export default function Gifs({
+  sendMessage,
+}: {
+  sendMessage: SendMessageHandler;
+}) {
   const [gifs, setGifs] = useState([]);
   const [query, setQuery] = useState('');
 
@@ -42,6 +38,13 @@ export default function Gifs({ message, setMessage }) {
     }
   };
 
+const sendGif: React.MouseEventHandler<HTMLImageElement> = (e) => {
+  const img = e.target as HTMLImageElement;
+  const address = img.src;
+  sendMessage({ type: 'gif', content: address });
+};
+
+
   return (
     <>
       {' '}
@@ -56,6 +59,7 @@ export default function Gifs({ message, setMessage }) {
         {gifs.length > 0 &&
           gifs.map((gif: Gif) => (
             <img
+              onClick={sendGif}
               key={gif.id}
               src={gif.images.original.url}
               alt='GIF'

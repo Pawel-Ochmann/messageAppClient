@@ -1,14 +1,9 @@
 import React, { useState } from 'react';
 import Emotes from '../components/Emotes';
 import Gifs from '../components/Gifs';
-
-type Message = {
-  author: string;
-  content: string;
-  date: Date;
-};
-
-type SendMessageHandler = (message:string) => void;
+import MessageBox from './MessageBox';
+import { v4 as uuid4 } from 'uuid';
+import {Message,SendMessageHandler} from '../types/index'
 
 const Conversation = ({
   messages,
@@ -25,7 +20,7 @@ const Conversation = ({
       case 1:
         return <Emotes message={newMessage} setMessage={setNewMessage}/>;
       case 2:
-        return <Gifs />;
+        return <Gifs sendMessage={sendMessage}/>;
       default:
         return null;
     }
@@ -38,7 +33,7 @@ const Conversation = ({
   };
 
   const newMessageHandler = () => {
-    sendMessage(newMessage);
+    sendMessage({type:'text', content:newMessage});
     setNewMessage('');
   };
 
@@ -46,11 +41,9 @@ const Conversation = ({
     <div>
       <ul>
         {messages &&
-          messages.map((message, index) => (
-            <li key={index}>
-              <div>Author: {message.author}</div>
-              <div>Content: {message.content}</div>
-              <div>Date: {message.date.toString()}</div>
+          messages.map((message) => (
+            <li key={uuid4()}>
+              <MessageBox message={message}/>
             </li>
           ))}
       </ul>
