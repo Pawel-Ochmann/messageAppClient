@@ -3,6 +3,7 @@ export type Message = {
   content?: string;
   type: 'text' | 'image' | 'gif' | 'audio';
   date: Date;
+  id?:string
 };
 
 export type MessageParam = {

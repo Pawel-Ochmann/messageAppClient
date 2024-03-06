@@ -3,7 +3,7 @@ import Emotes from '../components/Emotes';
 import Gifs from '../components/Gifs';
 import MessageBox from './MessageBox';
 import { v4 as uuid4 } from 'uuid';
-import {Message,SendMessageHandler} from '../types/index'
+import { Message, SendMessageHandler } from '../types/index';
 
 const Conversation = ({
   messages,
@@ -18,9 +18,9 @@ const Conversation = ({
   const renderExtras = () => {
     switch (extrasOpen) {
       case 1:
-        return <Emotes message={newMessage} setMessage={setNewMessage}/>;
+        return <Emotes message={newMessage} setMessage={setNewMessage} />;
       case 2:
-        return <Gifs sendMessage={sendMessage}/>;
+        return <Gifs sendMessage={sendMessage} />;
       default:
         return null;
     }
@@ -33,8 +33,25 @@ const Conversation = ({
   };
 
   const newMessageHandler = () => {
-    sendMessage({type:'text', content:newMessage});
+    sendMessage({ type: 'text', content: newMessage });
     setNewMessage('');
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const file = e.target.files?.[0];
+    if (file) {
+      const fileType = file.type;
+      if (fileType.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const imageData = reader.result as string;
+          sendMessage({ type: 'image', content: imageData });
+        };
+      } else {
+        alert('Please select an image file (jpg, png, etc)');
+      }
+    }
   };
 
   return (
@@ -43,7 +60,7 @@ const Conversation = ({
         {messages &&
           messages.map((message) => (
             <li key={uuid4()}>
-              <MessageBox message={message}/>
+              <MessageBox message={message} />
             </li>
           ))}
       </ul>
@@ -75,8 +92,10 @@ const Conversation = ({
         </button>
       </div>
       <div>
-        <input type='file' />
-        <button>Add an image</button>
+        <form>
+          <input type='file' onChange={handleImageUpload} />
+          <button type='submit'>Add an image</button>
+        </form>
       </div>
       <div>
         <button onClick={newMessageHandler}>Send Message</button>
