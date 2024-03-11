@@ -1,7 +1,7 @@
-import { Message } from '../types/index';
+import { MessageBackend } from '../types/index';
 import { getAddress } from '../utils/serverAddress';
 
-const MessageBox = ({ message }: { message: Message }) => {
+const MessageBox = ({ message }: { message: MessageBackend }) => {
   const renderMessageContent = () => {
     switch (message.type) {
       case 'text':
@@ -11,7 +11,7 @@ const MessageBox = ({ message }: { message: Message }) => {
       case 'gif':
         return <img src={message.content} alt='GIF' />;
       case 'audio':
-        return <audio controls src={message.content} />;
+        return <audio controls src={getAddress(`/${message.content}`)} />;
       default:
         return null;
     }

@@ -6,6 +6,14 @@ export type Message = {
   id?: string;
 };
 
+export type MessageBackend = {
+  author: string;
+  content: string;
+  type: 'text' | 'image' | 'gif' | 'audio';
+  date: Date;
+  id?: string;
+};
+
 export type MessageParam = {
   type: 'text' | 'image' | 'gif' | 'audio';
   content: string | File;

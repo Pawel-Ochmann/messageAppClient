@@ -1,15 +1,16 @@
 import React, { MouseEventHandler, useState } from 'react';
 import Emotes from '../components/Emotes';
 import Gifs from '../components/Gifs';
+import AudioRecorder from './AudioInput';
 import MessageBox from './MessageBox';
 import { v4 as uuid4 } from 'uuid';
-import { Message, SendMessageHandler } from '../types/index';
+import { MessageBackend, SendMessageHandler } from '../types/index';
 
 const Conversation = ({
   messages,
   sendMessage,
 }: {
-  messages: Message[];
+  messages: MessageBackend[];
   sendMessage: SendMessageHandler;
 }) => {
   const [newMessage, setNewMessage] = useState('');
@@ -103,6 +104,7 @@ const Conversation = ({
           </button>
         </form>
       </div>
+      <AudioRecorder sendMessage={sendMessage}/>
       <div>
         <button onClick={newMessageHandler}>Send Message</button>
       </div>

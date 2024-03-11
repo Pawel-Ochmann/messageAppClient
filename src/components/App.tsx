@@ -6,11 +6,11 @@ import { getAddress } from '../utils/serverAddress';
 import Conversation from './Conversation';
 import UserImage from './UserImage';
 import { io, Socket } from 'socket.io-client';
-import { Message, MessageParam } from '../types/index';
+import { Message, MessageBackend, MessageParam } from '../types/index';
 
 export default function App() {
   const [user, setUser] = useState({});
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<MessageBackend[]>([]);
   const [socket, setSocket] = useState<Socket | null>();
   const navigate = useNavigate();
 
@@ -63,7 +63,7 @@ export default function App() {
       }
 
       if (newSocket) {
-        newSocket.on('messages', (receivedMessages: Message[]) => {
+        newSocket.on('messages', (receivedMessages: MessageBackend[]) => {
           setMessages(receivedMessages);
         });
       }
@@ -92,7 +92,7 @@ export default function App() {
 
     console.log(message)
 
-    if (message.type === 'image') {
+    if (message.type === 'image' || message.type === 'audio') {
       const formData = new FormData();
       formData.append('file', message.content);
     }
