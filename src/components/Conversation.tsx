@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { MouseEventHandler, useState } from 'react';
 import Emotes from '../components/Emotes';
 import Gifs from '../components/Gifs';
 import MessageBox from './MessageBox';
@@ -14,6 +14,7 @@ const Conversation = ({
 }) => {
   const [newMessage, setNewMessage] = useState('');
   const [extrasOpen, setExtrasOpen] = useState(0);
+  const [image, setImage] = useState<File | null>(null);
 
   const renderExtras = () => {
     switch (extrasOpen) {
@@ -37,20 +38,15 @@ const Conversation = ({
     setNewMessage('');
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload: MouseEventHandler = (e) => {
     e.preventDefault();
-    const file = e.target.files?.[0];
-    if (file) {
-      const fileType = file.type;
-      if (fileType.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const imageData = reader.result as string;
-          sendMessage({ type: 'image', content: imageData });
-        };
-      } else {
-        alert('Please select an image file (jpg, png, etc)');
-      }
+
+    if (image) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        sendMessage({ type: 'image', content: image });
+      };
+      reader.readAsDataURL(image);
     }
   };
 
@@ -93,8 +89,18 @@ const Conversation = ({
       </div>
       <div>
         <form>
-          <input type='file' onChange={handleImageUpload} />
-          <button type='submit'>Add an image</button>
+          <input
+            type='file'
+            multiple={false}
+            accept='image/*'
+            onChange={(e) => {
+              const selectedFile = e.target.files && e.target.files[0];
+              setImage(selectedFile);
+            }}
+          />
+          <button type='submit' onClick={handleImageUpload}>
+            Add an image
+          </button>
         </form>
       </div>
       <div>

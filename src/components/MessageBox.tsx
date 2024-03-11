@@ -1,4 +1,5 @@
 import { Message } from '../types/index';
+import { getAddress } from '../utils/serverAddress';
 
 const MessageBox = ({ message }: { message: Message }) => {
   const renderMessageContent = () => {
@@ -6,7 +7,7 @@ const MessageBox = ({ message }: { message: Message }) => {
       case 'text':
         return <div>Text: {message.content}</div>;
       case 'image':
-        return <img src={message.content} alt='Image' />;
+        return <img src={getAddress(`/${message.content}`)} alt='Image' />;
       case 'gif':
         return <img src={message.content} alt='GIF' />;
       case 'audio':

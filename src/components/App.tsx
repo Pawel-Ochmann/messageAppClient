@@ -6,7 +6,7 @@ import { getAddress } from '../utils/serverAddress';
 import Conversation from './Conversation';
 import UserImage from './UserImage';
 import { io, Socket } from 'socket.io-client';
-import {Message, MessageParam} from '../types/index'
+import { Message, MessageParam } from '../types/index';
 
 export default function App() {
   const [user, setUser] = useState({});
@@ -26,11 +26,15 @@ export default function App() {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       try {
         const response = await axios.get(getAddress('/'));
-        console.log(response.data)
-        const  username  = response.data;
+        console.log(response.data);
+        const username = response.data;
         setUser(username);
       } catch (error) {
-        if ( error instanceof AxiosError &&error.response && error.response.status === 401) {
+        if (
+          error instanceof AxiosError &&
+          error.response &&
+          error.response.status === 401
+        ) {
           navigate('/login');
           return;
         }
@@ -78,13 +82,20 @@ export default function App() {
     navigate('/login');
   };
 
-  const sendMessage = (message:MessageParam) => {
+  const sendMessage = (message: MessageParam) => {
     const messageToSend: Message = {
       author: user.toString(),
       content: message.content,
       type: message.type,
       date: new Date(),
     };
+
+    console.log(message)
+
+    if (message.type === 'image') {
+      const formData = new FormData();
+      formData.append('file', message.content);
+    }
     socket ? socket.emit('newMessage', messageToSend) : '';
   };
 
@@ -99,7 +110,7 @@ export default function App() {
   return (
     <>
       <h1>You have been logged!</h1>
-      <UserImage userName={user.toString()}/>
+      <UserImage userName={user.toString()} />
       <p>{user.toString()}</p>
       <Conversation messages={messages} sendMessage={sendMessage} />
       <button onClick={connectToSocket}>Connect</button>

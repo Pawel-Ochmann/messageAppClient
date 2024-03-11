@@ -1,14 +1,14 @@
 export type Message = {
   author: string;
-  content?: string;
+  content: string | File;
   type: 'text' | 'image' | 'gif' | 'audio';
   date: Date;
-  id?:string
+  id?: string;
 };
 
 export type MessageParam = {
   type: 'text' | 'image' | 'gif' | 'audio';
-  content: string;
+  content: string | File;
 };
 
 export type SendMessageHandler = (message: MessageParam) => void;
