@@ -1,17 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 import { getToken } from '../utils/tokenHandler';
 import { getAddress } from '../utils/serverAddress';
 import Conversation from './Conversation';
-import UserImage from './UserImage';
+import { UserContext } from '../Context';
+import Dashboard from './Dashboard';
 import { io, Socket } from 'socket.io-client';
 import { Message, MessageBackend, MessageParam } from '../types/index';
 
 export default function App() {
-  const [user, setUser] = useState({});
   const [messages, setMessages] = useState<MessageBackend[]>([]);
   const [socket, setSocket] = useState<Socket | null>();
+  const user = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,7 +29,7 @@ export default function App() {
         const response = await axios.get(getAddress('/'));
         console.log(response.data);
         const username = response.data;
-        setUser(username);
+        user.setName(username.toString());
       } catch (error) {
         if (
           error instanceof AxiosError &&
@@ -49,7 +50,7 @@ export default function App() {
     };
 
     checkLoggedIn();
-  }, [navigate, socket]);
+  }, [navigate, socket, user]);
 
   const connectToSocket = async () => {
     try {
@@ -74,14 +75,6 @@ export default function App() {
     }
   };
 
-  const goToSignup = () => {
-    navigate('/sign');
-  };
-
-  const goToLogin = () => {
-    navigate('/login');
-  };
-
   const sendMessage = (message: MessageParam) => {
     const messageToSend: Message = {
       author: user.toString(),
@@ -90,7 +83,7 @@ export default function App() {
       date: new Date(),
     };
 
-    console.log(message)
+    console.log(message);
 
     if (message.type === 'image' || message.type === 'audio') {
       const formData = new FormData();
@@ -109,14 +102,10 @@ export default function App() {
 
   return (
     <>
-      <h1>You have been logged!</h1>
-      <UserImage userName={user.toString()} />
-      <p>{user.toString()}</p>
+      <Dashboard />
       <Conversation messages={messages} sendMessage={sendMessage} />
       <button onClick={connectToSocket}>Connect</button>
       <button onClick={handleDisconnect}>Disconnect</button>
-      <button onClick={goToSignup}>Go to Signup</button>
-      <button onClick={goToLogin}>Go to Login</button>
     </>
   );
 }

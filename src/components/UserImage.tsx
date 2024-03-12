@@ -1,19 +1,21 @@
 import { getAddress } from '../utils/serverAddress';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { UserContext } from '../Context';
 import axios from 'axios';
 
-const UserImage = ({ userName }: { userName: string }) => {
+const UserImage = () => {
   const [imageAvatar, setImageAvatar] = useState<File | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const user = useContext(UserContext);
 
   useEffect(() => {
     const fetchImage = async () => {
       try {
-        const response = await axios.get(getAddress(`/${userName}/avatar`), {
-          responseType: 'blob', // Ensure response type is blob to handle files
+        const response = await axios.get(getAddress(`/${user.name}/avatar`), {
+          responseType: 'blob', 
         });
 
-        setImageAvatar(response.data); // Store the fetched image file
+        setImageAvatar(response.data); 
       } catch (error) {
         console.error('Error fetching image:', error);
         setImageAvatar(null);
@@ -21,7 +23,7 @@ const UserImage = ({ userName }: { userName: string }) => {
     };
 
     fetchImage();
-  }, [userName]);
+  }, [user.name]);
 
   const openImageDialog = () => {
     setOpenDialog(!openDialog);
@@ -43,14 +45,14 @@ const UserImage = ({ userName }: { userName: string }) => {
           const formData = new FormData();
           formData.append('avatar', file);
           console.log(file);
-          await axios.post(getAddress(`/${userName}/avatar`), formData, {
+          await axios.post(getAddress(`/${user.name}/avatar`), formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
             },
           });
           location.reload();
         } else {
-          await axios.post(getAddress(`/${userName}/avatar`), null);
+          await axios.post(getAddress(`/${user.name}/avatar`), null);
         }
 
         setFile(null);
@@ -88,7 +90,7 @@ const UserImage = ({ userName }: { userName: string }) => {
       <button onClick={openImageDialog}>
         <img
           src={URL.createObjectURL(imageAvatar)}
-          alt={`${userName}'s profile`}
+          alt={`${user.name}'s profile`}
           style={{ maxWidth: '200px' }}
         />
       </button>
@@ -96,7 +98,7 @@ const UserImage = ({ userName }: { userName: string }) => {
     </>
   ) : (
     <>
-      <button onClick={openImageDialog}>{userName[0]}</button>
+      <button onClick={openImageDialog}>{user.name[0]}</button>
       <ImageForm />
     </>
   );
