@@ -1,18 +1,22 @@
-import React, { MouseEventHandler, useState } from 'react';
+import React, { MouseEventHandler, useState, useContext } from 'react';
+import { UserContext } from '../Context';
 import Emotes from '../components/Emotes';
 import Gifs from '../components/Gifs';
 import AudioRecorder from './AudioInput';
 import MessageBox from './MessageBox';
 import { v4 as uuid4 } from 'uuid';
-import { MessageBackend, SendMessageHandler } from '../types/index';
+import { Socket } from 'socket.io-client';
+import { Message, MessageParam, MessageBackend, User} from '../types/index';
+
 
 const Conversation = ({
   messages,
-  sendMessage,
+  socket,
 }: {
   messages: MessageBackend[];
-  sendMessage: SendMessageHandler;
+  socket:Socket;
 }) => {
+  const {user} = useContext(UserContext) as {user:User};
   const [newMessage, setNewMessage] = useState('');
   const [extrasOpen, setExtrasOpen] = useState(0);
   const [image, setImage] = useState<File | null>(null);
@@ -27,6 +31,23 @@ const Conversation = ({
         return null;
     }
   };
+
+    const sendMessage = (message: MessageParam) => {
+      const messageToSend: Message = {
+        author: user.name,
+        content: message.content,
+        type: message.type,
+        date: new Date(),
+      };
+
+      console.log(message);
+
+      if (message.type === 'image' || message.type === 'audio') {
+        const formData = new FormData();
+        formData.append('file', message.content);
+      }
+      socket ? socket.emit('newMessage', messageToSend) : '';
+    };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

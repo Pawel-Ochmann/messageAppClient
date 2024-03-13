@@ -1,13 +1,14 @@
-import React, { ReactNode, createContext, useState } from 'react';
+import React, { createContext, ReactNode, useState } from 'react';
+import { User } from './types/index';
 
 interface UserContextType {
-  name: string;
-  setName: React.Dispatch<React.SetStateAction<string>>;
+  user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
 const initialUserContextValue: UserContextType = {
-  name: '',
-  setName: () => {},
+  user: null,
+  setUser: () => {},
 };
 
 export const UserContext = createContext<UserContextType>(
@@ -15,10 +16,10 @@ export const UserContext = createContext<UserContextType>(
 );
 
 const Context = ({ children }: { children: ReactNode }) => {
-  const [name, setName] = useState<string>(' ');
+  const [user, setUser] = useState<User | null>(null);
 
   return (
-    <UserContext.Provider value={{ name, setName }}>
+    <UserContext.Provider value={{ user, setUser }}>
       {children}
     </UserContext.Provider>
   );

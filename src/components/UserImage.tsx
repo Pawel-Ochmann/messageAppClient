@@ -1,12 +1,13 @@
 import { getAddress } from '../utils/serverAddress';
 import { useState, useEffect, useContext } from 'react';
 import { UserContext } from '../Context';
+import {User} from '../types/index'
 import axios from 'axios';
 
 const UserImage = () => {
   const [imageAvatar, setImageAvatar] = useState<File | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const user = useContext(UserContext);
+  const { user } = useContext(UserContext) as {user:User};
 
   useEffect(() => {
     const fetchImage = async () => {
@@ -95,10 +96,17 @@ const UserImage = () => {
         />
       </button>
       <ImageForm />
+      <button
+        onClick={() => {
+          console.log(user);
+        }}
+      >
+        show user
+      </button>
     </>
   ) : (
     <>
-      <button onClick={openImageDialog}>{user.name[0]}</button>
+      <button onClick={openImageDialog}>{user.name}</button>
       <ImageForm />
     </>
   );

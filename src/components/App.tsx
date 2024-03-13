@@ -7,12 +7,12 @@ import Conversation from './Conversation';
 import { UserContext } from '../Context';
 import Dashboard from './Dashboard';
 import { io, Socket } from 'socket.io-client';
-import { Message, MessageBackend, MessageParam } from '../types/index';
+import { MessageBackend } from '../types/index';
 
 export default function App() {
   const [messages, setMessages] = useState<MessageBackend[]>([]);
-  const [socket, setSocket] = useState<Socket | null>();
-  const user = useContext(UserContext);
+  const [socket, setSocket] = useState<Socket>(io);
+  const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,9 +27,8 @@ export default function App() {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       try {
         const response = await axios.get(getAddress('/'));
-        console.log(response.data);
-        const username = response.data;
-        user.setName(username.toString());
+        await setUser(response.data);
+        await connectToSocket();
       } catch (error) {
         if (
           error instanceof AxiosError &&
@@ -42,15 +41,15 @@ export default function App() {
         console.error('Error:', error);
       }
       return () => {
-        if (socket) {
           socket.off('messages');
           socket.disconnect();
-        }
+        
       };
     };
 
     checkLoggedIn();
-  }, [navigate, socket, user]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigate, setUser]);
 
   const connectToSocket = async () => {
     try {
@@ -75,37 +74,13 @@ export default function App() {
     }
   };
 
-  const sendMessage = (message: MessageParam) => {
-    const messageToSend: Message = {
-      author: user.toString(),
-      content: message.content,
-      type: message.type,
-      date: new Date(),
-    };
-
-    console.log(message);
-
-    if (message.type === 'image' || message.type === 'audio') {
-      const formData = new FormData();
-      formData.append('file', message.content);
-    }
-    socket ? socket.emit('newMessage', messageToSend) : '';
-  };
-
-  const handleDisconnect = () => {
-    if (socket) {
-      console.log('disconnecting');
-      socket.disconnect(); // Disconnect from the socket
-      setSocket(null); // Clear the socket state
-    }
-  };
-
+  if (!user) return <></>;
   return (
     <>
-      <Dashboard />
-      <Conversation messages={messages} sendMessage={sendMessage} />
-      <button onClick={connectToSocket}>Connect</button>
-      <button onClick={handleDisconnect}>Disconnect</button>
+      <div style={{display:'flex'}}>
+        <Dashboard />
+        {socket && <Conversation messages={messages} socket={socket} />}
+      </div>
     </>
   );
 }

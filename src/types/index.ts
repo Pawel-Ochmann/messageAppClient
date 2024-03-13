@@ -29,3 +29,11 @@ export type Gif = {
     };
   };
 };
+
+export type User = {
+  name: string;
+  password:string;
+  lastVisited: Date;
+  conversations: { ref: string; name: string }[];
+  groupConversations: { ref: string; name: string }[];
+}
