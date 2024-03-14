@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../Context';
 import {User} from '../types/index'
 import { v4 as uuid } from 'uuid';
+import { ConversationType } from '../types/index';
 
 interface Contact {
   id: string;
@@ -14,8 +15,10 @@ interface Contact {
 }
 
 const NewContact = ({
+  setChatOpen,
   openHandler,
 }: {
+  setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>;
   openHandler: Dispatch<SetStateAction<boolean>>;
 }) => {
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -44,6 +47,18 @@ const NewContact = ({
     fetchContacts();
   }, [navigate, user.name]);
 
+  const createNewConversation = (name:string)=> {
+    const newConversation:ConversationType = {
+      id:'',
+      messages:[],
+      participants:[user.name, name],
+      group:false,
+      name:name
+    };
+    setChatOpen(newConversation);
+  }
+
+
   return (
     <div>
       <h2>Here you can set new contact</h2>
@@ -51,7 +66,7 @@ const NewContact = ({
       <ul>
         {contacts.map((contact) => (
           <li key={uuid()}>
-            <button>{contact.name}</button>
+            <button onClick={()=>{createNewConversation(contact.name)}}>{contact.name}</button>
           </li>
         ))}
       </ul>

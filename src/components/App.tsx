@@ -7,12 +7,12 @@ import Conversation from './Conversation';
 import { UserContext } from '../Context';
 import Dashboard from './Dashboard';
 import { io, Socket } from 'socket.io-client';
-import { MessageBackend } from '../types/index';
+import {ConversationType} from '../types/index';
 
 export default function App() {
-  const [messages, setMessages] = useState<MessageBackend[]>([]);
   const [socket, setSocket] = useState<Socket>(io);
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser} = useContext(UserContext);
+  const [chatOpen, setChatOpen] = useState<ConversationType | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,19 +55,6 @@ export default function App() {
     try {
       const newSocket = io('http://localhost:4000');
       setSocket(newSocket);
-      console.log(newSocket);
-
-      if (newSocket) {
-        await newSocket.emit('join');
-        console.log(newSocket);
-      }
-
-      if (newSocket) {
-        newSocket.on('messages', (receivedMessages: MessageBackend[]) => {
-          setMessages(receivedMessages);
-        });
-      }
-
       console.log('Socket connected!');
     } catch (error) {
       console.error('Error connecting to socket:', error);
@@ -78,8 +65,8 @@ export default function App() {
   return (
     <>
       <div style={{display:'flex'}}>
-        <Dashboard />
-        {socket && <Conversation messages={messages} socket={socket} />}
+        <Dashboard setChatOpen={setChatOpen}/>
+        {socket && <Conversation chatOpen={chatOpen} socket={socket} />}
       </div>
     </>
   );

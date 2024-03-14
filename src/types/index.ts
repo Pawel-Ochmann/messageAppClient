@@ -37,3 +37,11 @@ export type User = {
   conversations: { ref: string; name: string }[];
   groupConversations: { ref: string; name: string }[];
 }
+
+export type ConversationType = {
+  id: string; 
+  messages: MessageBackend[];
+  participants: string[];
+  group:boolean,
+  name:string;
+};

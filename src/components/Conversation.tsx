@@ -6,20 +6,22 @@ import AudioRecorder from './AudioInput';
 import MessageBox from './MessageBox';
 import { v4 as uuid4 } from 'uuid';
 import { Socket } from 'socket.io-client';
-import { Message, MessageParam, MessageBackend, User} from '../types/index';
+import { Message, MessageParam, User, ConversationType} from '../types/index';
 
 
 const Conversation = ({
-  messages,
+  chatOpen,
   socket,
 }: {
-  messages: MessageBackend[];
+  chatOpen:ConversationType | null,
   socket:Socket;
 }) => {
   const {user} = useContext(UserContext) as {user:User};
   const [newMessage, setNewMessage] = useState('');
   const [extrasOpen, setExtrasOpen] = useState(0);
   const [image, setImage] = useState<File | null>(null);
+
+
 
   const renderExtras = () => {
     switch (extrasOpen) {
@@ -72,11 +74,19 @@ const Conversation = ({
     }
   };
 
+  
+
+  if (!chatOpen) {
+    return <div>There is no conversation yet.</div>;
+  }
+
   return (
     <div>
+      <button onClick={()=>{console.log(chatOpen)}}>check chat</button>
+      {chatOpen.id === '' ? `Create new chat with ${chatOpen.name}`: chatOpen.name}
       <ul>
-        {messages &&
-          messages.map((message) => (
+        {chatOpen.messages &&
+          chatOpen.messages.map((message) => (
             <li key={uuid4()}>
               <MessageBox message={message} />
             </li>
