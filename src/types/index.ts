@@ -31,17 +31,18 @@ export type Gif = {
 };
 
 export type ConversationType = {
-  id: string;
+  key:string;
   messages: MessageBackend[];
   participants: string[];
   group: boolean;
-  name?: string;
+  name: string[];
   new?: boolean;
 };
 
 export type User = {
   name: string;
   password:string;
+  _id:string,
   lastVisited: Date;
   conversations: ConversationType[];
   groupConversations: { ref: string; name: string }[];

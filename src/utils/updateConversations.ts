@@ -14,7 +14,7 @@ const updateConversation: UpdateConversationHandler = (
   setUser((prevUser) => {
     if (!prevUser) return prevUser; 
     const updatedConversations = prevUser.conversations.map((conversation) => {
-      if (conversation.id === conversationId) {
+      if (conversation._id === conversationId) {
         return {
           ...conversation,
           messages: [...conversation.messages, message],

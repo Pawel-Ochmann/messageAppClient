@@ -1,13 +1,13 @@
 import { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { getToken } from '../utils/tokenHandler';
 import { getAddress } from '../utils/serverAddress';
 import Conversation from './Conversation';
 import { UserContext } from '../Context';
 import Dashboard from './Dashboard';
 import { io, Socket } from 'socket.io-client';
-import { ConversationType } from '../types/index';
+import { User, ConversationType } from '../types/index';
 
 export default function App() {
   const [socket, setSocket] = useState<Socket>(io);
@@ -25,21 +25,17 @@ export default function App() {
       }
 
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
       try {
         const response = await axios.get(getAddress('/'));
-        await setUser(response.data);
+        console.log('user: ', response.data)
+        setUser(response.data);
         await connectToSocket();
       } catch (error) {
-        if (
-          error instanceof AxiosError &&
-          error.response &&
-          error.response.status === 401
-        ) {
-          navigate('/login');
-          return;
-        }
-        console.error('Error:', error);
+        navigate('/login');
+        return;
       }
+
       return () => {
         socket.off('messages');
         socket.disconnect();
@@ -55,7 +51,8 @@ export default function App() {
       const newSocket = io('http://localhost:4000');
       user && newSocket.emit('join', user.name);
 
-      newSocket.on('updatedUserDocument', (updatedUser) => {
+      newSocket.on('updatedUserDocument', (updatedUser: User) => {
+        console.log('trying to update user: ', updatedUser);
         setUser(updatedUser);
       });
       setSocket(newSocket);

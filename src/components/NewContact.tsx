@@ -10,7 +10,7 @@ import { v4 as uuid } from 'uuid';
 import { ConversationType } from '../types/index';
 
 interface Contact {
-  id: string;
+  _id: string;
   name: string;
 }
 
@@ -47,13 +47,13 @@ const NewContact = ({
     fetchContacts();
   }, [navigate, user.name]);
 
-  const createNewConversation = (name:string)=> {
+  const createNewConversation = (_id:string, name:string)=> {
     const newConversation:ConversationType = {
-      id:'',
+      key:uuid(),
       messages:[],
-      participants:[user.name, name],
+      participants:[user._id, _id],
+      name:[user.name, name],
       group:false,
-      name:name,
       new:true,
     };
     setChatOpen(newConversation);
@@ -67,7 +67,7 @@ const NewContact = ({
       <ul>
         {contacts.map((contact) => (
           <li key={uuid()}>
-            <button onClick={()=>{createNewConversation(contact.name)}}>{contact.name}</button>
+            <button onClick={()=>{createNewConversation(contact._id, contact.name)}}>{contact.name}</button>
           </li>
         ))}
       </ul>
