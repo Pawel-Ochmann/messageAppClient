@@ -1,12 +1,19 @@
-import { useState } from 'react';
-import { SendMessageHandler, MessageParam } from '../types';
+import { useState, MouseEventHandler } from 'react';
 
-const AudioRecorder = ({sendMessage}:{sendMessage:SendMessageHandler}) => {
+const AudioRecorder = ({
+  sendAudio,
+  audioChunks,
+  setAudioChunks,
+}: {
+  sendAudio: MouseEventHandler<HTMLButtonElement>;
+  audioChunks: Blob[];
+  setAudioChunks: React.Dispatch<React.SetStateAction<Blob[]>>;
+}) => {
   const [recording, setRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
     null
   );
-  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
+ 
 
   const startRecording = async () => {
     try {
@@ -34,18 +41,7 @@ const AudioRecorder = ({sendMessage}:{sendMessage:SendMessageHandler}) => {
     }
   };
 
-  const handleSendAudio = () => {
-    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-    const audioFile = new File([audioBlob], 'audio_recording.webm', {
-      type: 'audio/webm',
-    });
 
-    const newMessage:MessageParam = {
-        type:'audio',
-        content:audioFile
-    }
-    sendMessage(newMessage);
-  };
 
   return (
     <div>
@@ -53,7 +49,7 @@ const AudioRecorder = ({sendMessage}:{sendMessage:SendMessageHandler}) => {
         {recording ? 'Stop Recording' : 'Start Recording'}
       </button>
       {audioChunks.length > 0 && (
-        <button onClick={handleSendAudio}>Send Audio</button>
+        <button onClick={sendAudio}>Send Audio</button>
       )}
     </div>
   );

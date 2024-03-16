@@ -1,13 +1,13 @@
-import { MouseEventHandler, useEffect, useState } from 'react';
+import {  useEffect, useState } from 'react';
 import axios from 'axios';
-import { SendMessageHandler, Gif } from '../types/index';
+import { Gif } from '../types';
 
 const GiphyAPIKey = 'yj95txvwzdxGDuFA4J2CeomczmxZRQ1D&s';
 
 export default function Gifs({
-  sendMessage,
+  sendGif,
 }: {
-  sendMessage: SendMessageHandler;
+  sendGif: React.MouseEventHandler<HTMLImageElement>;
 }) {
   const [gifs, setGifs] = useState([]);
   const [query, setQuery] = useState('');
@@ -37,12 +37,6 @@ export default function Gifs({
       console.error('Error fetching gifs:', error);
     }
   };
-
-const sendGif: React.MouseEventHandler<HTMLImageElement> = (e) => {
-  const img = e.target as HTMLImageElement;
-  const address = img.src;
-  sendMessage({ type: 'gif', content: address });
-};
 
 
   return (

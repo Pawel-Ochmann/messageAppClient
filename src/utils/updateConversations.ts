@@ -1,18 +1,19 @@
-import { MessageBackend, Conversation } from '../types/index';
+import { MessageBackend, User } from '../types/index';
 
 export type UpdateConversationHandler = (
-  setConversations: React.Dispatch<React.SetStateAction<Conversation[]>>,
+  setUser: React.Dispatch<React.SetStateAction<User | null>>,
   message: MessageBackend,
   conversationId: string
 ) => void;
 
-const updateConversation:UpdateConversationHandler = (
-  setConversations: React.Dispatch<React.SetStateAction<Conversation[]>>,
+const updateConversation: UpdateConversationHandler = (
+  setUser: React.Dispatch<React.SetStateAction<User | null>>,
   message: MessageBackend,
   conversationId: string
 ) => {
-  setConversations((prevConversations) => {
-    return prevConversations.map((conversation) => {
+  setUser((prevUser) => {
+    if (!prevUser) return prevUser; 
+    const updatedConversations = prevUser.conversations.map((conversation) => {
       if (conversation.id === conversationId) {
         return {
           ...conversation,
@@ -21,6 +22,10 @@ const updateConversation:UpdateConversationHandler = (
       }
       return conversation;
     });
+    return {
+      ...prevUser,
+      conversations: updatedConversations,
+    };
   });
 };
 

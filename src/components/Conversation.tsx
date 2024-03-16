@@ -4,52 +4,49 @@ import Emotes from '../components/Emotes';
 import Gifs from '../components/Gifs';
 import AudioRecorder from './AudioInput';
 import MessageBox from './MessageBox';
-import { v4 as uuid4 } from 'uuid';
 import { Socket } from 'socket.io-client';
-import { Message, MessageParam, User, ConversationType} from '../types/index';
-
+import { Message, MessageParam, User, ConversationType } from '../types/index';
 
 const Conversation = ({
   chatOpen,
   socket,
 }: {
-  chatOpen:ConversationType | null,
-  socket:Socket;
+  chatOpen: ConversationType | null;
+  socket: Socket;
 }) => {
-  const {user} = useContext(UserContext) as {user:User};
+  const { user } = useContext(UserContext) as { user: User };
   const [newMessage, setNewMessage] = useState('');
   const [extrasOpen, setExtrasOpen] = useState(0);
   const [image, setImage] = useState<File | null>(null);
-
-
+   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
 
   const renderExtras = () => {
     switch (extrasOpen) {
       case 1:
         return <Emotes message={newMessage} setMessage={setNewMessage} />;
       case 2:
-        return <Gifs sendMessage={sendMessage} />;
+        return <Gifs sendGif={sendGif} />;
       default:
         return null;
     }
   };
 
-    const sendMessage = (message: MessageParam) => {
-      const messageToSend: Message = {
-        author: user.name,
-        content: message.content,
-        type: message.type,
-        date: new Date(),
-      };
-
-      console.log(message);
-
-      if (message.type === 'image' || message.type === 'audio') {
-        const formData = new FormData();
-        formData.append('file', message.content);
-      }
-      socket ? socket.emit('newMessage', messageToSend) : '';
+  const sendMessage = (message: MessageParam) => {
+    const messageToSend: Message = {
+      author: user.name,
+      content: message.content,
+      type: message.type,
+      date: new Date(),
     };
+
+    console.log(message);
+
+    if (message.type === 'image' || message.type === 'audio') {
+      const formData = new FormData();
+      formData.append('file', message.content);
+    }
+    socket ? socket.emit('newMessage', messageToSend) : '';
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -57,24 +54,110 @@ const Conversation = ({
     setNewMessage(e.target.value);
   };
 
-  const newMessageHandler = () => {
-    sendMessage({ type: 'text', content: newMessage });
-    setNewMessage('');
+    const newMessageHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
+      e.preventDefault();
+      if (chatOpen && chatOpen.new) {
+        socket.emit(
+          'createNewChatConfirmation',
+          chatOpen,
+          (confirmation: boolean) => {
+            if (confirmation) {
+              sendMessage({ type: 'text', content: newMessage });
+              setNewMessage('');
+            } else {
+              console.error('Error: New chat creation confirmation failed');
+            }
+          }
+        );
+      } else {
+        sendMessage({ type: 'text', content: newMessage });
+        setNewMessage('');
+      }
+    };
+
+const sendGif: MouseEventHandler<HTMLImageElement> = (e) => {
+
+ const img = e.target as HTMLImageElement;
+
+  if (chatOpen && chatOpen.new) {
+    socket.emit(
+      'createNewChatConfirmation',
+      chatOpen,
+      (confirmation: boolean) => {
+        if (confirmation) {
+          const address = img.src;
+          sendMessage({ type: 'gif', content: address });
+        } else {
+          console.error('Error: New chat creation confirmation failed');
+        }
+      }
+    );
+  } else {
+    const address = img.src;
+    sendMessage({ type: 'gif', content: address });
+  }
+};
+
+
+const handleImageUpload: MouseEventHandler = (e) => {
+  e.preventDefault();
+
+    const uploadImage = () => {
+      if (image) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          sendMessage({ type: 'image', content: image });
+        };
+        reader.readAsDataURL(image);
+      }
+    };
+
+  if (chatOpen && chatOpen.new) {
+    socket.emit(
+      'createNewConversation',
+      chatOpen,
+      (confirmation: boolean) => {
+        if (confirmation) {
+          uploadImage();
+        } else {
+          console.error('Error: New chat creation confirmation failed');
+        }
+      }
+    );
+  } else {
+    uploadImage();
+  }
+};
+  const audioHandler = ()=>{ const sendAudio = () => {
+    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+    const audioFile = new File([audioBlob], 'audio_recording.webm', {
+      type: 'audio/webm',
+    });
+
+    const newMessage: MessageParam = {
+      type: 'audio',
+      content: audioFile,
+    };
+    sendMessage(newMessage);
   };
 
-  const handleImageUpload: MouseEventHandler = (e) => {
-    e.preventDefault();
-
-    if (image) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        sendMessage({ type: 'image', content: image });
-      };
-      reader.readAsDataURL(image);
-    }
-  };
-
-  
+  if (chatOpen && chatOpen.new) {
+    socket.emit(
+      'createNewChatConfirmation',
+      chatOpen,
+      (confirmation: boolean) => {
+        if (confirmation) {
+          sendAudio();
+        } else {
+          console.error('Error: New chat creation confirmation failed');
+        }
+      }
+    );
+  } else {
+    sendAudio();
+  }
+}
+ 
 
   if (!chatOpen) {
     return <div>There is no conversation yet.</div>;
@@ -82,12 +165,20 @@ const Conversation = ({
 
   return (
     <div>
-      <button onClick={()=>{console.log(chatOpen)}}>check chat</button>
-      {chatOpen.id === '' ? `Create new chat with ${chatOpen.name}`: chatOpen.name}
+      <button
+        onClick={() => {
+          console.log(chatOpen);
+        }}
+      >
+        check chat
+      </button>
+      {chatOpen.id === ''
+        ? `Create new chat with ${chatOpen.name}`
+        : chatOpen.name}
       <ul>
         {chatOpen.messages &&
           chatOpen.messages.map((message) => (
-            <li key={uuid4()}>
+            <li key={message._id}>
               <MessageBox message={message} />
             </li>
           ))}
@@ -130,12 +221,17 @@ const Conversation = ({
               setImage(selectedFile);
             }}
           />
-          <button type='submit' onClick={handleImageUpload}>
+          <button
+            type='submit'
+            onClick={() => {
+              handleImageUpload;
+            }}
+          >
             Add an image
           </button>
         </form>
       </div>
-      <AudioRecorder sendMessage={sendMessage}/>
+      <AudioRecorder sendAudio={audioHandler} audioChunks={audioChunks} setAudioChunks={setAudioChunks}/>
       <div>
         <button onClick={newMessageHandler}>Send Message</button>
       </div>

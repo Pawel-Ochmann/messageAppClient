@@ -7,11 +7,11 @@ import Conversation from './Conversation';
 import { UserContext } from '../Context';
 import Dashboard from './Dashboard';
 import { io, Socket } from 'socket.io-client';
-import {ConversationType} from '../types/index';
+import { ConversationType } from '../types/index';
 
 export default function App() {
   const [socket, setSocket] = useState<Socket>(io);
-  const { user, setUser} = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const [chatOpen, setChatOpen] = useState<ConversationType | null>(null);
   const navigate = useNavigate();
 
@@ -41,19 +41,23 @@ export default function App() {
         console.error('Error:', error);
       }
       return () => {
-          socket.off('messages');
-          socket.disconnect();
-        
+        socket.off('messages');
+        socket.disconnect();
       };
     };
 
     checkLoggedIn();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate, setUser]);
 
   const connectToSocket = async () => {
     try {
       const newSocket = io('http://localhost:4000');
+      user && newSocket.emit('join', user.name);
+
+      newSocket.on('updatedUserDocument', (updatedUser) => {
+        setUser(updatedUser);
+      });
       setSocket(newSocket);
       console.log('Socket connected!');
     } catch (error) {
@@ -64,8 +68,8 @@ export default function App() {
   if (!user) return <></>;
   return (
     <>
-      <div style={{display:'flex'}}>
-        <Dashboard setChatOpen={setChatOpen}/>
+      <div style={{ display: 'flex' }}>
+        <Dashboard setChatOpen={setChatOpen} />
         {socket && <Conversation chatOpen={chatOpen} socket={socket} />}
       </div>
     </>

@@ -11,7 +11,7 @@ export type MessageBackend = {
   content: string;
   type: 'text' | 'image' | 'gif' | 'audio';
   date: Date;
-  id?: string;
+  _id: string;
 };
 
 export type MessageParam = {
@@ -30,18 +30,20 @@ export type Gif = {
   };
 };
 
+export type ConversationType = {
+  id: string;
+  messages: MessageBackend[];
+  participants: string[];
+  group: boolean;
+  name?: string;
+  new?: boolean;
+};
+
 export type User = {
   name: string;
   password:string;
   lastVisited: Date;
-  conversations: { ref: string; name: string }[];
+  conversations: ConversationType[];
   groupConversations: { ref: string; name: string }[];
 }
 
-export type ConversationType = {
-  id: string; 
-  messages: MessageBackend[];
-  participants: string[];
-  group:boolean,
-  name:string;
-};

@@ -53,7 +53,8 @@ const NewContact = ({
       messages:[],
       participants:[user.name, name],
       group:false,
-      name:name
+      name:name,
+      new:true,
     };
     setChatOpen(newConversation);
   }
