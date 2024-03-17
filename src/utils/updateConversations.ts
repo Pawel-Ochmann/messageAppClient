@@ -2,12 +2,16 @@ import { User, ConversationType } from '../types/index';
 
 export type UpdateConversationHandler = (
   setUser: React.Dispatch<React.SetStateAction<User | null>>,
-  updatedConversation: ConversationType
+  updatedConversation: ConversationType,
+  chatOpen: ConversationType | null,
+  setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>
 ) => void;
 
 const updateConversation: UpdateConversationHandler = (
   setUser: React.Dispatch<React.SetStateAction<User | null>>,
-  updatedConversation: ConversationType
+  updatedConversation: ConversationType,
+  chatOpen: ConversationType | null,
+  setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>
 ) => {
   setUser((prevUser) => {
     if (!prevUser) return prevUser;
@@ -22,6 +26,9 @@ const updateConversation: UpdateConversationHandler = (
       conversations: updatedConversations,
     };
   });
+  if (chatOpen && chatOpen.key === updatedConversation.key) {
+    setChatOpen(updatedConversation);
+  }
 };
 
 export default updateConversation;

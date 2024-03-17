@@ -9,12 +9,16 @@ import Dashboard from './Dashboard';
 import { io, Socket } from 'socket.io-client';
 import { User, ConversationType } from '../types/index';
 import updateConversation from '../utils/updateConversations';
+import { updateLastRead } from '../utils/lastRead';
+
 
 export default function App() {
   const [socket, setSocket] = useState<Socket>(io);
   const { user, setUser } = useContext(UserContext);
   const [chatOpen, setChatOpen] = useState<ConversationType | null>(null);
   const navigate = useNavigate();
+
+
 
   useEffect(() => {
     const checkLoggedIn = async () => {
@@ -29,7 +33,6 @@ export default function App() {
 
       try {
         const response = await axios.get(getAddress('/'));
-        console.log('user: ', response.data);
         setUser(response.data);
         await connectToSocket();
       } catch (error) {
@@ -47,6 +50,12 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate, setUser]);
 
+    useEffect(() => {
+      if (chatOpen) {
+        updateLastRead(chatOpen);
+      }
+    }, [chatOpen]);
+
   const connectToSocket = async () => {
     try {
       const newSocket = io('http://localhost:4000');
@@ -60,7 +69,7 @@ export default function App() {
       newSocket.on('message', (conversation: ConversationType) => {
         console.log('Received conversation from server: ', conversation);
 
-        updateConversation(setUser, conversation);
+        updateConversation(setUser, conversation, chatOpen, setChatOpen);
       });
 
       setSocket(newSocket);

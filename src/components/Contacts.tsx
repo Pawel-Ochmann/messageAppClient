@@ -1,7 +1,8 @@
-import { useContext} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../Context';
 import getConversationName from '../utils/getConversationName';
 import { ConversationType } from '../types';
+import { hasBeenRead } from '../utils/lastRead';
 
 const Contacts = ({
   setChatOpen,
@@ -9,14 +10,30 @@ const Contacts = ({
   setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>;
 }) => {
   const { user } = useContext(UserContext);
+  const [userConversations, setUserConversations] = useState(
+    user?.conversations || []
+  );
+
+  useEffect(() => {
+    setUserConversations(user?.conversations || []);
+  }, [user]);
 
   return (
     <div>
       <ul>
         {user &&
-          user.conversations.map((conversation) => (
+          userConversations.map((conversation) => (
             <li key={conversation.key}>
-              <button onClick={()=>{setChatOpen(conversation)}}>{getConversationName(user, conversation)}</button>
+              <button
+                onClick={() => setChatOpen(conversation)}
+                style={{
+                  backgroundColor: hasBeenRead(conversation)
+                    ? 'white'
+                    : 'green',
+                }}
+              >
+                {getConversationName(user, conversation)}
+              </button>
             </li>
           ))}
       </ul>

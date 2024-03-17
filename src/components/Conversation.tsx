@@ -48,6 +48,7 @@ const Conversation = ({
     }
 
     socket ? socket.emit('newMessage', messageToSend, chatOpen?.key) : '';
+    
   };
 
   const handleInputChange = (
