@@ -1,18 +1,22 @@
 import { useContext} from 'react';
 import { UserContext } from '../Context';
 import getConversationName from '../utils/getConversationName';
+import { ConversationType } from '../types';
 
-const Contacts = () => {
-
-const {user} = useContext(UserContext)
-
+const Contacts = ({
+  setChatOpen,
+}: {
+  setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>;
+}) => {
+  const { user } = useContext(UserContext);
 
   return (
     <div>
       <ul>
-        {user && user.conversations.map((conversation) => (
+        {user &&
+          user.conversations.map((conversation) => (
             <li key={conversation.key}>
-             <p>{getConversationName(user, conversation)}</p>
+              <button onClick={()=>{setChatOpen(conversation)}}>{getConversationName(user, conversation)}</button>
             </li>
           ))}
       </ul>

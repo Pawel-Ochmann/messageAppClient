@@ -46,7 +46,8 @@ const Conversation = ({
       const formData = new FormData();
       formData.append('file', message.content);
     }
-    socket ? socket.emit('newMessage', messageToSend) : '';
+
+    socket ? socket.emit('newMessage', messageToSend, chatOpen?.key) : '';
   };
 
   const handleInputChange = (
@@ -172,7 +173,12 @@ const Conversation = ({
       >
         check chat
       </button>
-      <h2>`Create new chat with ${getConversationName(user, chatOpen)}`</h2>
+      {chatOpen.new ? (
+        <h2>Create new chat with {getConversationName(user, chatOpen)}</h2>
+      ) : (
+        <h2>{getConversationName(user, chatOpen)}</h2>
+      )}
+
       <ul>
         {chatOpen.messages &&
           chatOpen.messages.map((message) => (

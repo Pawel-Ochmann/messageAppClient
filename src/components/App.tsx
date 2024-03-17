@@ -8,6 +8,7 @@ import { UserContext } from '../Context';
 import Dashboard from './Dashboard';
 import { io, Socket } from 'socket.io-client';
 import { User, ConversationType } from '../types/index';
+import updateConversation from '../utils/updateConversations';
 
 export default function App() {
   const [socket, setSocket] = useState<Socket>(io);
@@ -28,7 +29,7 @@ export default function App() {
 
       try {
         const response = await axios.get(getAddress('/'));
-        console.log('user: ', response.data)
+        console.log('user: ', response.data);
         setUser(response.data);
         await connectToSocket();
       } catch (error) {
@@ -55,6 +56,13 @@ export default function App() {
         console.log('trying to update user: ', updatedUser);
         setUser(updatedUser);
       });
+
+      newSocket.on('message', (conversation: ConversationType) => {
+        console.log('Received conversation from server: ', conversation);
+
+        updateConversation(setUser, conversation);
+      });
+
       setSocket(newSocket);
       console.log('Socket connected!');
     } catch (error) {
