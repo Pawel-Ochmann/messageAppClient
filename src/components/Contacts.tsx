@@ -27,7 +27,7 @@ const Contacts = ({
               <button
                 onClick={() => setChatOpen(conversation)}
                 style={{
-                  backgroundColor: hasBeenRead(conversation)
+                  color: hasBeenRead(conversation)
                     ? 'white'
                     : 'green',
                 }}

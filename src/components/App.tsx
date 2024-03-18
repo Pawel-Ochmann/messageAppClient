@@ -83,7 +83,7 @@ export default function App() {
   return (
     <>
       <div style={{ display: 'flex' }}>
-        <Dashboard setChatOpen={setChatOpen} />
+        <Dashboard setChatOpen={setChatOpen} socket={socket}/>
         {socket && <Conversation chatOpen={chatOpen} socket={socket} />}
       </div>
     </>

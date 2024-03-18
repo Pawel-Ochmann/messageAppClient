@@ -56,7 +56,7 @@ const NewContact = ({
       group:false,
       new:true,
     };
-    setChatOpen(newConversation);
+    setChatOpen(newConversation);setChatOpen(newConversation);
   }
 
 

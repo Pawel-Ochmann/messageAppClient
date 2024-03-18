@@ -6,11 +6,14 @@ import NewContact from "./NewContact";
 import { useNavigate } from "react-router-dom";
 import { deleteToken } from "../utils/tokenHandler";
 import { ConversationType } from "../types";
+import { Socket } from 'socket.io-client';
 
 const Dashboard = ({
   setChatOpen,
+  socket
 }: {
   setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>;
+  socket:Socket
 }) => {
   const [newContact, setNewContact] = useState(false);
   const [newGroup, setNewGroup] = useState(false);
@@ -43,7 +46,7 @@ const Dashboard = ({
       <button>Settings</button>
       <button onClick={logOut}>log out</button>
       {newGroup && (
-        <NewGroup setChatOpen={setChatOpen} openHandler={setNewGroup} />
+        <NewGroup setChatOpen={setChatOpen} openHandler={setNewGroup} socket={socket}/>
       )}
       {newContact && (
         <NewContact setChatOpen={setChatOpen} openHandler={setNewContact} />
