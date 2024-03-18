@@ -16,6 +16,7 @@ export const updateLastRead = (chatOpen: ConversationType | null) => {
 
 export const hasBeenRead = (chatOpen: ConversationType) => {
   if (!chatOpen) return false;
+  if (chatOpen.messages.length === 0) return true;
   const lastRead: Record<string, string> = JSON.parse(
     localStorage.getItem('lastRead') || '{}'
   );

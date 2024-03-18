@@ -28,7 +28,7 @@ const NewGroup = ({
   const navigate = useNavigate();
   const { user } = useContext(UserContext) as { user: User };
   const [groupName, setGroupName] = useState('');
-  const [participants, setParticipants] = useState<string[]>([]);
+  const [participants, setParticipants] = useState<Contact[]>([]);
   const [groupImage, setGroupImage] = useState<File | null>(null);
   const [goFurther, setGoFurther] = useState(false);
 
@@ -73,18 +73,18 @@ const NewGroup = ({
     const newConversation: ConversationType = {
       key:uuid(),
       messages: [],
-      participants: [user.name, ...participants],
+      participants: [user._id, ...participants.map((e)=>{return e.id})],
       group: true,
       name: [groupName],
     };
-
+    console.log(newConversation);
     await socket.emit('createNewConversation', newConversation, (confirmation: boolean) => {
       if (confirmation && groupImage) {
            const reader = new FileReader();
            reader.onload = () => {
              const imageDataUrl = reader.result as string;
              socket.emit(
-               'setGroupImage',
+               'setGroupImage', newConversation.key,
                imageDataUrl,
                (confirmation: boolean) => {
                  if (!confirmation) {
@@ -106,14 +106,14 @@ const NewGroup = ({
     navigate('/');
   };
 
-  const addParticipant = (name: string) => {
-    if (!participants.includes(name)) {
-      setParticipants([...participants, name]);
+  const addParticipant = (contact:Contact) => {
+    if (!participants.some((participant)=>{participant.id === contact.id})) {
+      setParticipants([...participants, contact]);
     }
   };
 
-  const removeParticipant = (name: string) => {
-    setParticipants(participants.filter((participant) => participant !== name));
+  const removeParticipant = (contact:Contact) => {
+    setParticipants(participants.filter((participant) => participant.id !== contact.id));
   };
 
   return (
@@ -124,14 +124,14 @@ const NewGroup = ({
         <div>
           <ul>
             {participants.map((participant) => (
-              <li key={participant}>
+              <li key={participant.id}>
                 <button
                   style={{ color: 'green' }}
                   onClick={() => {
                     removeParticipant(participant);
                   }}
                 >
-                  {participant}
+                  {participant.name}
                 </button>
               </li>
             ))}
@@ -141,7 +141,7 @@ const NewGroup = ({
               <li key={contact.name}>
                 <button
                   onClick={() => {
-                    addParticipant(contact.name);
+                    addParticipant(contact);
                   }}
                 >
                   {contact.name}

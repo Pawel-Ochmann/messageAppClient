@@ -61,6 +61,8 @@ export default function App() {
       const newSocket = io('http://localhost:4000');
       user && newSocket.emit('join', user.name);
 
+      newSocket.on('test', (e)=>{console.log(e)})
+
       newSocket.on('updatedUserDocument', (updatedUser: User) => {
         console.log('trying to update user: ', updatedUser);
         setUser(updatedUser);
