@@ -11,7 +11,7 @@ import { ConversationType } from '../types/index';
 import { Socket } from 'socket.io-client';
 
 interface Contact {
-  id: string;
+  _id: string;
   name: string;
 }
 
@@ -73,19 +73,17 @@ const NewGroup = ({
     const newConversation: ConversationType = {
       key:uuid(),
       messages: [],
-      participants: [user._id, ...participants.map((e)=>{return e.id})],
+      participants: [user._id, ...participants.map((e)=>{return e._id})],
       group: true,
       name: [groupName],
     };
-    console.log(newConversation);
-    await socket.emit('createNewConversation', newConversation, (confirmation: boolean) => {
+    await socket.emit('createNewConversation', newConversation, async (confirmation: boolean) => {
       if (confirmation && groupImage) {
            const reader = new FileReader();
            reader.onload = () => {
-             const imageDataUrl = reader.result as string;
              socket.emit(
                'setGroupImage', newConversation.key,
-               imageDataUrl,
+               groupImage,
                (confirmation: boolean) => {
                  if (!confirmation) {
                    console.error('Error: Group image could not be set');
@@ -100,21 +98,23 @@ const NewGroup = ({
         console.error('Error: New chat creation confirmation failed');
       }
     });
-    setGroupName('');
-    setGroupImage(null);
     setChatOpen(newConversation);
-    navigate('/');
+    openHandler(false);
   };
 
-  const addParticipant = (contact:Contact) => {
-    if (!participants.some((participant)=>{participant.id === contact.id})) {
-      setParticipants([...participants, contact]);
-    }
-  };
+const addParticipant = (contact: Contact) => {
+  if (!participants.some((participant) => participant._id === contact._id)) {
+    setContacts(contacts.filter((c) => c._id !== contact._id)); 
+    setParticipants([...participants, contact]); 
+  }
+};
 
-  const removeParticipant = (contact:Contact) => {
-    setParticipants(participants.filter((participant) => participant.id !== contact.id));
-  };
+const removeParticipant = (contact: Contact) => {
+  setParticipants(
+    participants.filter((participant) => participant._id !== contact._id)
+  ); 
+  setContacts([...contacts, contact]); 
+};
 
   return (
     <div>
@@ -124,7 +124,7 @@ const NewGroup = ({
         <div>
           <ul>
             {participants.map((participant) => (
-              <li key={participant.id}>
+              <li key={participant._id}>
                 <button
                   style={{ color: 'green' }}
                   onClick={() => {

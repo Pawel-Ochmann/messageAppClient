@@ -18,28 +18,48 @@ const Contacts = ({
     setUserConversations(user?.conversations || []);
   }, [user]);
 
+  const groups = userConversations.filter((conversation) => conversation.group);
+  const single = userConversations.filter(
+    (conversation) => !conversation.group
+  );
 
   return (
     <div>
-      <ul>
-        {user &&
-          userConversations.map((conversation) => (
+      <div>
+        <h2>Groups</h2>
+        <ul>
+          {user && groups.map((conversation) => (
             <li key={conversation.key}>
               <button
                 onClick={() => setChatOpen(conversation)}
                 style={{
-                  color: hasBeenRead(conversation)
-                    ? 'white'
-                    : 'green',
+                  color: hasBeenRead(conversation) ? 'white' : 'green',
                 }}
               >
                 {getConversationName(user, conversation)}
               </button>
             </li>
           ))}
-      </ul>
+        </ul>
+      </div>
+      <div>
+        <h2>Singles</h2>
+        <ul>
+          {user && single.map((conversation) => (
+            <li key={conversation.key}>
+              <button
+                onClick={() => setChatOpen(conversation)}
+                style={{
+                  color: hasBeenRead(conversation) ? 'white' : 'green',
+                }}
+              >
+                {getConversationName(user, conversation)}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
-
 export default Contacts;

@@ -15,6 +15,7 @@ export default function App() {
   const [socket, setSocket] = useState<Socket>(io);
   const { user, setUser } = useContext(UserContext);
   const [chatOpen, setChatOpen] = useState<ConversationType | null>(null);
+  const [newGroup, setNewGroup] = useState(false);
   const navigate = useNavigate();
 
  useEffect(()=>{console.log(user)}, [user])
@@ -34,8 +35,9 @@ export default function App() {
           });
 
           newSocket.on('updatedUserDocument', (updatedUser: User) => {
-            console.log('trying to update user: ', updatedUser);
             setUser(updatedUser);
+            newGroup && setNewGroup(false); 
+            console.log('user being updated');
           });
 
           newSocket.on('message', (conversation: ConversationType) => {
@@ -89,7 +91,7 @@ export default function App() {
   return (
     <>
       <div style={{ display: 'flex' }}>
-        <Dashboard setChatOpen={setChatOpen} socket={socket} />
+        <Dashboard setChatOpen={setChatOpen} socket={socket} newGroup={newGroup} openNewGroup={setNewGroup}/>
         {socket && <Conversation chatOpen={chatOpen} socket={socket} />}
       </div>
     </>
