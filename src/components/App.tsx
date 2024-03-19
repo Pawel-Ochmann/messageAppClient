@@ -11,16 +11,47 @@ import { User, ConversationType } from '../types/index';
 import updateConversation from '../utils/updateConversations';
 import { updateLastRead } from '../utils/lastRead';
 
-
 export default function App() {
   const [socket, setSocket] = useState<Socket>(io);
   const { user, setUser } = useContext(UserContext);
   const [chatOpen, setChatOpen] = useState<ConversationType | null>(null);
   const navigate = useNavigate();
 
-
+ useEffect(()=>{console.log(user)}, [user])
 
   useEffect(() => {
+      const connectToSocket = async () => {
+        try {
+          const newSocket = io('http://localhost:4000', {
+            reconnectionDelayMax: 10000,
+            timeout: 5000,
+            reconnectionAttempts: 3,
+          });
+          user && newSocket.emit('join', user.name);
+
+          newSocket.on('test', (e) => {
+            console.log(e);
+          });
+
+          newSocket.on('updatedUserDocument', (updatedUser: User) => {
+            console.log('trying to update user: ', updatedUser);
+            setUser(updatedUser);
+          });
+
+          newSocket.on('message', (conversation: ConversationType) => {
+            console.log('Received conversation from server: ', conversation);
+
+            updateConversation(setUser, conversation, chatOpen, setChatOpen);
+          });
+
+          setSocket(newSocket);
+          console.log('Socket connected!');
+        } catch (error) {
+          console.error('Error connecting to socket:', error);
+        }
+      };
+
+
     const checkLoggedIn = async () => {
       const token = getToken();
 
@@ -41,51 +72,24 @@ export default function App() {
       }
 
       return () => {
-        socket.off('messages');
         socket.disconnect();
       };
     };
 
     checkLoggedIn();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigate, setUser]);
+  }, [navigate, setUser, chatOpen]);
 
-    useEffect(() => {
-      if (chatOpen) {
-        updateLastRead(chatOpen);
-      }
-    }, [chatOpen]);
-
-  const connectToSocket = async () => {
-    try {
-      const newSocket = io('http://localhost:4000');
-      user && newSocket.emit('join', user.name);
-
-      newSocket.on('test', (e)=>{console.log(e)})
-
-      newSocket.on('updatedUserDocument', (updatedUser: User) => {
-        console.log('trying to update user: ', updatedUser);
-        setUser(updatedUser);
-      });
-
-      newSocket.on('message', (conversation: ConversationType) => {
-        console.log('Received conversation from server: ', conversation);
-
-        updateConversation(setUser, conversation, chatOpen, setChatOpen);
-      });
-
-      setSocket(newSocket);
-      console.log('Socket connected!');
-    } catch (error) {
-      console.error('Error connecting to socket:', error);
+  useEffect(() => {
+    if (chatOpen) {
+      updateLastRead(chatOpen);
     }
-  };
+  }, [chatOpen]);
 
   if (!user) return <></>;
   return (
     <>
       <div style={{ display: 'flex' }}>
-        <Dashboard setChatOpen={setChatOpen} socket={socket}/>
+        <Dashboard setChatOpen={setChatOpen} socket={socket} />
         {socket && <Conversation chatOpen={chatOpen} socket={socket} />}
       </div>
     </>

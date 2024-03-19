@@ -27,7 +27,10 @@ const updateConversation: UpdateConversationHandler = (
     };
   });
   if (chatOpen && chatOpen.key === updatedConversation.key) {
-    setChatOpen(updatedConversation);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    setChatOpen((_e) => {
+      return updatedConversation;
+    });
   }
 };
 
