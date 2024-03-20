@@ -18,41 +18,45 @@ export default function App() {
   const [newGroup, setNewGroup] = useState(false);
   const navigate = useNavigate();
 
- useEffect(()=>{console.log(user)}, [user])
-
   useEffect(() => {
-      const connectToSocket = async () => {
-        try {
-          const newSocket = io('http://localhost:4000', {
-            reconnectionDelayMax: 10000,
-            timeout: 5000,
-            reconnectionAttempts: 3,
-          });
-          user && newSocket.emit('join', user.name);
+    const connectToSocket = async () => {
+      try {
+        const newSocket = io('http://localhost:4000', {
+          reconnectionDelayMax: 10000,
+          timeout: 5000,
+          reconnectionAttempts: 3,
+        });
+        user && newSocket.emit('join', user.name);
 
-          newSocket.on('test', (e) => {
-            console.log(e);
-          });
+        newSocket.on('test', (e) => {
+          console.log(e);
+        });
 
-          newSocket.on('updatedUserDocument', (updatedUser: User) => {
-            setUser(updatedUser);
-            newGroup && setNewGroup(false); 
-            console.log('user being updated');
-          });
+        newSocket.on('updatedUserDocument', (updatedUser: User) => {
+          const newConversationAudio = new Audio('/audio/newConversation.wav');
+          newConversationAudio.play();
+          setUser(updatedUser);
+          newGroup && setNewGroup(false);
+        });
 
-          newSocket.on('message', (conversation: ConversationType) => {
-            console.log('Received conversation from server: ', conversation);
+        newSocket.on('message', (conversation: ConversationType) => {
+          if (
+            conversation.messages[conversation.messages.length - 1].author !==
+            user?.name
+          ) {
+            const newMessageAudio = new Audio('/audio/newMessage.wav');
+            newMessageAudio.play();
+          }
 
-            updateConversation(setUser, conversation, chatOpen, setChatOpen);
-          });
+          updateConversation(setUser, conversation, chatOpen, setChatOpen);
+        });
 
-          setSocket(newSocket);
-          console.log('Socket connected!');
-        } catch (error) {
-          console.error('Error connecting to socket:', error);
-        }
-      };
-
+        setSocket(newSocket);
+        console.log('Socket connected!');
+      } catch (error) {
+        console.error('Error connecting to socket:', error);
+      }
+    };
 
     const checkLoggedIn = async () => {
       const token = getToken();
@@ -91,7 +95,12 @@ export default function App() {
   return (
     <>
       <div style={{ display: 'flex' }}>
-        <Dashboard setChatOpen={setChatOpen} socket={socket} newGroup={newGroup} openNewGroup={setNewGroup}/>
+        <Dashboard
+          setChatOpen={setChatOpen}
+          socket={socket}
+          newGroup={newGroup}
+          openNewGroup={setNewGroup}
+        />
         {socket && <Conversation chatOpen={chatOpen} socket={socket} />}
       </div>
     </>

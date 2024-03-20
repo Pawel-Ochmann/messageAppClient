@@ -23,12 +23,33 @@ const Contacts = ({
     (conversation) => !conversation.group
   );
 
+    const getLastMessageDate = (
+      conversation: ConversationType
+    ): Date | null => {
+      const lastMessage =
+        conversation.messages[conversation.messages.length - 1];
+      return lastMessage ? new Date(lastMessage.date) : null;
+    };
+
+    // Sort conversations based on the date of the last message
+    const sortedGroups = [...groups].sort((a, b) => {
+      const dateA = getLastMessageDate(a);
+      const dateB = getLastMessageDate(b);
+      return dateB && dateA ? dateB.getTime() - dateA.getTime() : 0;
+    });
+
+    const sortedSingle = [...single].sort((a, b) => {
+      const dateA = getLastMessageDate(a);
+      const dateB = getLastMessageDate(b);
+      return dateB && dateA ? dateB.getTime() - dateA.getTime() : 0;
+    });
+
   return (
     <div>
       <div>
         <h2>Groups</h2>
         <ul>
-          {user && groups.map((conversation) => (
+          {user && sortedGroups.map((conversation) => (
             <li key={conversation.key}>
               <button
                 onClick={() => setChatOpen(conversation)}
@@ -45,7 +66,7 @@ const Contacts = ({
       <div>
         <h2>Singles</h2>
         <ul>
-          {user && single.map((conversation) => (
+          {user && sortedSingle.map((conversation) => (
             <li key={conversation.key}>
               <button
                 onClick={() => setChatOpen(conversation)}

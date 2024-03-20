@@ -22,6 +22,8 @@ const NewContact = ({
   openHandler: Dispatch<SetStateAction<boolean>>;
 }) => {
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]); 
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const navigate = useNavigate();
   const { user } = useContext(UserContext) as {user:User};
 
@@ -47,6 +49,13 @@ const NewContact = ({
     fetchContacts();
   }, [navigate, user.name]);
 
+    useEffect(() => {
+      const filtered = contacts.filter((contact) =>
+        contact.name.toLowerCase().startsWith(searchQuery.toLowerCase())
+      );
+      setFilteredContacts(filtered);
+    }, [contacts, searchQuery]);
+
   const createNewConversation = (_id:string, name:string)=> {
     const newConversation:ConversationType = {
       key:uuid(),
@@ -64,10 +73,22 @@ const NewContact = ({
     <div>
       <h2>Here you can set new contact</h2>
       <button onClick={() => openHandler(false)}>Close new contact</button>
+      <input
+        type='text'
+        placeholder='Search contacts'
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
       <ul>
-        {contacts.map((contact) => (
+        {filteredContacts.map((contact) => (
           <li key={uuid()}>
-            <button onClick={()=>{createNewConversation(contact._id, contact.name)}}>{contact.name}</button>
+            <button
+              onClick={() => {
+                createNewConversation(contact._id, contact.name);
+              }}
+            >
+              {contact.name}
+            </button>
           </li>
         ))}
       </ul>

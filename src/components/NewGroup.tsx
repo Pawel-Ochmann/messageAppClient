@@ -18,13 +18,15 @@ interface Contact {
 const NewGroup = ({
   setChatOpen,
   openHandler,
-  socket
+  socket,
 }: {
   setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>;
   openHandler: Dispatch<SetStateAction<boolean>>;
-  socket:Socket
+  socket: Socket;
 }) => {
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const navigate = useNavigate();
   const { user } = useContext(UserContext) as { user: User };
   const [groupName, setGroupName] = useState('');
@@ -54,6 +56,13 @@ const NewGroup = ({
     fetchContacts();
   }, [navigate, user.name]);
 
+  useEffect(() => {
+    const filtered = contacts.filter((contact) =>
+      contact.name.toLowerCase().startsWith(searchQuery.toLowerCase())
+    );
+    setFilteredContacts(filtered);
+  }, [contacts, searchQuery]);
+
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGroupName(e.target.value);
   };
@@ -71,50 +80,61 @@ const NewGroup = ({
 
   const handleSubmit = async () => {
     const newConversation: ConversationType = {
-      key:uuid(),
+      key: uuid(),
       messages: [],
-      participants: [user._id, ...participants.map((e)=>{return e._id})],
+      participants: [
+        user._id,
+        ...participants.map((e) => {
+          return e._id;
+        }),
+      ],
       group: true,
       name: [groupName],
     };
-    await socket.emit('createNewConversation', newConversation, async (confirmation: boolean) => {
-      if (confirmation && groupImage) {
-           const reader = new FileReader();
-           reader.onload = () => {
-             socket.emit(
-               'setGroupImage', newConversation.key,
-               groupImage,
-               (confirmation: boolean) => {
-                 if (!confirmation) {
-                   console.error('Error: Group image could not be set');
-                 }
-               }
-             );
-           };
+    await socket.emit(
+      'createNewConversation',
+      newConversation,
+      async (confirmation: boolean) => {
+        if (confirmation && groupImage) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            socket.emit(
+              'setGroupImage',
+              newConversation.key,
+              groupImage,
+              (confirmation: boolean) => {
+                if (!confirmation) {
+                  console.error('Error: Group image could not be set');
+                }
+              }
+            );
+          };
 
-           reader.readAsDataURL(groupImage);
-      } else if (confirmation){console.log('Group created')}
-      else {
-        console.error('Error: New chat creation confirmation failed');
+          reader.readAsDataURL(groupImage);
+        } else if (confirmation) {
+          console.log('Group created');
+        } else {
+          console.error('Error: New chat creation confirmation failed');
+        }
       }
-    });
+    );
     setChatOpen(newConversation);
     openHandler(false);
   };
 
-const addParticipant = (contact: Contact) => {
-  if (!participants.some((participant) => participant._id === contact._id)) {
-    setContacts(contacts.filter((c) => c._id !== contact._id)); 
-    setParticipants([...participants, contact]); 
-  }
-};
+  const addParticipant = (contact: Contact) => {
+    if (!participants.some((participant) => participant._id === contact._id)) {
+      setContacts(contacts.filter((c) => c._id !== contact._id));
+      setParticipants([...participants, contact]);
+    }
+  };
 
-const removeParticipant = (contact: Contact) => {
-  setParticipants(
-    participants.filter((participant) => participant._id !== contact._id)
-  ); 
-  setContacts([...contacts, contact]); 
-};
+  const removeParticipant = (contact: Contact) => {
+    setParticipants(
+      participants.filter((participant) => participant._id !== contact._id)
+    );
+    setContacts([...contacts, contact]);
+  };
 
   return (
     <div>
@@ -136,8 +156,14 @@ const removeParticipant = (contact: Contact) => {
               </li>
             ))}
           </ul>
+          <input
+            type='text'
+            placeholder='Search contacts'
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
           <ul>
-            {contacts.map((contact) => (
+            {filteredContacts.map((contact) => (
               <li key={contact.name}>
                 <button
                   onClick={() => {

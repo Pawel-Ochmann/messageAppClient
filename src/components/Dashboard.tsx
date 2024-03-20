@@ -54,7 +54,7 @@ const Dashboard = ({
         />
       )}
       {newContact && (
-        <NewContact setChatOpen={setChatOpen} openHandler={openNewGroup} />
+        <NewContact setChatOpen={setChatOpen} openHandler={setNewContact} />
       )}
       <Contacts setChatOpen={setChatOpen} />
     </div>
