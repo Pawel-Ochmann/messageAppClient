@@ -49,7 +49,7 @@ const Conversation = ({
   useEffect(() => {
     socket.on('typing', (userName: string) => {
       if (chatOpen) {
-        const anotherUser = getConversationName(user, chatOpen)
+        const anotherUser = getConversationName(user, chatOpen);
         if (anotherUser === userName) {
           setOtherUserIsTyping(
             `${getConversationName(user, chatOpen)} is typing...`
@@ -231,7 +231,7 @@ const Conversation = ({
         </>
       )}
 
-      <ul style={{ overflow: 'scroll' }}>
+      <ul style={{ maxHeight: '300px', overflow: 'scroll' }}>
         {chatOpen.messages &&
           chatOpen.messages.map((message) => (
             <li key={message._id}>
