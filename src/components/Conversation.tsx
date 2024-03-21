@@ -1,4 +1,10 @@
-import React, { MouseEventHandler, useState, useContext, useEffect } from 'react';
+import React, {
+  MouseEventHandler,
+  useState,
+  useContext,
+  useEffect,
+  useRef,
+} from 'react';
 import { UserContext } from '../Context';
 import Emotes from '../components/Emotes';
 import Gifs from '../components/Gifs';
@@ -20,15 +26,54 @@ const Conversation = ({
   const [extrasOpen, setExtrasOpen] = useState(0);
   const [image, setImage] = useState<File | null>(null);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
-  const [lastTimeSeen, setLastTimeSeen] = useState<string>('') 
+  const [lastTimeSeen, setLastTimeSeen] = useState<string>('');
+  const [isTyping, setIsTyping] = useState(false);
+  const [otherUserIsTyping, setOtherUserIsTyping] = useState('');
+  const lastMessageRef = useRef<HTMLParagraphElement>(null);
 
-  useEffect(()=>{if(chatOpen && !chatOpen.group){
-    const otherParticipant = getConversationName(user, chatOpen);
-    console.log(otherParticipant);
-    socket.emit('getStatus', otherParticipant, (status:string)=>{
-      setLastTimeSeen(status);
-    })
-  }},[chatOpen, socket, user])
+  useEffect(() => {
+    lastMessageRef.current?.scrollIntoView();
+  }, [chatOpen]);
+
+  const sendTyping = () => {
+    if (isTyping) return;
+    if (chatOpen) {
+      socket.emit('typing', getConversationName(user, chatOpen), user.name);
+      setIsTyping(true);
+      setTimeout(() => {
+        setIsTyping(false);
+      }, 2000);
+    }
+  };
+
+  useEffect(() => {
+    socket.on('typing', (userName: string) => {
+      if (chatOpen) {
+        const anotherUser = getConversationName(user, chatOpen)
+        if (anotherUser === userName) {
+          setOtherUserIsTyping(
+            `${getConversationName(user, chatOpen)} is typing...`
+          );
+          setTimeout(() => {
+            setOtherUserIsTyping('');
+          }, 2000);
+        }
+      }
+    });
+    return () => {
+      socket.off('typing');
+    };
+  }, [chatOpen, socket, user]);
+
+  useEffect(() => {
+    if (chatOpen && !chatOpen.group) {
+      const otherParticipant = getConversationName(user, chatOpen);
+      console.log(otherParticipant);
+      socket.emit('getStatus', otherParticipant, (status: string) => {
+        setLastTimeSeen(status);
+      });
+    }
+  }, [chatOpen, socket, user]);
 
   const renderExtras = () => {
     switch (extrasOpen) {
@@ -57,19 +102,20 @@ const Conversation = ({
     }
 
     socket ? socket.emit('newMessage', messageToSend, chatOpen?.key) : '';
-    
   };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setNewMessage(e.target.value);
+    if (!chatOpen?.group) {
+      sendTyping();
+    }
   };
 
   const newMessageHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     if (chatOpen && chatOpen.new) {
-      console.log('test');
       socket.emit(
         'createNewConversation',
         chatOpen,
@@ -185,16 +231,18 @@ const Conversation = ({
         </>
       )}
 
-      <ul>
+      <ul style={{ overflow: 'scroll' }}>
         {chatOpen.messages &&
           chatOpen.messages.map((message) => (
             <li key={message._id}>
               <MessageBox message={message} />
             </li>
           ))}
+        <p ref={lastMessageRef}>{otherUserIsTyping}</p>
       </ul>
       <div>
-        <textarea
+        <input
+          type='text'
           name='content'
           placeholder='Message'
           value={newMessage}
