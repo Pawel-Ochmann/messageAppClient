@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useState, useContext } from 'react';
+import React, { MouseEventHandler, useState, useContext, useEffect } from 'react';
 import { UserContext } from '../Context';
 import Emotes from '../components/Emotes';
 import Gifs from '../components/Gifs';
@@ -20,6 +20,15 @@ const Conversation = ({
   const [extrasOpen, setExtrasOpen] = useState(0);
   const [image, setImage] = useState<File | null>(null);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
+  const [lastTimeSeen, setLastTimeSeen] = useState<string>('') 
+
+  useEffect(()=>{if(chatOpen && !chatOpen.group){
+    const otherParticipant = getConversationName(user, chatOpen);
+    console.log(otherParticipant);
+    socket.emit('getStatus', otherParticipant, (status:string)=>{
+      setLastTimeSeen(status);
+    })
+  }},[chatOpen, socket, user])
 
   const renderExtras = () => {
     switch (extrasOpen) {
@@ -167,17 +176,13 @@ const Conversation = ({
 
   return (
     <div>
-      <button
-        onClick={() => {
-          console.log(chatOpen);
-        }}
-      >
-        check chat
-      </button>
       {chatOpen.new ? (
         <h2>Create new chat with {getConversationName(user, chatOpen)}</h2>
       ) : (
-        <h2>{getConversationName(user, chatOpen)}</h2>
+        <>
+          <h2>{getConversationName(user, chatOpen)}</h2>
+          <p>{lastTimeSeen}</p>
+        </>
       )}
 
       <ul>

@@ -21,38 +21,20 @@ export default function App() {
   useEffect(() => {
     const connectToSocket = async () => {
       try {
-        const newSocket = io('http://localhost:4000', {
-          reconnectionDelayMax: 10000,
-          timeout: 5000,
-          reconnectionAttempts: 3,
-        });
-        user && newSocket.emit('join', user.name);
+        if (!socket || !socket.connected) {
+          const newSocket = io('http://localhost:4000', {
+            reconnectionDelayMax: 10000,
+            timeout: 5000,
+            reconnectionAttempts: 3,
+          });
 
-        newSocket.on('test', (e) => {
-          console.log(e);
-        });
-
-        newSocket.on('updatedUserDocument', (updatedUser: User) => {
-          const newConversationAudio = new Audio('/audio/newConversation.wav');
-          newConversationAudio.play();
-          setUser(updatedUser);
-          newGroup && setNewGroup(false);
-        });
-
-        newSocket.on('message', (conversation: ConversationType) => {
-          if (
-            conversation.messages[conversation.messages.length - 1].author !==
-            user?.name
-          ) {
-            const newMessageAudio = new Audio('/audio/newMessage.wav');
-            newMessageAudio.play();
-          }
-
-          updateConversation(setUser, conversation, chatOpen, setChatOpen);
-        });
-
-        setSocket(newSocket);
-        console.log('Socket connected!');
+          newSocket.on('connect', () => {
+            console.log('joining');
+            user && newSocket.emit('join', user.name);
+          });
+          setSocket(newSocket);
+          console.log('Socket connected!');
+        }
       } catch (error) {
         console.error('Error connecting to socket:', error);
       }
@@ -82,8 +64,33 @@ export default function App() {
       };
     };
 
-    checkLoggedIn();
-  }, [navigate, setUser, chatOpen]);
+    if (!user) checkLoggedIn();
+    else connectToSocket();
+
+    if (socket && socket.connected) {
+      socket.on('test', (e) => {
+        console.log(e);
+      });
+
+      socket.on('updatedUserDocument', (updatedUser: User) => {
+        const newMessageAudio = new Audio('/audio/newConversation.wav');
+        newMessageAudio.play();
+        setUser(updatedUser);
+        newGroup && setNewGroup(false);
+      });
+
+      socket.on('message', (conversation: ConversationType) => {
+        updateConversation(setUser, conversation, chatOpen, setChatOpen);
+        if (
+          conversation.messages[conversation.messages.length - 1].author !==
+          user?.name
+        ) {
+          const newMessageAudio = new Audio('/audio/newMessage.wav');
+          newMessageAudio.play();
+        }
+      });
+    }
+  }, [navigate, setUser, chatOpen, user, newGroup]);
 
   useEffect(() => {
     if (chatOpen) {
@@ -94,6 +101,13 @@ export default function App() {
   if (!user) return <></>;
   return (
     <>
+      <button
+        onClick={() => {
+          console.log('user: ', user, 'socket: ', socket);
+        }}
+      >
+        test
+      </button>
       <div style={{ display: 'flex' }}>
         <Dashboard
           setChatOpen={setChatOpen}
