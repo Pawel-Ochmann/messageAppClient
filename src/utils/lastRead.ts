@@ -5,12 +5,15 @@ export const updateLastRead = (chatOpen: ConversationType | null) => {
 
   const lastMessageDate = chatOpen.messages[chatOpen.messages.length - 1]?.date;
 
-    type LastRead = {
-      [key: string]: string;
-    };
+  type LastRead = {
+    [key: string]: string;
+  };
 
-  const lastRead:LastRead = JSON.parse(localStorage.getItem('lastRead') || '{}');
-  if (typeof(lastMessageDate) === 'string')  lastRead[chatOpen.key] = lastMessageDate;
+  const lastRead: LastRead = JSON.parse(
+    localStorage.getItem('lastRead') || '{}'
+  );
+  if (typeof lastMessageDate === 'string')
+    lastRead[chatOpen.key] = lastMessageDate;
   localStorage.setItem('lastRead', JSON.stringify(lastRead));
 };
 
@@ -24,4 +27,22 @@ export const hasBeenRead = (chatOpen: ConversationType) => {
   const latestMessageDateAsString =
     chatOpen.messages[chatOpen.messages.length - 1]?.date.toString();
   return lastReadDate === latestMessageDateAsString;
+};
+
+export const numberOfUnreadMessages = (conversation: ConversationType) => {
+  if (!conversation || !conversation.messages) return 0;
+  if (conversation.messages.length === 0) return 0;
+
+  const lastRead: Record<string, string> = JSON.parse(
+    localStorage.getItem('lastRead') || '{}'
+  );
+  const lastReadDate = lastRead[conversation.key];
+  let unreadMessages = 0;
+  conversation.messages.forEach((message) => {
+    if (message.date > new Date(lastReadDate)) {
+      unreadMessages++; 
+    }
+  });
+
+  return unreadMessages;
 };

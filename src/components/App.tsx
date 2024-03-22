@@ -101,13 +101,6 @@ export default function App() {
   if (!user) return <></>;
   return (
     <>
-      <button
-        onClick={() => {
-          console.log('user: ', user, 'socket: ', socket);
-        }}
-      >
-        test
-      </button>
       <div style={{ display: 'flex' }}>
         <Dashboard
           setChatOpen={setChatOpen}
