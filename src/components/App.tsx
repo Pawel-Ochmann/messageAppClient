@@ -101,7 +101,7 @@ export default function App() {
   if (!user) return <></>;
   return (
     <>
-      <div style={{ display: 'flex' }}>
+      <div>
         <Dashboard
           setChatOpen={setChatOpen}
           socket={socket}

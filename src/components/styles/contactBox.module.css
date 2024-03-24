@@ -1,0 +1,24 @@
+.contactBox {
+    display: grid;
+    grid-template-columns: 150px auto 100px;
+    grid-template-rows: 60% 40%;
+}
+.image {
+    grid-row: span 2;
+}
+
+.contactName {
+    font-size: 1rem;
+}
+
+.lastMessage {
+    font-size: .8rem;
+}
+
+.date {
+    font-size: 1rem;
+}
+
+.unread {
+    color: var(--active-theme-color);
+}

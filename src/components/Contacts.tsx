@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../Context';
 import { ConversationType } from '../types';
 import ContactBox from './ContactBox';
+import styles from './styles/contacts.module.css'
 
 const Contacts = ({
   setChatOpen,
@@ -39,8 +40,7 @@ const Contacts = ({
   return (
     <div>
       <div>
-        <h2>Groups</h2>
-        <ul>
+        <ul className={styles.contactList}>
           {user && sortedContacts.map((conversation) => (
             <li key={conversation.key}>
               <ContactBox conversation={conversation} setChatOpen={setChatOpen} />

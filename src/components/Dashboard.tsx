@@ -1,24 +1,29 @@
-import Contacts from "./Contacts";
-import UserImage from "./UserImage";
-import {useState, Dispatch, SetStateAction} from 'react';
-import NewGroup from "./NewGroup";
-import NewContact from "./NewContact";
-import { useNavigate } from "react-router-dom";
-import { deleteToken } from "../utils/tokenHandler";
-import { ConversationType } from "../types";
+import Contacts from './Contacts';
+import UserImage from './UserImage';
+import { useState, Dispatch, SetStateAction, useContext } from 'react';
+import NewGroup from './NewGroup';
+import NewContact from './NewContact';
+import { useNavigate } from 'react-router-dom';
+import { deleteToken } from '../utils/tokenHandler';
+import { ConversationType } from '../types';
 import { Socket } from 'socket.io-client';
+import { UserContext } from '../Context';
+import  styles from './styles/dashboard.module.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faUsersLine, faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 
 const Dashboard = ({
   setChatOpen,
   socket,
   newGroup,
-  openNewGroup
+  openNewGroup,
 }: {
   setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>;
   socket: Socket;
-  newGroup:boolean;
+  newGroup: boolean;
   openNewGroup: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const { user } = useContext(UserContext);
   const [newContact, setNewContact] = useState(false);
   const navigate = useNavigate();
 
@@ -28,24 +33,30 @@ const Dashboard = ({
   };
 
   return (
-    <div>
-      <UserImage />
-      <button
-        onClick={() => {
-          setNewContact(true);
-        }}
-      >
-        Add contact
-      </button>
-      <button
-        onClick={() => {
-          openNewGroup(true);
-        }}
-      >
-        Add group
-      </button>
-      <button>Settings</button>
-      <button onClick={logOut}>log out</button>
+    <>
+      <header className={styles.header}>
+        <h1 className={styles.title}>WhatsUp</h1>
+        {user && <UserImage userName={user.name} />}
+        <div className={styles.menu}>
+          <button
+            onClick={() => {
+              setNewContact(true);
+            }}
+          >
+            <FontAwesomeIcon icon={faPlus} />
+          </button>
+          <button
+            onClick={() => {
+              openNewGroup(true);
+            }}
+          >
+            <FontAwesomeIcon icon={faUsersLine} />
+          </button>
+          <button onClick={logOut}>
+            <FontAwesomeIcon icon={faEllipsisVertical} />
+          </button>
+        </div>
+      </header>
       {newGroup && (
         <NewGroup
           setChatOpen={setChatOpen}
@@ -57,7 +68,7 @@ const Dashboard = ({
         <NewContact setChatOpen={setChatOpen} openHandler={setNewContact} />
       )}
       <Contacts setChatOpen={setChatOpen} />
-    </div>
+    </>
   );
 };
 

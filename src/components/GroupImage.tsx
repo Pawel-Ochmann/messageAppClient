@@ -1,17 +1,18 @@
 import { getAddress } from '../utils/serverAddress';
 import { useState } from 'react';
+import { ConversationType } from '../types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import styles from './styles/userImage.module.css';
-const UserImage = ({ userName }: { userName: string }) => {
+const GroupImage = ({ conversation }: { conversation:ConversationType }) => {
   const [imageLoaded, setImageLoaded] = useState(true);
 
   const handleImageLoad = () => {
     setImageLoaded(true);
   };
 
-  const getContactImage = () => {
-    return getAddress(`/${userName}/avatar`);
+  const getGroupImage = () => {
+     return getAddress(`/group/${conversation.key}`);
   };
 
   return (
@@ -19,17 +20,17 @@ const UserImage = ({ userName }: { userName: string }) => {
       {' '}
       {imageLoaded ? (
         <img
-          src={getContactImage()}
+          src={getGroupImage()}
           alt=''
           style={{ width: '100px' }}
           onLoad={handleImageLoad}
           onError={() => setImageLoaded(false)}
         />
       ) : (
-        <FontAwesomeIcon icon={faUser} />
+        <FontAwesomeIcon icon={faUserGroup} />
       )}
     </div>
   );
 };
 
-export default UserImage;
+export default GroupImage;

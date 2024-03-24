@@ -1,11 +1,12 @@
 import { ConversationType } from '../types';
 import { hasBeenRead, numberOfUnreadMessages } from '../utils/lastRead';
 import getConversationName from '../utils/getConversationName';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { UserContext } from '../Context';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faUserGroup } from '@fortawesome/free-solid-svg-icons';
-import { getAddress } from '../utils/serverAddress';
+import UserImage from './UserImage';
+import GroupImage from './GroupImage';
+import styles from './styles/contactBox.module.css'
+import moment from 'moment';
 
 const ContactBox = ({
   conversation,
@@ -15,20 +16,6 @@ const ContactBox = ({
   setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>;
 }) => {
   const { user } = useContext(UserContext);
-  const [imageLoaded, setImageLoaded] = useState(true);
-
-  const handleImageLoad = () => {
-    setImageLoaded(true);
-  };
-
-  const getContactImage = (conversation: ConversationType) => {
-    if (conversation.group) {
-      return getAddress(`/group/${conversation.key}`);
-    } else if (user) {
-      const userName = getConversationName(user, conversation);
-      return getAddress(`/${userName}/avatar`);
-    }
-  };
 
   const getLastMessageContent = (conversation: ConversationType) => {
     const lastMessage = conversation.messages[conversation.messages.length - 1];
@@ -58,7 +45,7 @@ const ContactBox = ({
 
   const getLastMessageDate = (conversation:ConversationType)=> {
     const lastMessage = conversation.messages[conversation.messages.length - 1];
-    return lastMessage ? lastMessage.date.toString() : ''
+    return lastMessage ? moment(lastMessage.date).fromNow() : ''
   }
 
 
@@ -69,24 +56,20 @@ const ContactBox = ({
         color: hasBeenRead(conversation) ? 'white' : 'green',
       }}
     >
-      <div>
-        {imageLoaded ? (
-          <img
-            src={getContactImage(conversation)}
-            alt=''
-            style={{ width: '100px' }}
-            onLoad={handleImageLoad}
-            onError={() => setImageLoaded(false)}
-          />
-        ) : conversation.group ? (
-          <FontAwesomeIcon icon={faUserGroup} />
-        ) : (
-          <FontAwesomeIcon icon={faUser} />
-        )}
+      <div className={styles.contactBox}>
+        <div className={styles.image}>
+          {conversation.group ? (
+            <GroupImage conversation={conversation} />
+          ) : (
+            user && (
+              <UserImage userName={getConversationName(user, conversation)} />
+            )
+          )}
+        </div>
         <h3>{user && getConversationName(user, conversation)}</h3>
+        <p className={styles.date}>{getLastMessageDate(conversation)}</p>
         <p>{getLastMessageContent(conversation)}</p>
-        <p>{getLastMessageDate(conversation)}</p>
-        <p>{numberOfUnreadMessages(conversation)}</p>
+         <p>{numberOfUnreadMessages(conversation)}</p>
       </div>
     </button>
   );

@@ -1,0 +1,16 @@
+.imageBox {
+  background-color: var(--background-light-color);
+  border-radius: 100rem;
+  display: flex;
+  width: 3rem;
+  height: 3rem;
+  justify-content: center;
+  align-items: center;
+  svg {
+    font-size: 200%;
+    color: var(--main-font-color-header);
+  }
+  img {
+    border-radius: 100rem;
+  }
+}
