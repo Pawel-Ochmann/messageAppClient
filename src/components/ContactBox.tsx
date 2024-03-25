@@ -23,7 +23,7 @@ const ContactBox = ({
     else {
       switch (lastMessage.type) {
         case 'text': {
-          const maxLength = 20;
+          const maxLength = 10;
           if (lastMessage.content.length > maxLength) {
             return lastMessage.content.substring(0, maxLength) + '...';
           } else {
@@ -51,10 +51,8 @@ const ContactBox = ({
 
   return (
     <button
+    className={styles.buttonWrapper}
       onClick={() => setChatOpen(conversation)}
-      style={{
-        color: hasBeenRead(conversation) ? 'white' : 'green',
-      }}
     >
       <div className={styles.contactBox}>
         <div className={styles.image}>
@@ -66,10 +64,10 @@ const ContactBox = ({
             )
           )}
         </div>
-        <h3>{user && getConversationName(user, conversation)}</h3>
-        <p className={styles.date}>{getLastMessageDate(conversation)}</p>
-        <p>{getLastMessageContent(conversation)}</p>
-         <p>{numberOfUnreadMessages(conversation)}</p>
+        <h3 className={styles.contactName}>{user && getConversationName(user, conversation)}</h3>
+        <p className={`${styles.date} ${!hasBeenRead(conversation) && styles.unread}`}>{getLastMessageDate(conversation)}</p>
+        <p className={styles.lastMessage}>{getLastMessageContent(conversation)}</p>
+         <p className={styles.numberOfUnread}>{!hasBeenRead(conversation) && numberOfUnreadMessages(conversation)}</p>
       </div>
     </button>
   );

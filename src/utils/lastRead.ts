@@ -1,4 +1,4 @@
-import { ConversationType} from '../types';
+import { ConversationType } from '../types';
 
 export const updateLastRead = (chatOpen: ConversationType | null) => {
   if (!chatOpen) return;
@@ -39,10 +39,13 @@ export const numberOfUnreadMessages = (conversation: ConversationType) => {
   const lastReadDate = lastRead[conversation.key];
   let unreadMessages = 0;
   conversation.messages.forEach((message) => {
-    if (message.date > new Date(lastReadDate)) {
-      unreadMessages++; 
+    const dateFormatted = new Date(lastReadDate);
+    console.log(typeof message.date, typeof dateFormatted.toISOString());
+    if (typeof message.date === 'string') {
+      if (message.date as string> dateFormatted.toISOString()) {
+        unreadMessages++;
+      }
     }
   });
-
   return unreadMessages;
 };

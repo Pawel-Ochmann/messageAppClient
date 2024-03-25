@@ -1,24 +1,50 @@
+.buttonWrapper {
+    width: 100%;
+}
 .contactBox {
     display: grid;
-    grid-template-columns: 150px auto 100px;
-    grid-template-rows: 60% 40%;
+    grid-template-columns: min-content 1fr max-content;
+    grid-template-rows: 1fr 1fr;
 }
 .image {
     grid-row: span 2;
+    height: 100%;
+    aspect-ratio: 1;
 }
 
 .contactName {
-    font-size: 1rem;
+    font-size: 1.3rem;
+    text-align: start;
+    padding-left: 2rem;
 }
 
 .lastMessage {
-    font-size: .8rem;
+    font-size: 1rem;
+    text-align: start;
+    padding-left: 2rem;
 }
 
 .date {
     font-size: 1rem;
+    text-align: end;
 }
 
 .unread {
     color: var(--active-theme-color);
+}
+
+.numberOfUnread {
+    font-size: 1rem;
+    color: var(--main-font-color-header);
+    background-color: var(--active-theme-color);
+    width: 1rem;
+    height: 1rem;
+    justify-self: center;
+    padding: .5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 2;
+    border-radius: 100rem;
+    font-weight: 800;
 }
