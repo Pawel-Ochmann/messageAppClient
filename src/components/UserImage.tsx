@@ -21,7 +21,6 @@ const UserImage = ({ userName }: { userName: string }) => {
         <img
           src={getContactImage()}
           alt=''
-          style={{ width: '100px' }}
           onLoad={handleImageLoad}
           onError={() => setImageLoaded(false)}
         />

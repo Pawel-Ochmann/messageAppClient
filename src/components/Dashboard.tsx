@@ -8,9 +8,13 @@ import { deleteToken } from '../utils/tokenHandler';
 import { ConversationType } from '../types';
 import { Socket } from 'socket.io-client';
 import { UserContext } from '../Context';
-import  styles from './styles/dashboard.module.css';
+import styles from './styles/dashboard.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faUsersLine, faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
+import {
+  faPlus,
+  faUsersLine,
+  faEllipsisVertical,
+} from '@fortawesome/free-solid-svg-icons';
 
 const Dashboard = ({
   setChatOpen,
@@ -64,9 +68,13 @@ const Dashboard = ({
           socket={socket}
         />
       )}
-      {newContact && (
-        <NewContact setChatOpen={setChatOpen} openHandler={setNewContact} />
-      )}
+
+      <NewContact
+        className={`${newContact && styles.open}`}
+        setChatOpen={setChatOpen}
+        openHandler={setNewContact}
+      />
+
       <Contacts setChatOpen={setChatOpen} />
     </>
   );

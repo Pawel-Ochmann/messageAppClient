@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { UserContext } from '../Context';
 import UserImage from './UserImage';
 import GroupImage from './GroupImage';
-import styles from './styles/contactBox.module.css'
+import styles from './styles/contactBox.module.css';
 import moment from 'moment';
 
 const ContactBox = ({
@@ -43,15 +43,14 @@ const ContactBox = ({
     }
   };
 
-  const getLastMessageDate = (conversation:ConversationType)=> {
+  const getLastMessageDate = (conversation: ConversationType) => {
     const lastMessage = conversation.messages[conversation.messages.length - 1];
-    return lastMessage ? moment(lastMessage.date).fromNow() : ''
-  }
-
+    return lastMessage ? moment(lastMessage.date).fromNow() : '';
+  };
 
   return (
     <button
-    className={styles.buttonWrapper}
+      className={styles.buttonWrapper}
       onClick={() => setChatOpen(conversation)}
     >
       <div className={styles.contactBox}>
@@ -64,10 +63,24 @@ const ContactBox = ({
             )
           )}
         </div>
-        <h3 className={styles.contactName}>{user && getConversationName(user, conversation)}</h3>
-        <p className={`${styles.date} ${!hasBeenRead(conversation) && styles.unread}`}>{getLastMessageDate(conversation)}</p>
-        <p className={styles.lastMessage}>{getLastMessageContent(conversation)}</p>
-         <p className={styles.numberOfUnread}>{!hasBeenRead(conversation) && numberOfUnreadMessages(conversation)}</p>
+        <h3 className={styles.contactName}>
+          {user && getConversationName(user, conversation)}
+        </h3>
+        <p
+          className={`${styles.date} ${
+            !hasBeenRead(conversation) && styles.unread
+          }`}
+        >
+          {getLastMessageDate(conversation)}
+        </p>
+        <p className={styles.lastMessage}>
+          {getLastMessageContent(conversation)}
+        </p>
+        {!hasBeenRead(conversation) && (
+          <p className={styles.numberOfUnread}>
+            {numberOfUnreadMessages(conversation)}
+          </p>
+        )}
       </div>
     </button>
   );

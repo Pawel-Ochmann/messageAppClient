@@ -1,0 +1,54 @@
+.container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  z-index: 100;
+  transform: translateX(-100%);
+  transition: 0.5s;
+}
+
+.header {
+  background-color: var(--main-theme-color);
+  display: flex;
+  padding: .7rem  var(--main-padding);
+  gap: 2rem;
+}
+
+.buttonBack {
+  color: var(--main-font-color-header);
+  font-size: 1.5rem;
+}
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+  h2,
+  p {
+    color: var(--main-font-color-header);
+  }
+  h2 {
+    font-size: 1.4rem;
+  }
+  p {
+
+  }
+}
+
+.contactsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: var(--main-padding);
+}
+.contactBox {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    gap: 1rem;
+    h2 {
+        display: flex;
+        text-align: start;
+        align-self: center;
+    }
+}

@@ -40,7 +40,6 @@ export const numberOfUnreadMessages = (conversation: ConversationType) => {
   let unreadMessages = 0;
   conversation.messages.forEach((message) => {
     const dateFormatted = new Date(lastReadDate);
-    console.log(typeof message.date, typeof dateFormatted.toISOString());
     if (typeof message.date === 'string') {
       if (message.date as string> dateFormatted.toISOString()) {
         unreadMessages++;
