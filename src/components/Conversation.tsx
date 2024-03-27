@@ -13,12 +13,20 @@ import MessageBox from './MessageBox';
 import { Socket } from 'socket.io-client';
 import { Message, MessageParam, User, ConversationType } from '../types/index';
 import getConversationName from '../utils/getConversationName';
+import styles from './styles/conversation.module.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import UserImage from './UserImage';
+import GroupImage from './GroupImage';
+import moment from 'moment';
 
 const Conversation = ({
   chatOpen,
+  setChatOpen,
   socket,
 }: {
   chatOpen: ConversationType | null;
+  setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>;
   socket: Socket;
 }) => {
   const { user } = useContext(UserContext) as { user: User };
@@ -30,7 +38,7 @@ const Conversation = ({
   const [isTyping, setIsTyping] = useState(false);
   const [otherUserIsTyping, setOtherUserIsTyping] = useState('');
   const lastMessageRef = useRef<HTMLParagraphElement>(null);
-
+  
   useEffect(() => {
     lastMessageRef.current?.scrollIntoView();
   }, [chatOpen]);
@@ -217,29 +225,38 @@ const Conversation = ({
   };
 
   if (!chatOpen) {
-    return <div>There is no conversation yet.</div>;
+    return <div className={styles.container}></div>;
   }
 
   return (
-    <div>
-      {chatOpen.new ? (
-        <h2>Create new chat with {getConversationName(user, chatOpen)}</h2>
-      ) : (
-        <>
-          <h2>{getConversationName(user, chatOpen)}</h2>
-          <p>{lastTimeSeen}</p>
-        </>
-      )}
-
-      <ul style={{ maxHeight: '300px', overflow: 'scroll' }}>
+    <div className={`${styles.container} ${chatOpen && styles.open}`}>
+      <header className={styles.header}>
+        <button className={styles.buttonBack} onClick={() => setChatOpen(null)}>
+          <FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon>
+        </button>
+        {chatOpen.group ? (
+          <GroupImage conversation={chatOpen} />
+        ) : (
+          <UserImage userName={getConversationName(user, chatOpen)} />
+        )}
+        <div className={styles.info}>
+          {chatOpen.new ? (
+            <h2>Create new chat with {getConversationName(user, chatOpen)}</h2>
+          ) : (
+            <h2>{getConversationName(user, chatOpen)}</h2>
+          )}
+          <p>{moment(lastTimeSeen).fromNow()}</p>
+        </div>
+      </header>
+      <div className={styles.messageContainer}>
         {chatOpen.messages &&
           chatOpen.messages.map((message) => (
-            <li key={message._id}>
-              <MessageBox message={message} />
-            </li>
+           
+              <MessageBox key={message._id} message={message} />
+            
           ))}
         <p ref={lastMessageRef}>{otherUserIsTyping}</p>
-      </ul>
+      </div>
       <div>
         <input
           type='text'

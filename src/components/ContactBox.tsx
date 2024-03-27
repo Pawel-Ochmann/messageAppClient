@@ -73,7 +73,11 @@ const ContactBox = ({
         >
           {getLastMessageDate(conversation)}
         </p>
-        <p className={styles.lastMessage}>
+        <p
+          className={`${styles.lastMessage} ${
+            !hasBeenRead(conversation) && styles.unread
+          }`}
+        >
           {getLastMessageContent(conversation)}
         </p>
         {!hasBeenRead(conversation) && (

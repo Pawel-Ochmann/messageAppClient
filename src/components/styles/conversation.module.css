@@ -1,0 +1,52 @@
+.container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-image: url('/backgroundLight.jpg');
+  z-index: 100;
+  transform: translateX(-100%);
+  transition: 0.5s;
+  height: 100dvh;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.open {
+  transform: translateX(0) !important;
+}
+
+.header {
+  background-color: var(--main-theme-color);
+  display: flex;
+  padding: 0.7rem var(--main-padding);
+  gap: 1rem;
+}
+
+.header > div {
+  height: 50px;
+}
+
+.buttonBack {
+  color: var(--main-font-color-header);
+  font-size: 1.5rem;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  h2,
+  p {
+    color: var(--main-font-color-header);
+  }
+  h2 {
+    font-size: 1.4rem;
+  }
+}
+
+.messageContainer {
+  flex: 1;
+  overflow: auto;
+}

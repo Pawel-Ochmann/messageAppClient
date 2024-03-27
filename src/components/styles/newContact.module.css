@@ -7,6 +7,7 @@
   z-index: 100;
   transform: translateX(-100%);
   transition: 0.5s;
+  min-height: 100vh;
 }
 
 .header {
@@ -31,9 +32,6 @@
   h2 {
     font-size: 1.4rem;
   }
-  p {
-
-  }
 }
 
 .contactsContainer {
@@ -44,11 +42,20 @@
 }
 .contactBox {
     display: grid;
-    grid-template-columns: 1fr 4fr;
-    gap: 1rem;
+    grid-template-columns: 100px 1fr;
+    gap: 1.5rem;
+    height: 100px;
     h2 {
         display: flex;
         text-align: start;
         align-self: center;
     }
+}
+
+.searchInput {
+  width: 88%;
+  margin: 1rem var(--main-padding);
+  font-size: 1.1rem;
+  padding: .5rem;
+  border: 1px solid var(--background-light-color);
 }

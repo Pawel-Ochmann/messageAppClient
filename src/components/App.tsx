@@ -11,6 +11,7 @@ import { User, ConversationType } from '../types/index';
 import updateConversation from '../utils/updateConversations';
 import { updateLastRead } from '../utils/lastRead';
 
+
 export default function App() {
   const [socket, setSocket] = useState<Socket>(io);
   const { user, setUser } = useContext(UserContext);
@@ -108,7 +109,7 @@ export default function App() {
           newGroup={newGroup}
           openNewGroup={setNewGroup}
         />
-        {socket && <Conversation chatOpen={chatOpen} socket={socket} />}
+        {socket && <Conversation chatOpen={chatOpen} setChatOpen={setChatOpen} socket={socket} />}
       </div>
     </>
   );

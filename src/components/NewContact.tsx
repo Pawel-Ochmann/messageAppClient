@@ -90,8 +90,9 @@ const NewContact = ({
         </div>
       </header>
       <input
+        className={styles.searchInput}
         type='text'
-        placeholder='Search contacts'
+        placeholder='Find contacts'
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
