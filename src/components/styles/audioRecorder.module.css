@@ -1,0 +1,11 @@
+.audioField {
+    position: absolute;
+    bottom: 0;
+    width: 100dvw;
+    transform: translateY(100%);
+    transform: .5s;
+}
+
+.open {
+    transform: translateY(0) !important;
+}

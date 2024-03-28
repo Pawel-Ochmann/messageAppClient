@@ -16,6 +16,7 @@ import getConversationName from '../utils/getConversationName';
 import styles from './styles/conversation.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import {faFaceLaugh, faImage} from '@fortawesome/free-regular-svg-icons';
 import UserImage from './UserImage';
 import GroupImage from './GroupImage';
 import moment from 'moment';
@@ -251,13 +252,57 @@ const Conversation = ({
       <div className={styles.messageContainer}>
         {chatOpen.messages &&
           chatOpen.messages.map((message) => (
-           
-              <MessageBox key={message._id} message={message} />
-            
+            <MessageBox
+              key={message._id}
+              message={message}
+              group={chatOpen.group}
+            />
           ))}
         <p ref={lastMessageRef}>{otherUserIsTyping}</p>
       </div>
-      <div>
+      <div className={styles.footer}>
+        <div className={styles.inputContainer}>
+          <button
+            onClick={() => {
+              extrasOpen === 0 ? setExtrasOpen(2) : setExtrasOpen(0);
+            }}
+          >
+            <FontAwesomeIcon icon={faFaceLaugh}></FontAwesomeIcon>
+          </button>
+          <button
+            onClick={() => {
+              extrasOpen === 0 ? setExtrasOpen(2) : setExtrasOpen(0);
+            }}
+          >
+            gif
+          </button>
+          <button
+            type='submit'
+            onClick={() => {
+              handleImageUpload;
+            }}
+          >
+            <FontAwesomeIcon icon={faImage}></FontAwesomeIcon>
+          </button>
+          <input
+            type='text'
+            name='content'
+            placeholder='Message'
+            value={newMessage}
+            onChange={handleInputChange}
+          />
+        </div>
+        {newMessage ? (
+          <button onClick={newMessageHandler}>Send Message</button>
+        ) : (
+          <AudioRecorder
+            sendAudio={audioHandler}
+            audioChunks={audioChunks}
+            setAudioChunks={setAudioChunks}
+          />
+        )}
+      </div>
+      {/* <div>
         <input
           type='text'
           name='content'
@@ -313,7 +358,7 @@ const Conversation = ({
       />
       <div>
         <button onClick={newMessageHandler}>Send Message</button>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -1,4 +1,7 @@
 import { useState, MouseEventHandler } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMicrophone } from '@fortawesome/free-solid-svg-icons';
+import styles from './styles/audioRecorder.module.css'
 
 const AudioRecorder = ({
   sendAudio,
@@ -41,16 +44,19 @@ const AudioRecorder = ({
     }
   };
 
-
-
   return (
     <div>
       <button onClick={recording ? stopRecording : startRecording}>
-        {recording ? 'Stop Recording' : 'Start Recording'}
+        {recording ? (
+          'Stop Recording'
+        ) : (
+          <FontAwesomeIcon icon={faMicrophone}></FontAwesomeIcon>
+        )}
       </button>
       {audioChunks.length > 0 && (
         <button onClick={sendAudio}>Send Audio</button>
       )}
+      <div></div>
     </div>
   );
 };

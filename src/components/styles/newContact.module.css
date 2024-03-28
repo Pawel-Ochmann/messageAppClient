@@ -11,6 +11,7 @@
 }
 
 .header {
+  height: var(--header-height);
   background-color: var(--main-theme-color);
   display: flex;
   padding: .7rem  var(--main-padding);

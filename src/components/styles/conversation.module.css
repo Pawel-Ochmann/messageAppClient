@@ -18,6 +18,7 @@
 }
 
 .header {
+  height: var(--header-height);
   background-color: var(--main-theme-color);
   display: flex;
   padding: 0.7rem var(--main-padding);
@@ -49,4 +50,21 @@
 .messageContainer {
   flex: 1;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: var(--main-padding);
+}
+
+.footer {
+  display: flex;
+}
+
+.inputContainer {
+  background-color: var(--background-light-color);
+  padding: .5rem var(--main-padding);
+  button {
+    color: var(--secondary-font-color);
+    font-size: 2rem;
+  }
 }
