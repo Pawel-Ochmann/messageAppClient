@@ -1,7 +1,12 @@
-import { useState, MouseEventHandler } from 'react';
+import { useState, MouseEventHandler, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMicrophone } from '@fortawesome/free-solid-svg-icons';
-import styles from './styles/audioRecorder.module.css'
+import {
+  faMicrophone,
+  faLocationArrow,
+  faPause,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
+import styles from './styles/audioRecorder.module.css';
 
 const AudioRecorder = ({
   sendAudio,
@@ -16,7 +21,17 @@ const AudioRecorder = ({
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
     null
   );
- 
+  const [timer, setTimer] = useState(0);
+
+  useEffect(() => {
+    if (recording) {
+      const interval = setInterval(() => {
+        setTimer((prevTimer) => prevTimer + 1);
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [recording]);
 
   const startRecording = async () => {
     try {
@@ -44,19 +59,53 @@ const AudioRecorder = ({
     }
   };
 
+  const formatTime = (timeInSeconds: number): string => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    return `${minutes < 10 ? '0' : ''}${minutes}:${
+      seconds < 10 ? '0' : ''
+    }${seconds}`;
+  };
+
   return (
     <div>
-      <button onClick={recording ? stopRecording : startRecording}>
+      <button
+        className={styles.buttonMain}
+        onClick={recording ? stopRecording : startRecording}
+      >
         {recording ? (
-          'Stop Recording'
+          <FontAwesomeIcon icon={faPause}></FontAwesomeIcon>
         ) : (
           <FontAwesomeIcon icon={faMicrophone}></FontAwesomeIcon>
         )}
       </button>
-      {audioChunks.length > 0 && (
-        <button onClick={sendAudio}>Send Audio</button>
-      )}
-      <div></div>
+
+      <div
+        className={`${styles.audioField} ${
+          (audioChunks.length > 0 || recording) && styles.open
+        }`}
+      >
+        <>
+          <button
+            onClick={() => {
+              setAudioChunks([]);
+              setRecording(false);
+              setTimer(0)
+            }}
+          >
+            <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
+          </button>
+          <p>{formatTime(timer)}</p>
+          <button
+            className={`${styles.buttonSend} ${
+              audioChunks.length === 0 && styles.buttonInactive
+            }`}
+            onClick={sendAudio}
+          >
+            <FontAwesomeIcon icon={faLocationArrow}></FontAwesomeIcon>
+          </button>
+        </>
+      </div>
     </div>
   );
 };

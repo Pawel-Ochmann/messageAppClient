@@ -62,7 +62,8 @@
 
 .inputContainer {
   background-color: var(--background-light-color);
-  padding: .5rem var(--main-padding);
+  padding: .8rem var(--main-padding);
+  width: 100%;
   button {
     color: var(--secondary-font-color);
     font-size: 2rem;

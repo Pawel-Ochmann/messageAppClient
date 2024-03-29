@@ -1,11 +1,46 @@
 .audioField {
-    position: absolute;
-    bottom: 0;
-    width: 100dvw;
-    transform: translateY(100%);
-    transform: .5s;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  transform: translateY(100%);
+  transition: 0.5s;
+  background-color: var(--background-light-color);
+  padding: 0.5rem var(--main-padding);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  p {
+    font-size: 1.5rem;
+  }
+  button {
+    font-size: 2rem;
+  }
+}
+
+.buttonMain {
+    bottom: .5rem;
+    right: .5rem;
+    padding: .5rem;
+    width: 2.8rem;
+    height: 2.8rem;
+    position: fixed;
+    border-radius: 10rem;
+    background-color: var(--active-theme-color);
+    color: var(--main-font-color-header);
+    z-index: 100;
 }
 
 .open {
-    transform: translateY(0) !important;
+  transform: translateY(0) !important;
+}
+
+.buttonSend {
+  transform: rotate(45deg);
+  color: var(--active-theme-color);
+}
+.buttonInactive {
+  color: var(--secondary-font-color);
 }
