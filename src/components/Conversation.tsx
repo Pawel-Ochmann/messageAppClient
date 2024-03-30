@@ -32,13 +32,15 @@ const Conversation = ({
 }) => {
   const { user } = useContext(UserContext) as { user: User };
   const [newMessage, setNewMessage] = useState('');
-  const [extrasOpen, setExtrasOpen] = useState(0);
   const [image, setImage] = useState<File | null>(null);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   const [lastTimeSeen, setLastTimeSeen] = useState<string>('');
   const [isTyping, setIsTyping] = useState(false);
   const [otherUserIsTyping, setOtherUserIsTyping] = useState('');
   const lastMessageRef = useRef<HTMLParagraphElement>(null);
+  const [openEmotes, setOpenEmotes] = useState(false);
+  const [openGifs, setOpenGifs] = useState(false);
+  const [openFile, setOpenFile] = useState(false);
   
   useEffect(() => {
     lastMessageRef.current?.scrollIntoView();
@@ -83,17 +85,6 @@ const Conversation = ({
       });
     }
   }, [chatOpen, socket, user]);
-
-  const renderExtras = () => {
-    switch (extrasOpen) {
-      case 1:
-        return <Emotes message={newMessage} setMessage={setNewMessage} />;
-      case 2:
-        return <Gifs sendGif={sendGif} />;
-      default:
-        return null;
-    }
-  };
 
   const sendMessage = (message: MessageParam) => {
     const messageToSend: Message = {
@@ -262,16 +253,23 @@ const Conversation = ({
       </div>
       <div className={styles.footer}>
         <div className={styles.inputContainer}>
+          <Emotes
+            message={newMessage}
+            setMessage={setNewMessage}
+            isOpen={openEmotes}
+            setIsOpen={setOpenEmotes}
+          />
+          <Gifs sendGif={sendGif} isOpen={openGifs} />
           <button
             onClick={() => {
-              extrasOpen === 0 ? setExtrasOpen(2) : setExtrasOpen(0);
+              setOpenEmotes(!openEmotes);
             }}
           >
             <FontAwesomeIcon icon={faFaceLaugh}></FontAwesomeIcon>
           </button>
           <button
             onClick={() => {
-              extrasOpen === 0 ? setExtrasOpen(2) : setExtrasOpen(0);
+              setOpenGifs(!openGifs);
             }}
           >
             gif

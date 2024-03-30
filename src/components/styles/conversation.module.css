@@ -1,8 +1,9 @@
 .container {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
+  bottom: 0;
   background-image: url('/backgroundLight.jpg');
   z-index: 100;
   transform: translateX(-100%);
@@ -58,14 +59,29 @@
 
 .footer {
   display: flex;
+  flex-direction: column;
 }
 
 .inputContainer {
+  position: relative;
   background-color: var(--background-light-color);
   padding: .8rem var(--main-padding);
   width: 100%;
+  display: flex;
+  align-items: center;
   button {
     color: var(--secondary-font-color);
     font-size: 2rem;
+    text-transform: uppercase;
+  }
+  input {
+    border: none;
+    padding: .5rem var(--main-padding);
+    font-size: 1.1rem;
+    border-radius: .3rem;
+    width: calc(75dvw - 150px);
+    &:focus {
+    outline: 2px solid var(--secondary-font-color);
+    }
   }
 }

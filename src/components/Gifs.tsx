@@ -1,13 +1,16 @@
 import {  useEffect, useState } from 'react';
 import axios from 'axios';
 import { Gif } from '../types';
+import styles from './styles/giphs.module.css'
 
 const GiphyAPIKey = 'yj95txvwzdxGDuFA4J2CeomczmxZRQ1D&s';
 
 export default function Gifs({
   sendGif,
+  isOpen
 }: {
   sendGif: React.MouseEventHandler<HTMLImageElement>;
+  isOpen:boolean
 }) {
   const [gifs, setGifs] = useState([]);
   const [query, setQuery] = useState('');
@@ -40,16 +43,17 @@ export default function Gifs({
 
 
   return (
-    <>
-      {' '}
-      <input
-        type='text'
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder='Enter search query'
-      />
-      <button onClick={handleSearch}>Search</button>
+    <div className={`${styles.giphsContainer} ${isOpen && styles.open}`}>
       <div>
+        <input
+          type='text'
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder='Find gifs'
+        />
+        <button onClick={handleSearch}>Search</button>
+      </div>
+      <div className={styles.gifGrid}>
         {gifs.length > 0 &&
           gifs.map((gif: Gif) => (
             <img
@@ -57,10 +61,9 @@ export default function Gifs({
               key={gif.id}
               src={gif.images.original.url}
               alt='GIF'
-              style={{ maxWidth: '200px' }}
             />
           ))}
       </div>
-    </>
+    </div>
   );
 }

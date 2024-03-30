@@ -1,0 +1,31 @@
+.giphsContainer {
+  padding: var(--main-padding);
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  overflow: scroll;
+  width: 100%;
+  left: 0;
+  top: -300%;
+  min-height: 33dvh;
+  max-height: 10dvh;
+  background-color: var(--background-light-color);
+  transform: translateY(100%);
+  z-index: -10;
+  transition: 0.5s;
+  transform-origin: bottom;
+  &>input {
+    border-radius: 0;
+  }
+  .gifGrid {
+    display: grid;
+    padding: 0 2rem 0 0 ;
+    gap: .5rem;
+    grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+  }
+  &.open {
+    transform: translateY(0);
+    z-index: 0;
+  }
+}
