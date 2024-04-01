@@ -7,11 +7,11 @@
   transition: 0.5s;
   background-color: var(--background-light-color);
   padding: 0.5rem var(--main-padding);
-  z-index: 10;
+  z-index: 250;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2rem;
+  gap: 1rem;
   p {
     font-size: 1.5rem;
   }
@@ -21,7 +21,7 @@
 }
 
 .buttonMain {
-    bottom: .5rem;
+    bottom: .7rem;
     right: .5rem;
     padding: .5rem;
     width: 2.8rem;
@@ -30,7 +30,7 @@
     border-radius: 10rem;
     background-color: var(--active-theme-color);
     color: var(--main-font-color-header);
-    z-index: 100;
+    z-index: 300;
 }
 
 .open {

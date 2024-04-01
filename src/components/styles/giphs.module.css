@@ -7,16 +7,21 @@
   overflow: scroll;
   width: 100%;
   left: 0;
-  top: -300%;
-  min-height: 33dvh;
-  max-height: 10dvh;
+  bottom: 71px;
+  max-height: 10rem;
   background-color: var(--background-light-color);
   transform: translateY(100%);
-  z-index: -10;
+  z-index: 0;
   transition: 0.5s;
   transform-origin: bottom;
-  &>input {
-    border-radius: 0;
+  .searchContainer {
+    align-self: center;
+    margin-bottom: .5rem;
+    display: flex;
+    input {
+      border: none;
+      font-size: 1.2rem;
+    }
   }
   .gifGrid {
     display: grid;

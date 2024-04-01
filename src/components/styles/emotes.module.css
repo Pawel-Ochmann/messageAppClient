@@ -2,16 +2,15 @@
     position: absolute;
     width: 100%;
     left: 0;
-    top: -400%;
+    right: 0;
+    bottom: 71px;
     font-size: 2rem;
     display: grid;
     gap: .5rem;
-    min-height: 46dvh;
-    padding: var(--main-padding);
-    grid-template-columns: repeat(auto-fill, 2rem);
+    padding: .5rem;
+    grid-template-columns: repeat(auto-fill, 3rem);
     background-color: var(--background-light-color);
     transform: translateY(100%);
-    z-index: -10;
     transition: .3s linear;
     transform-origin: bottom;
     &.open {

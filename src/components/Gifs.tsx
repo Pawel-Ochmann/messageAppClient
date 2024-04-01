@@ -2,6 +2,8 @@ import {  useEffect, useState } from 'react';
 import axios from 'axios';
 import { Gif } from '../types';
 import styles from './styles/giphs.module.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 const GiphyAPIKey = 'yj95txvwzdxGDuFA4J2CeomczmxZRQ1D&s';
 
@@ -44,14 +46,16 @@ export default function Gifs({
 
   return (
     <div className={`${styles.giphsContainer} ${isOpen && styles.open}`}>
-      <div>
+      <div className={styles.searchContainer}>
         <input
           type='text'
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder='Find gifs'
         />
-        <button onClick={handleSearch}>Search</button>
+        <button onClick={handleSearch}>
+          <FontAwesomeIcon icon={faMagnifyingGlass}></FontAwesomeIcon>
+        </button>
       </div>
       <div className={styles.gifGrid}>
         {gifs.length > 0 &&

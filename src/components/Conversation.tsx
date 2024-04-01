@@ -15,8 +15,13 @@ import { Message, MessageParam, User, ConversationType } from '../types/index';
 import getConversationName from '../utils/getConversationName';
 import styles from './styles/conversation.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import {faFaceLaugh, faImage} from '@fortawesome/free-regular-svg-icons';
+import {
+  faArrowLeft,
+  faLocationArrow,
+  faFileImage,
+  faShare
+} from '@fortawesome/free-solid-svg-icons';
+import {faFaceLaugh, faImage, faCircleXmark} from '@fortawesome/free-regular-svg-icons';
 import UserImage from './UserImage';
 import GroupImage from './GroupImage';
 import moment from 'moment';
@@ -158,7 +163,6 @@ const Conversation = ({
 
   const handleImageUpload: MouseEventHandler = (e) => {
     e.preventDefault();
-
     const uploadImage = () => {
       if (image) {
         const reader = new FileReader();
@@ -176,6 +180,7 @@ const Conversation = ({
         (confirmation: boolean) => {
           if (confirmation) {
             uploadImage();
+            setImage(null);
           } else {
             console.error('Error: New chat creation confirmation failed');
           }
@@ -183,6 +188,7 @@ const Conversation = ({
       );
     } else {
       uploadImage();
+      setImage(null);
     }
   };
   const audioHandler = () => {
@@ -260,45 +266,94 @@ const Conversation = ({
             setIsOpen={setOpenEmotes}
           />
           <Gifs sendGif={sendGif} isOpen={openGifs} />
-          <button
-            onClick={() => {
-              setOpenEmotes(!openEmotes);
-            }}
-          >
-            <FontAwesomeIcon icon={faFaceLaugh}></FontAwesomeIcon>
-          </button>
-          <button
-            onClick={() => {
-              setOpenGifs(!openGifs);
-            }}
-          >
-            gif
-          </button>
-          <button
-            type='submit'
-            onClick={() => {
-              handleImageUpload;
-            }}
-          >
-            <FontAwesomeIcon icon={faImage}></FontAwesomeIcon>
-          </button>
-          <input
-            type='text'
-            name='content'
-            placeholder='Message'
-            value={newMessage}
-            onChange={handleInputChange}
-          />
+          <div className={`${styles.imageForm} ${openFile && styles.open}`}>
+            <form>
+              <label htmlFor='image'>
+                Add <FontAwesomeIcon icon={faFileImage}></FontAwesomeIcon>
+              </label>
+              <input
+                id='image'
+                type='file'
+                multiple={false}
+                accept='image/*'
+                onChange={(e) => {
+                  const selectedFile = e.target.files && e.target.files[0];
+                  setImage(selectedFile);
+                }}
+              />
+              <button
+                disabled={!image}
+                className={`${image && styles.active}`}
+                type='submit'
+                onClick={(e) => {
+                  handleImageUpload(e);
+                }}
+              >
+                <FontAwesomeIcon icon={faShare}></FontAwesomeIcon>
+              </button>
+            </form>
+          </div>
+          <div className={styles.dashboard}>
+            <button
+              onClick={() => {
+                setOpenGifs(false);
+                setOpenFile(false);
+                setOpenEmotes(!openEmotes);
+              }}
+            >
+              {openEmotes ? (
+                <FontAwesomeIcon icon={faCircleXmark}></FontAwesomeIcon>
+              ) : (
+                <FontAwesomeIcon icon={faFaceLaugh}></FontAwesomeIcon>
+              )}
+            </button>
+            <button
+              onClick={() => {
+                setOpenEmotes(false);
+                setOpenFile(false);
+                setOpenGifs(!openGifs);
+              }}
+            >
+              {openGifs ? (
+                <FontAwesomeIcon icon={faCircleXmark}></FontAwesomeIcon>
+              ) : (
+                'gif'
+              )}
+            </button>
+            <button
+              type='submit'
+              onClick={() => {
+                setOpenEmotes(false);
+                setOpenGifs(false);
+                setOpenFile(!openFile);
+              }}
+            >
+              {openFile ? (
+                <FontAwesomeIcon icon={faCircleXmark}></FontAwesomeIcon>
+              ) : (
+                <FontAwesomeIcon icon={faImage}></FontAwesomeIcon>
+              )}
+            </button>
+            <input
+              type='text'
+              name='content'
+              placeholder='Message'
+              value={newMessage}
+              onChange={handleInputChange}
+            />
+          </div>
+          {newMessage ? (
+            <button className={styles.sendButton} onClick={newMessageHandler}>
+              <FontAwesomeIcon icon={faLocationArrow}></FontAwesomeIcon>
+            </button>
+          ) : (
+            <AudioRecorder
+              sendAudio={audioHandler}
+              audioChunks={audioChunks}
+              setAudioChunks={setAudioChunks}
+            />
+          )}
         </div>
-        {newMessage ? (
-          <button onClick={newMessageHandler}>Send Message</button>
-        ) : (
-          <AudioRecorder
-            sendAudio={audioHandler}
-            audioChunks={audioChunks}
-            setAudioChunks={setAudioChunks}
-          />
-        )}
       </div>
       {/* <div>
         <input
