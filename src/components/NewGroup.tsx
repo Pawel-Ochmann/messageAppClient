@@ -9,6 +9,9 @@ import { User } from '../types/index';
 import { v4 as uuid } from 'uuid';
 import { ConversationType } from '../types/index';
 import { Socket } from 'socket.io-client';
+import styles from './styles/newGroup.module.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft, faCircleCheck, faPeopleGroup } from '@fortawesome/free-solid-svg-icons';
 
 interface Contact {
   _id: string;
@@ -19,10 +22,12 @@ const NewGroup = ({
   setChatOpen,
   openHandler,
   socket,
+  className,
 }: {
   setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>;
   openHandler: Dispatch<SetStateAction<boolean>>;
   socket: Socket;
+  className: string;
 }) => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]);
@@ -137,9 +142,19 @@ const NewGroup = ({
   };
 
   return (
-    <div>
-      <h2>Here you can set new group</h2>
-      <button onClick={() => openHandler(false)}>Close new Group</button>
+    <div className={`${className} ${styles.container} `}>
+      <header className={styles.header}>
+        <button
+          className={styles.buttonBack}
+          onClick={() => openHandler(false)}
+        >
+          <FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon>
+        </button>
+        <div className={styles.info}>
+          <h2>Create new Group</h2>
+        </div>
+      </header>
+
       {goFurther ? (
         <div>
           <ul>
@@ -186,37 +201,38 @@ const NewGroup = ({
         </div>
       ) : (
         <div>
-          <h2>Create Group</h2>
-          <form>
-            <div>
-              <label htmlFor='groupName'>Group Name:</label>
-              <input
-                type='text'
-                id='groupName'
-                value={groupName}
-                onChange={handleNameChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor='groupImage'>Group Image:</label>
-              <input
-                type='file'
-                id='groupImage'
-                accept='image/*'
-                onChange={handleImageChange}
-                required
-              />
-            </div>
+          <form className={styles.mainForm}>
+            <label className={styles.imageLabel} htmlFor='groupImage'>
+              <FontAwesomeIcon icon={faPeopleGroup}></FontAwesomeIcon>
+              <div></div>
+            </label>
+            <input
+              type='file'
+              id='groupImage'
+              accept='image/*'
+              onChange={handleImageChange}
+              required
+            />
+
+            <label htmlFor='groupName'>Group Name:</label>
+            <input
+              type='text'
+              id='groupName'
+              value={groupName}
+              onChange={handleNameChange}
+              required
+            />
+            {groupName.trim() !== '' && (
+              <button
+                disabled={groupName.trim() === ''}
+                onClick={() => {
+                  setGoFurther(true);
+                }}
+              >
+                <FontAwesomeIcon icon={faCircleCheck}></FontAwesomeIcon>
+              </button>
+            )}
           </form>
-          <button
-            disabled={groupName.trim() === ''}
-            onClick={() => {
-              setGoFurther(true);
-            }}
-          >
-            Go further
-          </button>
         </div>
       )}
     </div>

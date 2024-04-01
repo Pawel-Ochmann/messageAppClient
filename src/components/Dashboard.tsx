@@ -66,6 +66,7 @@ const Dashboard = ({
           setChatOpen={setChatOpen}
           openHandler={openNewGroup}
           socket={socket}
+          className={`${newGroup && styles.open}`}
         />
       )}
 
