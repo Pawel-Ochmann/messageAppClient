@@ -61,14 +61,13 @@ const Dashboard = ({
           </button>
         </div>
       </header>
-      {newGroup && (
-        <NewGroup
-          setChatOpen={setChatOpen}
-          openHandler={openNewGroup}
-          socket={socket}
-          className={`${newGroup && styles.open}`}
-        />
-      )}
+
+      <NewGroup
+        setChatOpen={setChatOpen}
+        openHandler={openNewGroup}
+        socket={socket}
+        className={`${newGroup && styles.open}`}
+      />
 
       <NewContact
         className={`${newContact && styles.open}`}

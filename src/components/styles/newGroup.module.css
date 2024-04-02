@@ -1,5 +1,5 @@
 .container {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -9,13 +9,14 @@
   transform: translateX(-100%);
   transition: 0.5s;
   min-height: 100vh;
+  overflow: auto;
 }
 
 .header {
   height: var(--header-height);
   background-color: var(--main-theme-color);
   display: flex;
-  padding: .7rem  var(--main-padding);
+  padding: 0.7rem var(--main-padding);
   gap: 2rem;
 }
 
@@ -25,9 +26,9 @@
 }
 
 .info {
-    display: flex;
-    flex-direction: column;
-    gap: .5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   h2,
   p {
     color: var(--main-font-color-header);
@@ -38,45 +39,108 @@
 }
 
 .mainForm {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: var(--main-padding);
-    input[type='file'] {
-        display: none;
+  display: flex;
+  gap: 2rem;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--main-padding);
+  input[type='file'] {
+    display: none;
+  }
+  .imageLabel {
+    display: grid;
+    width: 60%;
+    aspect-ratio: 1;
+    max-width: 15rem;
+    background-color: var(--secondary-font-color);
+    border-radius: 20%;
+    overflow: hidden;
+    img {
+      max-width: 80%;
+      max-height: 80%;
+      align-self: center;
+      justify-self: center;
+      margin: .5rem;
     }
-    .imageLabel {
-        display: grid;
-        width: 60%;
-        aspect-ratio: 1;
-        max-width: 15rem;
-        background-color: var(--secondary-font-color);
-        border-radius: 20%;
+    .backgroundIcon {
+      grid-column: 1/1;
+      grid-row: 1/1;
+      color: var(--main-font-color-header);
+      font-size: 30vw;
+      max-width: 163px;
+      justify-self: center;
+      align-self: center;
+      filter: opacity(0.15);
     }
+    .imageBox {
+      color: var(--main-font-color-header);
+      grid-column: 1/1;
+      grid-row: 1/1;
+      text-align: center;
+      justify-self: center;
+      align-self: center;
+      p {
+        color: var(--main-font-color-header);
+      }
+    }
+  }
+  label[for='groupName'] input[type='text'] {
+    width: 50vw;
+    max-width: 20rem;
+    border: none;
+    border-bottom: 2px solid var(--secondary-font-color);
+    font-size: 1.1rem;
+    &:focus {
+      border-bottom: 2px solid var(--active-theme-color);
+      outline: none;
+    }
+  }
+  .goFurtherButton {
+    font-size: 3rem;
+    color: var(--active-theme-color);
+  }
 }
 
 .contactsContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    padding: var(--main-padding);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: var(--main-padding);
+  overflow: auto;
 }
 .contactBox {
-    display: grid;
-    grid-template-columns: 100px 1fr;
-    gap: 1.5rem;
-    height: 100px;
-    h2 {
-        display: flex;
-        text-align: start;
-        align-self: center;
-    }
+  display: grid;
+  grid-template-columns: 70px 70px 1fr;
+  height: 50px;
+  align-items: center;
+  h2 {
+    display: flex;
+    text-align: start;
+    align-self: center;
+  }
 }
 
 .searchInput {
   width: 88%;
   margin: 1rem var(--main-padding);
   font-size: 1.1rem;
-  padding: .5rem;
+  padding: 0.5rem;
   border: 1px solid var(--background-light-color);
+}
+
+.participantsList {
+  padding: var(--main-padding);
+  font-size: 1rem;
+  display: flex;
+  button {
+    font-size: 2rem;
+    color: var(--secondary-font-color);
+  }
+  li {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    background-color: var(--background-light-color);
+    border-radius: 100rem;
+  }
 }

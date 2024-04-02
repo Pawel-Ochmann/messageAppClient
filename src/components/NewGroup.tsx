@@ -6,12 +6,19 @@ import { getAddress } from '../utils/serverAddress';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../Context';
 import { User } from '../types/index';
+import UserImage from './UserImage';
 import { v4 as uuid } from 'uuid';
 import { ConversationType } from '../types/index';
 import { Socket } from 'socket.io-client';
 import styles from './styles/newGroup.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faCircleCheck, faPeopleGroup } from '@fortawesome/free-solid-svg-icons';
+import {
+  faArrowLeft,
+  faCircleCheck,
+  faPeopleGroup,
+  faCamera,
+  faCircleXmark
+} from '@fortawesome/free-solid-svg-icons';
 
 interface Contact {
   _id: string;
@@ -72,16 +79,18 @@ const NewGroup = ({
     setGroupName(e.target.value);
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files && e.target.files[0];
-    if (file) {
-      if (file.type.startsWith('image/')) {
-        setGroupImage(file);
-      } else {
-        alert('Please select a valid image file.');
-      }
+const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files && e.target.files[0];
+  if (file) {
+    if (file.type.startsWith('image/')) {
+      setGroupImage(file);
+    } else {
+      alert('Please select a valid image file.');
     }
-  };
+  } else {
+    setGroupImage(null);
+  }
+};
 
   const handleSubmit = async () => {
     const newConversation: ConversationType = {
@@ -127,19 +136,16 @@ const NewGroup = ({
     openHandler(false);
   };
 
-  const addParticipant = (contact: Contact) => {
-    if (!participants.some((participant) => participant._id === contact._id)) {
-      setContacts(contacts.filter((c) => c._id !== contact._id));
-      setParticipants([...participants, contact]);
-    }
-  };
-
-  const removeParticipant = (contact: Contact) => {
-    setParticipants(
-      participants.filter((participant) => participant._id !== contact._id)
-    );
-    setContacts([...contacts, contact]);
-  };
+    const handleCheckboxChange = (contact:Contact) => {
+      console.log(contact, participants);
+      if (participants.some((c) => c._id === contact._id)) {
+        setParticipants(
+          [...participants.filter((c) => c.name !== contact.name)]
+        );
+      } else {
+        setParticipants([...participants, contact]);
+      }
+    };
 
   return (
     <div className={`${className} ${styles.container} `}>
@@ -156,40 +162,42 @@ const NewGroup = ({
       </header>
 
       {goFurther ? (
-        <div>
-          <ul>
+        <div className={styles.secondStageContainer}>
+          <ul className={styles.participantsList}>
             {participants.map((participant) => (
-              <li key={participant._id}>
+              <li key={participant.name}>
+                <UserImage userName={participant.name} />
+                <p>{participant.name}</p>
                 <button
-                  style={{ color: 'green' }}
                   onClick={() => {
-                    removeParticipant(participant);
+                    handleCheckboxChange(participant);
                   }}
                 >
-                  {participant.name}
+                  <FontAwesomeIcon icon={faCircleXmark}></FontAwesomeIcon>
                 </button>
               </li>
             ))}
           </ul>
           <input
+            className={styles.searchInput}
             type='text'
-            placeholder='Search contacts'
+            placeholder='Find contacts'
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <ul>
+          <div className={styles.contactsContainer}>
             {filteredContacts.map((contact) => (
-              <li key={contact.name}>
-                <button
-                  onClick={() => {
-                    addParticipant(contact);
-                  }}
-                >
-                  {contact.name}
-                </button>
-              </li>
+              <div key={contact.name} className={styles.contactBox}>
+                <input
+                  type='checkbox'
+                  checked={participants.some((c) => c._id === contact._id)}
+                  onClick={() => handleCheckboxChange(contact)}
+                />
+                <UserImage userName={contact.name} />
+                <h2 className={styles.contactName}>{contact.name}</h2>
+              </div>
             ))}
-          </ul>
+          </div>
           <button onClick={handleSubmit}>Create Group</button>
           <button
             onClick={() => {
@@ -203,8 +211,20 @@ const NewGroup = ({
         <div>
           <form className={styles.mainForm}>
             <label className={styles.imageLabel} htmlFor='groupImage'>
-              <FontAwesomeIcon icon={faPeopleGroup}></FontAwesomeIcon>
-              <div></div>
+              {groupImage ? (
+                <img src={URL.createObjectURL(groupImage)} alt='' />
+              ) : (
+                <>
+                  <FontAwesomeIcon
+                    className={styles.backgroundIcon}
+                    icon={faPeopleGroup}
+                  ></FontAwesomeIcon>
+                  <div className={styles.imageBox}>
+                    <FontAwesomeIcon icon={faCamera}></FontAwesomeIcon>
+                    <p>Add group image</p>
+                  </div>
+                </>
+              )}
             </label>
             <input
               type='file'
@@ -214,16 +234,20 @@ const NewGroup = ({
               required
             />
 
-            <label htmlFor='groupName'>Group Name:</label>
-            <input
-              type='text'
-              id='groupName'
-              value={groupName}
-              onChange={handleNameChange}
-              required
-            />
+            <label htmlFor='groupName'>
+              <input
+                type='text'
+                id='groupName'
+                value={groupName}
+                onChange={handleNameChange}
+                placeholder='Group Name'
+                required
+              />
+            </label>
+
             {groupName.trim() !== '' && (
               <button
+                className={styles.goFurtherButton}
                 disabled={groupName.trim() === ''}
                 onClick={() => {
                   setGoFurther(true);
