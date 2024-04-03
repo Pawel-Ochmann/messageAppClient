@@ -3,9 +3,7 @@ import UserImage from './UserImage';
 import { useState, Dispatch, SetStateAction, useContext } from 'react';
 import NewGroup from './NewGroup';
 import NewContact from './NewContact';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { deleteToken } from '../utils/tokenHandler';
+import Settings from './Settings';
 import { ConversationType } from '../types';
 import { Socket } from 'socket.io-client';
 import { UserContext } from '../Context';
@@ -28,16 +26,9 @@ const Dashboard = ({
   newGroup: boolean;
   openNewGroup: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const [newContact, setNewContact] = useState(false);
-  const navigate = useNavigate();
-
-  const logOut = () => {
-    deleteToken();
-    delete axios.defaults.headers.common['Authorization'];
-    setUser(null);
-    navigate('/login');
-  };
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
     <>
@@ -59,7 +50,11 @@ const Dashboard = ({
           >
             <FontAwesomeIcon icon={faUsersLine} />
           </button>
-          <button onClick={logOut}>
+          <button
+            onClick={() => {
+              setSettingsOpen(true);
+            }}
+          >
             <FontAwesomeIcon icon={faEllipsisVertical} />
           </button>
         </div>
@@ -79,6 +74,7 @@ const Dashboard = ({
       />
 
       <Contacts setChatOpen={setChatOpen} />
+      <Settings className={`${settingsOpen && styles.open}`} openHandler={setSettingsOpen}/>
     </>
   );
 };

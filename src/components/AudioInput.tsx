@@ -90,13 +90,14 @@ const AudioRecorder = ({
             onClick={() => {
               setAudioChunks([]);
               setRecording(false);
-              setTimer(0)
+              setTimer(0);
             }}
           >
             <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
           </button>
           <p>{formatTime(timer)}</p>
           <button
+            disabled={audioChunks.length === 0}
             className={`${styles.buttonSend} ${
               audioChunks.length === 0 && styles.buttonInactive
             }`}
