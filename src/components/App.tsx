@@ -11,7 +11,6 @@ import { User, ConversationType } from '../types/index';
 import updateConversation from '../utils/updateConversations';
 import { updateLastRead } from '../utils/lastRead';
 
-
 export default function App() {
   const [socket, setSocket] = useState<Socket>(io);
   const { user, setUser } = useContext(UserContext);
@@ -20,7 +19,7 @@ export default function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const connectToSocket = async () => {
+    const connectToSocket = async () => { 
       try {
         if (!socket || !socket.connected) {
           const newSocket = io('http://localhost:4000', {
@@ -52,7 +51,11 @@ export default function App() {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
       try {
-        const response = await axios.get(getAddress('/'));
+        const response = await axios.get(getAddress('/'), {
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+          },
+        });
         setUser(response.data);
         await connectToSocket();
       } catch (error) {
@@ -109,7 +112,13 @@ export default function App() {
           newGroup={newGroup}
           openNewGroup={setNewGroup}
         />
-        {socket && <Conversation chatOpen={chatOpen} setChatOpen={setChatOpen} socket={socket} />}
+        {socket && (
+          <Conversation
+            chatOpen={chatOpen}
+            setChatOpen={setChatOpen}
+            socket={socket}
+          />
+        )}
       </div>
     </>
   );

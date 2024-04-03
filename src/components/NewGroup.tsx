@@ -17,7 +17,9 @@ import {
   faCircleCheck,
   faPeopleGroup,
   faCamera,
-  faCircleXmark
+  faCircleXmark,
+  faUsersViewfinder,
+  faReply,
 } from '@fortawesome/free-solid-svg-icons';
 
 interface Contact {
@@ -79,18 +81,18 @@ const NewGroup = ({
     setGroupName(e.target.value);
   };
 
-const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files && e.target.files[0];
-  if (file) {
-    if (file.type.startsWith('image/')) {
-      setGroupImage(file);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) {
+      if (file.type.startsWith('image/')) {
+        setGroupImage(file);
+      } else {
+        alert('Please select a valid image file.');
+      }
     } else {
-      alert('Please select a valid image file.');
+      setGroupImage(null);
     }
-  } else {
-    setGroupImage(null);
-  }
-};
+  };
 
   const handleSubmit = async () => {
     const newConversation: ConversationType = {
@@ -136,16 +138,14 @@ const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     openHandler(false);
   };
 
-    const handleCheckboxChange = (contact:Contact) => {
-      console.log(contact, participants);
-      if (participants.some((c) => c._id === contact._id)) {
-        setParticipants(
-          [...participants.filter((c) => c.name !== contact.name)]
-        );
-      } else {
-        setParticipants([...participants, contact]);
-      }
-    };
+  const handleCheckboxChange = (contact: Contact) => {
+    console.log(contact, participants);
+    if (participants.some((c) => c._id === contact._id)) {
+      setParticipants([...participants.filter((c) => c.name !== contact.name)]);
+    } else {
+      setParticipants([...participants, contact]);
+    }
+  };
 
   return (
     <div className={`${className} ${styles.container} `}>
@@ -163,6 +163,17 @@ const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
       {goFurther ? (
         <div className={styles.secondStageContainer}>
+          <div className={styles.previousPage}>
+            <button
+              onClick={() => {
+                setGoFurther(false);
+              }}
+            >
+              <FontAwesomeIcon icon={faReply}></FontAwesomeIcon>
+            </button>
+            <p>Return to previous page</p>
+          </div>
+
           <ul className={styles.participantsList}>
             {participants.map((participant) => (
               <li key={participant.name}>
@@ -178,6 +189,15 @@ const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               </li>
             ))}
           </ul>
+          {participants.length > 0 && (
+            <div className={styles.createButton}>
+              <p>Are you ready? Create new group</p>
+              <button onClick={handleSubmit}>
+                <FontAwesomeIcon icon={faUsersViewfinder}></FontAwesomeIcon>
+              </button>
+            </div>
+          )}
+
           <input
             className={styles.searchInput}
             type='text'
@@ -198,14 +218,6 @@ const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               </div>
             ))}
           </div>
-          <button onClick={handleSubmit}>Create Group</button>
-          <button
-            onClick={() => {
-              setGoFurther(false);
-            }}
-          >
-            Go back
-          </button>
         </div>
       ) : (
         <div>

@@ -3,6 +3,7 @@ import UserImage from './UserImage';
 import { useState, Dispatch, SetStateAction, useContext } from 'react';
 import NewGroup from './NewGroup';
 import NewContact from './NewContact';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { deleteToken } from '../utils/tokenHandler';
 import { ConversationType } from '../types';
@@ -27,12 +28,14 @@ const Dashboard = ({
   newGroup: boolean;
   openNewGroup: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const [newContact, setNewContact] = useState(false);
   const navigate = useNavigate();
 
   const logOut = () => {
     deleteToken();
+    delete axios.defaults.headers.common['Authorization'];
+    setUser(null);
     navigate('/login');
   };
 

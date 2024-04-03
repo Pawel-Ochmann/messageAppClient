@@ -60,7 +60,7 @@
       max-height: 80%;
       align-self: center;
       justify-self: center;
-      margin: .5rem;
+      margin: 0.5rem;
     }
     .backgroundIcon {
       grid-column: 1/1;
@@ -132,15 +132,48 @@
   padding: var(--main-padding);
   font-size: 1rem;
   display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
   button {
-    font-size: 2rem;
+    font-size: 2.5rem;
     color: var(--secondary-font-color);
   }
   li {
+    height: 3rem;
     display: flex;
     align-items: center;
-    gap: .5rem;
+    gap: 0.5rem;
     background-color: var(--background-light-color);
     border-radius: 100rem;
+    img {
+      width: 90%;
+    }
+  }
+}
+
+.secondStageContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.previousPage {
+  padding: var(--main-padding);
+  display: flex;
+  align-items: center;
+  button {
+    color: var(--secondary-font-color);
+  }
+
+}
+
+.createButton {
+  padding: var(--main-padding);
+  display: flex;
+  align-self: center;
+  align-items: center;
+  font-size: 1.5rem;
+  button {
+    color: var(--active-theme-color);
+    font-size: 2rem;
   }
 }

@@ -3,7 +3,7 @@
   display: flex;
   gap: 1rem;
   align-items: center;
-  padding: var(--main-padding);
+  padding: .7rem var(--main-padding);
   background-color:var(--main-theme-color);
 }
 .title {
