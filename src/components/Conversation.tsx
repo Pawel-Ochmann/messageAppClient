@@ -84,7 +84,6 @@ const Conversation = ({
   useEffect(() => {
     if (chatOpen && !chatOpen.group) {
       const otherParticipant = getConversationName(user, chatOpen);
-      console.log(otherParticipant);
       socket.emit('getStatus', otherParticipant, (status: string) => {
         setLastTimeSeen(status);
       });
@@ -243,7 +242,7 @@ const Conversation = ({
           ) : (
             <h2>{getConversationName(user, chatOpen)}</h2>
           )}
-          <p>{moment(lastTimeSeen).fromNow()}</p>
+          <p onClick={()=>{console.log(lastTimeSeen)}}>{lastTimeSeen === 'active' ?  'active' : moment(lastTimeSeen).format('YYYY-MM-DD HH:mm:ss')}</p>
         </div>
       </header>
       <div className={styles.messageContainer}>
@@ -355,63 +354,6 @@ const Conversation = ({
           )}
         </div>
       </div>
-      {/* <div>
-        <input
-          type='text'
-          name='content'
-          placeholder='Message'
-          value={newMessage}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div>{renderExtras()}</div>
-      <div>
-        <button
-          onClick={() => {
-            extrasOpen === 0 ? setExtrasOpen(1) : setExtrasOpen(0);
-          }}
-        >
-          Add an emote
-        </button>
-      </div>
-      <div>
-        <button
-          onClick={() => {
-            extrasOpen === 0 ? setExtrasOpen(2) : setExtrasOpen(0);
-          }}
-        >
-          Add a gif
-        </button>
-      </div>
-      <div>
-        <form>
-          <input
-            type='file'
-            multiple={false}
-            accept='image/*'
-            onChange={(e) => {
-              const selectedFile = e.target.files && e.target.files[0];
-              setImage(selectedFile);
-            }}
-          />
-          <button
-            type='submit'
-            onClick={() => {
-              handleImageUpload;
-            }}
-          >
-            Add an image
-          </button>
-        </form>
-      </div>
-      <AudioRecorder
-        sendAudio={audioHandler}
-        audioChunks={audioChunks}
-        setAudioChunks={setAudioChunks}
-      />
-      <div>
-        <button onClick={newMessageHandler}>Send Message</button>
-      </div> */}
     </div>
   );
 };

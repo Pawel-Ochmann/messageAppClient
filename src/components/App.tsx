@@ -78,20 +78,26 @@ export default function App() {
 
       socket.on('updatedUserDocument', (updatedUser: User) => {
         const newMessageAudio = new Audio('/audio/newConversation.wav');
+        const volume = localStorage.getItem('volume');
+        if (volume) newMessageAudio.volume = parseInt(volume) / 100;
         newMessageAudio.play();
         setUser(updatedUser);
         newGroup && setNewGroup(false);
       });
 
       socket.on('message', (conversation: ConversationType) => {
+        console.log('first chat open', chatOpen)
         updateConversation(setUser, conversation, chatOpen, setChatOpen);
         if (
           conversation.messages[conversation.messages.length - 1].author !==
           user?.name
         ) {
           const newMessageAudio = new Audio('/audio/newMessage.wav');
+          const volume = localStorage.getItem('volume');
+          if (volume) newMessageAudio.volume = parseInt(volume) / 100;
           newMessageAudio.play();
         }
+        setTimeout(()=>{console.log('second chat open', chatOpen)}, 1000)
       });
     }
   }, [navigate, setUser, chatOpen, user, newGroup]);

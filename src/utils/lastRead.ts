@@ -25,7 +25,7 @@ export const hasBeenRead = (chatOpen: ConversationType) => {
   );
   const lastReadDate = lastRead[chatOpen.key];
   const latestMessageDateAsString =
-    chatOpen.messages[chatOpen.messages.length - 1]?.date.toString();
+  chatOpen.messages[chatOpen.messages.length - 1]?.date.toString();
   return lastReadDate === latestMessageDateAsString;
 };
 
@@ -37,6 +37,7 @@ export const numberOfUnreadMessages = (conversation: ConversationType) => {
     localStorage.getItem('lastRead') || '{}'
   );
   const lastReadDate = lastRead[conversation.key];
+  if (!lastReadDate) return 0;
   let unreadMessages = 0;
   conversation.messages.forEach((message) => {
     const dateFormatted = new Date(lastReadDate);
