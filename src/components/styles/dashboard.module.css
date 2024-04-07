@@ -5,6 +5,9 @@
   align-items: center;
   padding: .7rem var(--main-padding);
   background-color:var(--main-theme-color);
+  &.dark {
+    background-color: var(--main-theme-color-dark);
+  }
 }
 .title {
     color: var(--main-font-color-header);

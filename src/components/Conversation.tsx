@@ -242,7 +242,7 @@ const Conversation = ({
           ) : (
             <h2>{getConversationName(user, chatOpen)}</h2>
           )}
-          <p onClick={()=>{console.log(lastTimeSeen)}}>{lastTimeSeen === 'active' ?  'active' : moment(lastTimeSeen).format('YYYY-MM-DD HH:mm:ss')}</p>
+          <p onClick={()=>{console.log(lastTimeSeen)}}>{lastTimeSeen === 'active' ?  'active' : moment(new Date(lastTimeSeen)).fromNow()}</p>
         </div>
       </header>
       <div className={styles.messageContainer}>

@@ -31,7 +31,7 @@ const NewContact = ({
   const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const navigate = useNavigate();
-  const { user } = useContext(UserContext) as { user: User };
+  const { user, darkTheme } = useContext(UserContext) as { user: User, darkTheme:boolean };
 
   useEffect(() => {
     const fetchContacts = async () => {
@@ -76,8 +76,8 @@ const NewContact = ({
   };
 
   return (
-    <div className={`${className} ${styles.container} `}>
-      <header className={styles.header}>
+    <div className={`${className} ${styles.container} ${darkTheme && styles.dark}`}>
+      <header className={`${styles.header} ${darkTheme && styles.dark}`}>
         <button
           className={styles.buttonBack}
           onClick={() => openHandler(false)}
@@ -90,7 +90,7 @@ const NewContact = ({
         </div>
       </header>
       <input
-        className={styles.searchInput}
+        className={`${styles.searchInput} ${darkTheme && styles.dark}`}
         type='text'
         placeholder='Find contacts'
         value={searchQuery}
@@ -100,7 +100,7 @@ const NewContact = ({
         {filteredContacts.map((contact) => (
           <button
             key={contact._id}
-            className={styles.contactBox}
+            className={`${styles.contactBox} ${darkTheme && styles.dark}`}
             onClick={() => {
               createNewConversation(contact._id, contact.name);
             }}

@@ -10,6 +10,9 @@
   transform: translateX(-100%);
   transition: 0.5s;
   min-height: 100vh;
+  &.dark {
+    background-color: var(--background-color-dark);
+  }
 }
 
 .header {
@@ -22,6 +25,9 @@
   h2 {
     color: var(--main-font-color-header);
     font-size: 1.4rem;
+  }
+  &.dark {
+    background-color: var(--main-theme-color-dark);
   }
 }
 
@@ -82,7 +88,7 @@
   display: grid;
   grid-template-rows: 1fr 1fr;
   justify-content: center;
-  button {
+  button, .themeTitle, label {
     font-size: 1.3rem;
     color: var(--secondary-font-color);
     svg {
@@ -94,6 +100,28 @@
     display: flex;
     align-items: center;
     gap: .5rem;
+  }
+}
+
+.theme {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  text-align: center;
+  gap: 1rem;
+  .themeTitle {
+    display: flex;
+    justify-content: center;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    input {
+      transform: scale(1.5);
+      margin-right: 2vw;
+    }
   }
 }
 

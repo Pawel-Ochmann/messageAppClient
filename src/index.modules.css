@@ -159,7 +159,13 @@ h1,h2,h3,h4,h5,h6 {
   --background-light-color: rgb(223, 229, 231);
   --active-theme-color:rgb(51,201,91);
   --header-height:5rem;
+
+  --main-theme-color-dark:rgb(34,46,53);
+  --main-font-color-dark:white;
+  --background-color-dark:rgb(17,27,33);
 }
+
+
 @font-face {
   font-family: 'openSans';
   src: url('./assets/fonts/OpenSans-VariableFont_wdth\,wght.ttf') format(ttf);

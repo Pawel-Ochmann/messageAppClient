@@ -42,7 +42,10 @@ const NewGroup = ({
   const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const navigate = useNavigate();
-  const { user } = useContext(UserContext) as { user: User };
+  const { user, darkTheme } = useContext(UserContext) as {
+    user: User;
+    darkTheme: boolean;
+  };
   const [groupName, setGroupName] = useState('');
   const [participants, setParticipants] = useState<Contact[]>([]);
   const [groupImage, setGroupImage] = useState<File | null>(null);
@@ -148,8 +151,10 @@ const NewGroup = ({
   };
 
   return (
-    <div className={`${className} ${styles.container} `}>
-      <header className={styles.header}>
+    <div
+      className={`${className} ${styles.container} ${darkTheme && styles.dark}`}
+    >
+      <header className={`${styles.header} ${darkTheme && styles.dark}`}>
         <button
           className={styles.buttonBack}
           onClick={() => openHandler(false)}
@@ -163,7 +168,7 @@ const NewGroup = ({
 
       {goFurther ? (
         <div className={styles.secondStageContainer}>
-          <div className={styles.previousPage}>
+          <div className={`${styles.previousPage} ${darkTheme && styles.dark}`}>
             <button
               onClick={() => {
                 setGoFurther(false);
@@ -174,7 +179,7 @@ const NewGroup = ({
             <p>Return to previous page</p>
           </div>
 
-          <ul className={styles.participantsList}>
+          <ul className={`${styles.participantsList} ${darkTheme && styles.dark}`}>
             {participants.map((participant) => (
               <li key={participant.name}>
                 <UserImage userName={participant.name} />
@@ -190,7 +195,7 @@ const NewGroup = ({
             ))}
           </ul>
           {participants.length > 0 && (
-            <div className={styles.createButton}>
+            <div className={`${styles.createButton} ${darkTheme && styles.dark}`}>
               <p>Are you ready? Create new group</p>
               <button onClick={handleSubmit}>
                 <FontAwesomeIcon icon={faUsersViewfinder}></FontAwesomeIcon>
@@ -199,7 +204,7 @@ const NewGroup = ({
           )}
 
           <input
-            className={styles.searchInput}
+            className={`${styles.searchInput} ${darkTheme && styles.dark}`}
             type='text'
             placeholder='Find contacts'
             value={searchQuery}
@@ -207,7 +212,7 @@ const NewGroup = ({
           />
           <div className={styles.contactsContainer}>
             {filteredContacts.map((contact) => (
-              <div key={contact.name} className={styles.contactBox}>
+              <div key={contact.name} className={`${styles.contactBox} ${darkTheme && styles.dark}`}>
                 <input
                   type='checkbox'
                   checked={participants.some((c) => c._id === contact._id)}
@@ -248,6 +253,7 @@ const NewGroup = ({
 
             <label htmlFor='groupName'>
               <input
+                className={`${darkTheme && styles.dark}`}
                 type='text'
                 id='groupName'
                 value={groupName}

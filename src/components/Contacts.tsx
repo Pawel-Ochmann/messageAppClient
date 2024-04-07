@@ -9,7 +9,7 @@ const Contacts = ({
 }: {
   setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>;
 }) => {
-  const { user } = useContext(UserContext);
+  const { user, darkTheme } = useContext(UserContext);
   const [userConversations, setUserConversations] = useState(
     user?.conversations || []
   );
@@ -38,8 +38,7 @@ const Contacts = ({
 
 
   return (
-    <div>
-      <div>
+      <div className={`${darkTheme && styles.dark}`}>
         <ul className={styles.contactList}>
           {user && sortedContacts.map((conversation) => (
             <li key={conversation.key}>
@@ -48,7 +47,7 @@ const Contacts = ({
           ))}
         </ul>
       </div>
-    </div>
+   
   );
 };
 export default Contacts;

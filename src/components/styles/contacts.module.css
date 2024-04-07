@@ -1,3 +1,10 @@
+.dark {
+  background-color: var(--background-color-dark);
+  button, p {
+    color: var(--main-font-color-dark);
+  }
+}
+
 .contactList {
   display: flex;
   flex-direction: column;

@@ -26,13 +26,13 @@ const Dashboard = ({
   newGroup: boolean;
   openNewGroup: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const { user } = useContext(UserContext);
+  const { user, darkTheme } = useContext(UserContext);
   const [newContact, setNewContact] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
     <>
-      <header className={styles.header}>
+      <header className={`${styles.header} ${darkTheme && styles.dark}`}>
         <h1 className={styles.title}>WhatsUp</h1>
         {user && <UserImage userName={user.name} />}
         <div className={styles.menu}>

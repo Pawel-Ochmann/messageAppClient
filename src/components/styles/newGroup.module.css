@@ -10,14 +10,21 @@
   transition: 0.5s;
   min-height: 100vh;
   overflow: auto;
+  &.dark {
+    background-color: var(--background-color-dark);
+  }
 }
 
 .header {
   height: var(--header-height);
   background-color: var(--main-theme-color);
   display: flex;
+  align-items: center;
   padding: 0.7rem var(--main-padding);
   gap: 2rem;
+  &.dark {
+    background-color: var(--main-theme-color-dark);
+  }
 }
 
 .buttonBack {
@@ -94,6 +101,10 @@
       border-bottom: 2px solid var(--active-theme-color);
       outline: none;
     }
+    &.dark {
+      background-color: var(--main-theme-color-dark);
+      color: var(--main-font-color-dark);
+    }
   }
   .goFurtherButton {
     font-size: 3rem;
@@ -113,10 +124,16 @@
   grid-template-columns: 70px 70px 1fr;
   height: 50px;
   align-items: center;
+
   h2 {
     display: flex;
     text-align: start;
     align-self: center;
+  };
+  &.dark {
+    h2 {
+      color: var(--main-font-color-dark);
+    }
   }
 }
 
@@ -125,7 +142,20 @@
   margin: 1rem var(--main-padding);
   font-size: 1.1rem;
   padding: 0.5rem;
-  border: 1px solid var(--background-light-color);
+  border: none;
+  border-bottom: 2px solid var(--secondary-font-color);
+  font-size: 1.1rem;
+  width: 50vw;
+  max-width: 20rem;
+  margin: 0 auto 1rem auto;
+  &:focus {
+    border-bottom: 2px solid var(--active-theme-color);
+    outline: none;
+  }
+  &.dark {
+    background-color: var(--main-theme-color-dark);
+    color: var(--main-font-color-dark);
+  }
 }
 
 .participantsList {
@@ -146,7 +176,16 @@
     background-color: var(--background-light-color);
     border-radius: 100rem;
     img {
-      width: 90%;
+      width: 100%;
+    }
+  }
+  &.dark {
+    button,
+    p {
+      color: var(--main-font-color-dark);
+    }
+    li {
+      background-color: var(--main-theme-color-dark);
     }
   }
 }
@@ -163,7 +202,12 @@
   button {
     color: var(--secondary-font-color);
   }
-
+  &.dark {
+    button,
+    p {
+      color: var(--main-font-color-dark);
+    }
+  }
 }
 
 .createButton {
@@ -175,5 +219,10 @@
   button {
     color: var(--active-theme-color);
     font-size: 2rem;
+  }
+  &.dark {
+    p {
+      color: var(--main-font-color-dark);
+    }
   }
 }

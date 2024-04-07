@@ -33,11 +33,12 @@ const Settings = ({
     setUser: Dispatch<SetStateAction<User | null>>;
   };
 
+  const { darkTheme, setDarkTheme } = useContext(UserContext);
   const [file, setFile] = useState<File | null>(null);
-   const [volume, setVolume] = useState<number>(() => {
-     const storedVolume = localStorage.getItem('volume');
-     return storedVolume ? parseInt(storedVolume) : 50;
-   });
+  const [volume, setVolume] = useState<number>(() => {
+    const storedVolume = localStorage.getItem('volume');
+    return storedVolume ? parseInt(storedVolume) : 50;
+  });
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files && event.target.files[0];
@@ -75,6 +76,11 @@ const Settings = ({
     localStorage.setItem('volume', newVolume.toString());
   };
 
+  const handleThemeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const theme = event.target.value === 'dark';
+    setDarkTheme(theme);
+  };
+
   const logOut = () => {
     deleteToken();
     delete axios.defaults.headers.common['Authorization'];
@@ -82,8 +88,8 @@ const Settings = ({
     navigate('/login');
   };
   return (
-    <div className={`${className} ${styles.container}`}>
-      <header className={styles.header}>
+    <div className={`${className} ${styles.container} ${darkTheme && styles.dark}`}>
+      <header className={`${styles.header} ${darkTheme && styles.dark}`}>
         <button
           className={styles.buttonBack}
           onClick={() => openHandler(false)}
@@ -151,9 +157,32 @@ const Settings = ({
           </span>
         </div>
         <div className={styles.theme}>
-          <button>
-            <FontAwesomeIcon icon={faCircleHalfStroke}></FontAwesomeIcon>Theme
-          </button>
+          <div className={styles.themeTitle}>
+            <FontAwesomeIcon icon={faCircleHalfStroke}></FontAwesomeIcon>
+            <p>Theme</p>
+          </div>
+          <form>
+            <label>
+              <input
+                type='radio'
+                name='theme'
+                value='light'
+                checked={!darkTheme}
+                onChange={handleThemeChange}
+              />
+              Light Theme
+            </label>
+            <label>
+              <input
+                type='radio'
+                name='theme'
+                value='dark'
+                checked={darkTheme}
+                onChange={handleThemeChange}
+              />
+              Dark Theme
+            </label>
+          </form>
         </div>
         <div className={styles.logout}>
           <button onClick={logOut}>
