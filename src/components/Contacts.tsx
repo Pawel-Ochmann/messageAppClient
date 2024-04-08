@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../Context';
 import { ConversationType } from '../types';
 import ContactBox from './ContactBox';
-import styles from './styles/contacts.module.css'
+import styles from './styles/contacts.module.css';
 
 const Contacts = ({
   setChatOpen,
@@ -18,36 +18,39 @@ const Contacts = ({
     setUserConversations(user?.conversations || []);
   }, [user]);
 
- 
+  const getLastMessageDate = (conversation: ConversationType): Date | null => {
+    const lastMessage = conversation.messages[conversation.messages.length - 1];
+    return lastMessage ? new Date(lastMessage.date) : null;
+  };
 
-    const getLastMessageDate = (
-      conversation: ConversationType
-    ): Date | null => {
-      const lastMessage =
-        conversation.messages[conversation.messages.length - 1];
-      return lastMessage ? new Date(lastMessage.date) : null;
-    };
-
-    // Sort conversations based on the date of the last message
-    const sortedContacts = [...userConversations].sort((a, b) => {
-      const dateA = getLastMessageDate(a);
-      const dateB = getLastMessageDate(b);
-      return dateB && dateA ? dateB.getTime() - dateA.getTime() : 0;
-    });
-
-
+  const sortedContacts = [...userConversations].sort((a, b) => {
+    const dateA = getLastMessageDate(a);
+    const dateB = getLastMessageDate(b);
+    if (!dateA && !dateB) {
+      return 0;
+    } else if (!dateA) {
+      return 1;
+    } else if (!dateB) {
+      return -1;
+    } else {
+      return dateB.getTime() - dateA.getTime();
+    }
+  });
 
   return (
-      <div className={`${darkTheme && styles.dark}`}>
-        <ul className={styles.contactList}>
-          {user && sortedContacts.map((conversation) => (
+    <div className={`${darkTheme && styles.dark}`}>
+      <ul className={styles.contactList}>
+        {user &&
+          sortedContacts.map((conversation) => (
             <li key={conversation.key}>
-              <ContactBox conversation={conversation} setChatOpen={setChatOpen} />
+              <ContactBox
+                conversation={conversation}
+                setChatOpen={setChatOpen}
+              />
             </li>
           ))}
-        </ul>
-      </div>
-   
+      </ul>
+    </div>
   );
 };
 export default Contacts;

@@ -12,7 +12,18 @@
   min-height: 100vh;
   &.dark {
     background-color: var(--background-color-dark);
+    button,
+    p,
+    label,
+    svg {
+      color: var(--main-font-color-dark);
+    }
   }
+  .logout {
+  button, svg {
+    color: rgb(241, 92, 109);
+  }
+}
 }
 
 .header {
@@ -68,13 +79,12 @@
   font-size: 300%;
 
   img {
-    object-fit:cover;
+    object-fit: cover;
     border-radius: 100rem;
     overflow: hidden;
     aspect-ratio: 1;
   }
   label {
-    
     position: absolute;
     font-size: 3rem;
     right: 0;
@@ -82,13 +92,19 @@
   }
 }
 
-.audio, .theme, .logout {
+.audio,
+.theme,
+.logout {
   position: relative;
   border-bottom: 1px solid var(--background-light-color);
   display: grid;
   grid-template-rows: 1fr 1fr;
   justify-content: center;
-  button, .themeTitle, label {
+  button,
+  .themeTitle,
+  label,
+  p,
+  svg {
     font-size: 1.3rem;
     color: var(--secondary-font-color);
     svg {
@@ -99,29 +115,38 @@
     color: var(--secondary-font-color);
     display: flex;
     align-items: center;
-    gap: .5rem;
+    gap: 0.5rem;
   }
 }
 
-.theme {
+.theme,
+.audio {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-self: center;
   text-align: center;
   gap: 1rem;
-  .themeTitle {
+  .themeTitle,
+  .audioTitle {
     display: flex;
     justify-content: center;
+  }
+  .audioTitle {
+    gap: 1.3rem;
+  }
+  span {
+    align-self: center;
   }
   form {
     display: flex;
     flex-direction: column;
-    gap: .5rem;
+    gap: 0.5rem;
     input {
       transform: scale(1.5);
       margin-right: 2vw;
     }
   }
+  
 }
 

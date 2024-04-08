@@ -88,7 +88,9 @@ const Settings = ({
     navigate('/login');
   };
   return (
-    <div className={`${className} ${styles.container} ${darkTheme && styles.dark}`}>
+    <div
+      className={`${className} ${styles.container} ${darkTheme && styles.dark}`}
+    >
       <header className={`${styles.header} ${darkTheme && styles.dark}`}>
         <button
           className={styles.buttonBack}
@@ -118,30 +120,28 @@ const Settings = ({
             accept='image/jpeg, image/png, image/gif'
             onChange={handleFileChange}
           />
-          <div>
-            {file && (
-              <>
-                <button
-                  onClick={() => {
-                    setFile(null);
-                  }}
-                  type='reset'
-                >
-                  <FontAwesomeIcon icon={faRotateLeft}></FontAwesomeIcon>
-                </button>
-                <button type='submit'>
-                  <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
-                </button>
-              </>
-            )}
-          </div>
+          {file && (
+            <>
+              <button
+                onClick={() => {
+                  setFile(null);
+                }}
+                type='reset'
+              >
+                <FontAwesomeIcon icon={faRotateLeft}></FontAwesomeIcon>
+              </button>
+              <button type='submit'>
+                <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
+              </button>
+            </>
+          )}
         </form>
       </div>
       <div className={styles.settingsContainer}>
         <div className={styles.audio}>
-          <button>
-            <FontAwesomeIcon icon={faMusic}></FontAwesomeIcon> Audio
-          </button>
+          <div className={styles.audioTitle}>
+            <FontAwesomeIcon icon={faMusic}></FontAwesomeIcon> <p>Audio</p>
+          </div>
           <span>
             <FontAwesomeIcon icon={faVolumeXmark}></FontAwesomeIcon>
             <input

@@ -35,7 +35,7 @@ const Conversation = ({
   setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>;
   socket: Socket;
 }) => {
-  const { user } = useContext(UserContext) as { user: User };
+  const { user, darkTheme } = useContext(UserContext) as { user: User, darkTheme:boolean };
   const [newMessage, setNewMessage] = useState('');
   const [image, setImage] = useState<File | null>(null);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
@@ -226,8 +226,8 @@ const Conversation = ({
   }
 
   return (
-    <div className={`${styles.container} ${chatOpen && styles.open}`}>
-      <header className={styles.header}>
+    <div className={`${styles.container} ${chatOpen && styles.open} ${darkTheme && styles.dark}`}>
+      <header className={`${styles.header} ${darkTheme && styles.dark}`}>
         <button className={styles.buttonBack} onClick={() => setChatOpen(null)}>
           <FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon>
         </button>

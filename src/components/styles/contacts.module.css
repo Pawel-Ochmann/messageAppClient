@@ -1,6 +1,6 @@
 .dark {
   background-color: var(--background-color-dark);
-  button, p {
+  button, p, h3 {
     color: var(--main-font-color-dark);
   }
 }
