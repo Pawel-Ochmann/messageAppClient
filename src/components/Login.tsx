@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { UserContext } from '../Context';
 import { useNavigate } from 'react-router-dom';
 import { getAddress } from '../utils/serverAddress';
 import { saveToken } from '../utils/tokenHandler';
 import axios from 'axios';
+import styles from './styles/login.module.css';
 
 const Login = () => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const {darkTheme} = useContext(UserContext);
 
   const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -22,24 +25,24 @@ const Login = () => {
     event.preventDefault();
 
     type Data = {
-      done:boolean,
-      message:string
-      token:string
-    }
+      done: boolean;
+      message: string;
+      token: string;
+    };
 
     try {
       const response = await axios.post(getAddress('/login'), {
         username: name,
         password: password,
       });
-      const data:Data = response.data;
+      const data: Data = response.data;
       console.log('Login successful:', response.data);
-       if (data.done === false) {
-         setError(data.message);
-       } else {
-        saveToken(data.token)
-         navigate('/');
-       }
+      if (data.done === false) {
+        setError(data.message);
+      } else {
+        saveToken(data.token);
+        navigate('/');
+      }
     } catch (error) {
       console.error('Login failed:', error);
     }
@@ -50,13 +53,13 @@ const Login = () => {
   };
 
   return (
-    <>
-      <h1>Login</h1>
+    <div className={`${styles.container} ${darkTheme && styles.dark}`}>
+    <h1>Login</h1>
       <form onSubmit={handleLogin}>
         {error !== '' ? <p>{error}</p> : ''}
         <div>
-          <label>Nickname:</label>
           <input
+            placeholder='Nickname'
             type='text'
             value={name}
             onChange={handleNicknameChange}
@@ -64,26 +67,19 @@ const Login = () => {
           />
         </div>
         <div>
-          <label>Password:</label>
           <input
+            placeholder='Password'
             type='password'
             value={password}
             onChange={handlePasswordChange}
             required
           />
         </div>
-        <button type='submit'>Login</button>
+        <button className={styles.buttonMain} type='submit'>Login to your account</button>
       </form>
-      <p>Don't have an account? </p>
-      <button onClick={redirectToCreateAccount}>Create Account</button>
-      <button
-        onClick={() => {
-          navigate('/');
-        }}
-      >
-        Go to main Page
-      </button>
-    </>
+      <p>OR</p>
+      <button className={styles.buttonSecond} onClick={redirectToCreateAccount}>Create new account</button>
+    </div>
   );
 };
 

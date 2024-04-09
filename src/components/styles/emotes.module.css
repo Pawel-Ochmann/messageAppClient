@@ -17,4 +17,7 @@
         transform: translateY(0);
         z-index: 0;
     }
+    &.dark {
+        background-color: var(--main-theme-color-dark);
+    }
 }

@@ -70,7 +70,6 @@
 
 .inputContainer {
   position: relative;
-  background-color: var(--background-light-color);
   padding: 0.8rem var(--main-padding);
   width: 100%;
   display: flex;
@@ -86,6 +85,15 @@
     left: 0;
     right: 0;
     background-color: var(--background-light-color);
+
+    &.dark {
+      background-color: var(--main-theme-color-dark);
+      input, input::placeholder {
+        background-color: var(--secondary-font-color);
+        color: var(--main-font-color-dark);
+      }
+    }
+
     button {
       color: var(--secondary-font-color);
       font-size: 2rem;
@@ -117,48 +125,56 @@
   z-index: 300;
   transform: rotate(45deg);
   svg {
-    margin-right:.2rem;
-    margin-top: .2rem;
+    margin-right: 0.2rem;
+    margin-top: 0.2rem;
   }
 }
 
 .imageForm {
-   position: absolute;
-    width: 100%;
-    left: 0;
-    right: 0;
-    bottom: 71px;
-    font-size: 2rem;
-    display: flex;
-    justify-content: center;
-    padding: var(--main-padding);
-    background-color: var(--background-light-color);
-    transform: translateY(100%);
-    transition: .3s linear;
-    transform-origin: bottom;
-    input[type='file'] {
-      display: none;
-    }
-    form {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    label {
-      border: 3px solid var(--secondary-font-color);
-      padding: .2rem .5rem;
-      border-radius: .5rem;
-      font-size: 1.8rem;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  right: 0;
+  bottom: 71px;
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+  padding: var(--main-padding);
+  background-color: var(--background-light-color);
+  transform: translateY(100%);
+  transition: 0.3s linear;
+  transform-origin: bottom;
+
+  &.dark {
+    background-color: var(--main-theme-color-dark);
+    button:not(.active) {
       color: var(--secondary-font-color);
     }
-    &.open {
-        transform: translateY(0);
-        z-index: 0;
-    }
-    button {
-      font-size: 2rem;
-    }
-    button.active {
-      color: var(--active-theme-color);
-    }
+  }
+
+  input[type='file'] {
+    display: none;
+  }
+  form {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  label {
+    border: 3px solid var(--secondary-font-color);
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.5rem;
+    font-size: 1.8rem;
+    color: var(--secondary-font-color);
+  }
+  &.open {
+    transform: translateY(0);
+    z-index: 0;
+  }
+  button {
+    font-size: 2rem;
+  }
+  button.active {
+    color: var(--active-theme-color);
+  }
 }

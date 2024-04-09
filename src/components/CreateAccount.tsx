@@ -1,13 +1,16 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getAddress } from '../utils/serverAddress';
+import styles from './styles/login.module.css';
+import { UserContext } from '../Context';
 
 function CreateAccount() {
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const {darkTheme} = useContext(UserContext);
 
   const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(event.target.value);
@@ -43,13 +46,13 @@ function CreateAccount() {
   };
 
   return (
-    <>
-      <h1>Hello</h1>
+    <div className={`${styles.container} ${darkTheme && styles.dark}`}>
+      <h1>Sign up</h1>
       <form onSubmit={handleSubmit}>
         {error !== '' ? <p>{error}</p> : ''}
         <div>
-          <label>Nickname:</label>
           <input
+            placeholder='Nickname'
             type='text'
             value={nickname}
             onChange={handleNicknameChange}
@@ -57,24 +60,28 @@ function CreateAccount() {
           />
         </div>
         <div>
-          <label>Password:</label>
           <input
+            placeholder='Password'
             type='password'
             value={password}
             onChange={handlePasswordChange}
             required
           />
         </div>
-        <button type='submit'>Create Account</button>
+        <button className={styles.buttonMain} type='submit'>
+          Create new account
+        </button>
       </form>
+      <p>OR</p>
       <button
+        className={styles.buttonSecond}
         onClick={() => {
-          navigate('/');
+          navigate('/login');
         }}
       >
-        Go to main Page
+        Log in to your account
       </button>
-    </>
+    </div>
   );
 }
 

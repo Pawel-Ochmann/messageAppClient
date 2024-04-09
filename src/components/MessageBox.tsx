@@ -7,7 +7,7 @@ import { User } from '../types/index';
 import moment from 'moment';
 
 const MessageBox = ({ message, group }: { message: MessageBackend, group:boolean }) => {
-  const { user } = useContext(UserContext) as { user: User };
+  const { user, darkTheme } = useContext(UserContext) as { user: User, darkTheme:boolean };
 
   const renderMessageContent = () => {
     switch (message.type) {
@@ -28,7 +28,7 @@ const MessageBox = ({ message, group }: { message: MessageBackend, group:boolean
     <div
       className={`${styles.messageContainer} ${
         message.author === user.name ? styles.messageUser : styles.messageOther
-      }`}
+      } ${darkTheme && styles.dark}`}
     >
       <h2>{group && message.author}</h2>
       {renderMessageContent()}

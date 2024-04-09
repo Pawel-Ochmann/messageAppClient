@@ -1,9 +1,10 @@
-import {  useEffect, useState } from 'react';
+import {  useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { Gif } from '../types';
 import styles from './styles/giphs.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { UserContext } from '../Context';
 
 const GiphyAPIKey = 'yj95txvwzdxGDuFA4J2CeomczmxZRQ1D&s';
 
@@ -16,6 +17,7 @@ export default function Gifs({
 }) {
   const [gifs, setGifs] = useState([]);
   const [query, setQuery] = useState('');
+  const { darkTheme } = useContext(UserContext);
 
   useEffect(() => {
     const fetchRandomGifs = async () => {
@@ -45,8 +47,8 @@ export default function Gifs({
 
 
   return (
-    <div className={`${styles.giphsContainer} ${isOpen && styles.open}`}>
-      <div className={styles.searchContainer}>
+    <div className={`${styles.giphsContainer} ${isOpen && styles.open} ${darkTheme && styles.dark}`}>
+      <div className={`${styles.searchContainer} ${darkTheme && styles.dark}`}>
         <input
           type='text'
           value={query}

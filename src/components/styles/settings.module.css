@@ -15,7 +15,8 @@
     button,
     p,
     label,
-    svg {
+    svg,
+    h1 {
       color: var(--main-font-color-dark);
     }
   }

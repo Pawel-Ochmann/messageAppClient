@@ -3,6 +3,7 @@
   bottom: 0;
   left: 0;
   width: 100%;
+  height: 71px;
   transform: translateY(100%);
   transition: 0.5s;
   background-color: var(--background-light-color);
@@ -12,6 +13,20 @@
   align-items: center;
   justify-content: center;
   gap: 1rem;
+
+  &.dark {
+    background-color: var(--main-theme-color-dark);
+    button,
+    p {
+      color: var(--main-font-color-dark);
+    }
+    .buttonSend {
+      color: var(--active-theme-color);
+    }
+    .buttonInactive {
+      color: var(--secondary-font-color);
+    }
+  }
   p {
     font-size: 1.5rem;
   }
@@ -21,16 +36,16 @@
 }
 
 .buttonMain {
-    bottom: .7rem;
-    right: .5rem;
-    padding: .5rem;
-    width: 2.8rem;
-    height: 2.8rem;
-    position: fixed;
-    border-radius: 10rem;
-    background-color: var(--active-theme-color);
-    color: var(--main-font-color-header);
-    z-index: 300;
+  bottom: 0.7rem;
+  right: 0.5rem;
+  padding: 0.5rem;
+  width: 2.8rem;
+  height: 2.8rem;
+  position: fixed;
+  border-radius: 10rem;
+  background-color: var(--active-theme-color);
+  color: var(--main-font-color-header);
+  z-index: 300;
 }
 
 .open {

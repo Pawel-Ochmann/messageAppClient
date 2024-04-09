@@ -1,5 +1,6 @@
-import { useState, MouseEventHandler, useEffect } from 'react';
+import { useState, MouseEventHandler, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { UserContext } from '../Context';
 import {
   faMicrophone,
   faLocationArrow,
@@ -22,6 +23,7 @@ const AudioRecorder = ({
     null
   );
   const [timer, setTimer] = useState(0);
+  const {darkTheme} = useContext(UserContext);
 
   useEffect(() => {
     if (recording) {
@@ -83,7 +85,7 @@ const AudioRecorder = ({
       <div
         className={`${styles.audioField} ${
           (audioChunks.length > 0 || recording) && styles.open
-        }`}
+        } ${darkTheme && styles.dark}`}
       >
         <>
           <button

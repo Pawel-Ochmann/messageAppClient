@@ -9,6 +9,14 @@
   background-color: rgb(217, 253, 211);
   align-self: end;
   border-radius: 1rem 0 1rem 1rem;
+  &.dark {
+    background-color: var(--message-color-dark);
+    &,
+    & h2,
+    & p {
+      color: var(--main-font-color-dark);
+    }
+  }
 }
 
 .messageUser::after {
@@ -21,10 +29,21 @@
   border-color: rgb(217, 253, 211) transparent transparent transparent;
   z-index: 0;
 }
+.messageUser.dark::after {
+  border-color: var(--message-color-dark) transparent transparent transparent;
+}
 
 .messageOther {
   background-color: white;
   border-radius: 0 1rem 1rem 1rem;
+  &.dark {
+    background-color: var(--main-theme-color-dark);
+    &,
+    & h2,
+    & p {
+      color: var(--main-font-color-dark);
+    }
+  }
 }
 
 .messageOther::before {
@@ -36,6 +55,10 @@
   border-width: 0 8px 13px 0;
   border-color: transparent white transparent transparent;
   z-index: 0;
+}
+
+.messageOther.dark::before {
+  border-color: transparent var(--main-theme-color-dark) transparent transparent;
 }
 
 .messageUser,

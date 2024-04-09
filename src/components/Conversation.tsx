@@ -265,7 +265,7 @@ const Conversation = ({
             setIsOpen={setOpenEmotes}
           />
           <Gifs sendGif={sendGif} isOpen={openGifs} />
-          <div className={`${styles.imageForm} ${openFile && styles.open}`}>
+          <div className={`${styles.imageForm} ${openFile && styles.open} ${darkTheme && styles.dark}`}>
             <form>
               <label htmlFor='image'>
                 Add <FontAwesomeIcon icon={faFileImage}></FontAwesomeIcon>
@@ -292,7 +292,7 @@ const Conversation = ({
               </button>
             </form>
           </div>
-          <div className={styles.dashboard}>
+          <div className={`${styles.dashboard} ${darkTheme && styles.dark}`}>
             <button
               onClick={() => {
                 setOpenGifs(false);
