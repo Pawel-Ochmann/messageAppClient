@@ -86,6 +86,7 @@
     aspect-ratio: 1;
   }
   label {
+    cursor: pointer;
     position: absolute;
     font-size: 3rem;
     right: 0;

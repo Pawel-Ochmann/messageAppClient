@@ -55,6 +55,7 @@
     display: none;
   }
   .imageLabel {
+    cursor: pointer;
     display: grid;
     width: 60%;
     aspect-ratio: 1;

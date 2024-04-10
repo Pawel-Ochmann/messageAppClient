@@ -10,6 +10,7 @@ import { io, Socket } from 'socket.io-client';
 import { User, ConversationType } from '../types/index';
 import updateConversation from '../utils/updateConversations';
 import { updateLastRead } from '../utils/lastRead';
+import styles from './styles/app.module.css';
 
 export default function App() {
   const [socket, setSocket] = useState<Socket>(io);
@@ -111,7 +112,7 @@ export default function App() {
   if (!user) return <></>;
   return (
     <>
-      <div>
+      <div className={styles.container}>
         <Dashboard
           setChatOpen={setChatOpen}
           socket={socket}

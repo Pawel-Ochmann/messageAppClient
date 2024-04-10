@@ -13,10 +13,12 @@ function CreateAccount() {
   const {darkTheme} = useContext(UserContext);
 
   const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setError('')
     setNickname(event.target.value);
   };
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setError('');
     setPassword(event.target.value);
   };
 
@@ -49,7 +51,7 @@ function CreateAccount() {
     <div className={`${styles.container} ${darkTheme && styles.dark}`}>
       <h1>Sign up</h1>
       <form onSubmit={handleSubmit}>
-        {error !== '' ? <p>{error}</p> : ''}
+        <p className={styles.error}>{error}</p>
         <div>
           <input
             placeholder='Nickname'

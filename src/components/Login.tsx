@@ -14,10 +14,12 @@ const Login = () => {
   const {darkTheme} = useContext(UserContext);
 
   const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setError('')
     setName(event.target.value);
   };
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setError('')
     setPassword(event.target.value);
   };
 
@@ -43,8 +45,14 @@ const Login = () => {
         saveToken(data.token);
         navigate('/');
       }
-    } catch (error) {
-      console.error('Login failed:', error);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+       if (error.response.status === 401) {
+         setError('Invalid username or password');
+       } else {
+         console.error('Login failed:', error);
+       }
+      
     }
   };
 
@@ -56,7 +64,7 @@ const Login = () => {
     <div className={`${styles.container} ${darkTheme && styles.dark}`}>
     <h1>Login</h1>
       <form onSubmit={handleLogin}>
-        {error !== '' ? <p>{error}</p> : ''}
+        <p className={styles.error}>{error}</p> 
         <div>
           <input
             placeholder='Nickname'

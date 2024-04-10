@@ -38,7 +38,7 @@ const Contacts = ({
   });
 
   return (
-    <div className={`${darkTheme && styles.dark}`}>
+    <div className={`${styles.container} ${darkTheme && styles.dark}`}>
       <ul className={styles.contactList}>
         {user &&
           sortedContacts.map((conversation) => (

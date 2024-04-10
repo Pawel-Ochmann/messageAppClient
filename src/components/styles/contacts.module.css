@@ -5,10 +5,16 @@
   }
 }
 
+.container {
+  max-height: 100%;
+  overflow: auto;
+}
+
 .contactList {
   display: flex;
   flex-direction: column;
   padding: var(--main-padding);
+  
   li {
     border-bottom: 1px solid var(--background-light-color);
   }

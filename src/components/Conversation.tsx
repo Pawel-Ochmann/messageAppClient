@@ -226,7 +226,11 @@ const Conversation = ({
   }
 
   return (
-    <div className={`${styles.container} ${chatOpen && styles.open} ${darkTheme && styles.dark}`}>
+    <div
+      className={`${styles.container} ${chatOpen && styles.open} ${
+        darkTheme && styles.dark
+      }`}
+    >
       <header className={`${styles.header} ${darkTheme && styles.dark}`}>
         <button className={styles.buttonBack} onClick={() => setChatOpen(null)}>
           <FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon>
@@ -242,7 +246,15 @@ const Conversation = ({
           ) : (
             <h2>{getConversationName(user, chatOpen)}</h2>
           )}
-          <p onClick={()=>{console.log(lastTimeSeen)}}>{lastTimeSeen === 'active' ?  'active' : moment(new Date(lastTimeSeen)).fromNow()}</p>
+          <p
+            onClick={() => {
+              console.log(lastTimeSeen);
+            }}
+          >
+            {lastTimeSeen === 'active'
+              ? 'active'
+              : moment(new Date(lastTimeSeen)).fromNow()}
+          </p>
         </div>
       </header>
       <div className={styles.messageContainer}>
@@ -265,7 +277,11 @@ const Conversation = ({
             setIsOpen={setOpenEmotes}
           />
           <Gifs sendGif={sendGif} isOpen={openGifs} />
-          <div className={`${styles.imageForm} ${openFile && styles.open} ${darkTheme && styles.dark}`}>
+          <div
+            className={`${styles.imageForm} ${openFile && styles.open} ${
+              darkTheme && styles.dark
+            }`}
+          >
             <form>
               <label htmlFor='image'>
                 Add <FontAwesomeIcon icon={faFileImage}></FontAwesomeIcon>
@@ -316,7 +332,7 @@ const Conversation = ({
               {openGifs ? (
                 <FontAwesomeIcon icon={faCircleXmark}></FontAwesomeIcon>
               ) : (
-                'gif'
+                <button className={styles.gifButton}>gif</button>
               )}
             </button>
             <button

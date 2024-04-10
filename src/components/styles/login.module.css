@@ -58,4 +58,10 @@
   .buttonSecond {
     background-color: var(--main-theme-color);
   }
+  .error {
+  height: 1rem;
+  color: red;
+  font-weight: 300;
 }
+}
+

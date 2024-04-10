@@ -31,7 +31,7 @@ const Dashboard = ({
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
-    <>
+    <div className={styles.container}>
       <header className={`${styles.header} ${darkTheme && styles.dark}`}>
         <h1 className={styles.title}>WhatsUp</h1>
         {user && <UserImage userName={user.name} />}
@@ -42,6 +42,7 @@ const Dashboard = ({
             }}
           >
             <FontAwesomeIcon icon={faPlus} />
+            <span>Add new chat</span>
           </button>
           <button
             onClick={() => {
@@ -49,6 +50,7 @@ const Dashboard = ({
             }}
           >
             <FontAwesomeIcon icon={faUsersLine} />
+            <span>Create new group</span>
           </button>
           <button
             onClick={() => {
@@ -56,6 +58,7 @@ const Dashboard = ({
             }}
           >
             <FontAwesomeIcon icon={faEllipsisVertical} />
+            <span>Settings</span>
           </button>
         </div>
       </header>
@@ -74,8 +77,11 @@ const Dashboard = ({
       />
 
       <Contacts setChatOpen={setChatOpen} />
-      <Settings className={`${settingsOpen && styles.open}`} openHandler={setSettingsOpen}/>
-    </>
+      <Settings
+        className={`${settingsOpen && styles.open}`}
+        openHandler={setSettingsOpen}
+      />
+    </div>
   );
 };
 
