@@ -19,7 +19,7 @@
   height: var(--header-height);
   background-color: var(--main-theme-color);
   display: flex;
-  padding: .7rem  var(--main-padding);
+  padding: 0.7rem var(--main-padding);
   gap: 2rem;
   &.dark {
     background-color: var(--main-theme-color-dark);
@@ -31,9 +31,9 @@
   font-size: 1.5rem;
 }
 .info {
-    display: flex;
-    flex-direction: column;
-    gap: .5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   h2,
   p {
     color: var(--main-font-color-header);
@@ -44,37 +44,41 @@
 }
 
 .contactsContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    padding: var(--main-padding);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: var(--main-padding);
 }
 .contactBox {
-    display: grid;
-    grid-template-columns: 100px 1fr;
-    gap: 1.5rem;
-    height: 100px;
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 1.5rem;
+  height: 100px;
+  h2 {
+    display: flex;
+    text-align: start;
+    align-self: center;
+  }
+  &.dark {
     h2 {
-        display: flex;
-        text-align: start;
-        align-self: center;
+      color: var(--main-font-color-dark);
     }
-    &.dark {
-       h2 {
-        color: var(--main-font-color-dark);
-      }
-      
-    }
+  }
 }
 
 .searchInput {
-  width: 88%;
   margin: 1rem var(--main-padding);
   font-size: 1.1rem;
-  padding: .5rem;
+  padding: 0.5rem;
   border: 1px solid var(--background-light-color);
   &.dark {
     background-color: var(--main-theme-color-dark);
     color: var(--main-font-color-dark);
+  }
+}
+
+@media screen and (min-width: 700px) {
+  .container {
+    width: 50%;
   }
 }

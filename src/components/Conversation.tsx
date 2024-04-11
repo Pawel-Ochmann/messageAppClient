@@ -19,9 +19,13 @@ import {
   faArrowLeft,
   faLocationArrow,
   faFileImage,
-  faShare
+  faShare,
 } from '@fortawesome/free-solid-svg-icons';
-import {faFaceLaugh, faImage, faCircleXmark} from '@fortawesome/free-regular-svg-icons';
+import {
+  faFaceLaugh,
+  faImage,
+  faCircleXmark,
+} from '@fortawesome/free-regular-svg-icons';
 import UserImage from './UserImage';
 import GroupImage from './GroupImage';
 import moment from 'moment';
@@ -35,7 +39,10 @@ const Conversation = ({
   setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>;
   socket: Socket;
 }) => {
-  const { user, darkTheme } = useContext(UserContext) as { user: User, darkTheme:boolean };
+  const { user, darkTheme } = useContext(UserContext) as {
+    user: User;
+    darkTheme: boolean;
+  };
   const [newMessage, setNewMessage] = useState('');
   const [image, setImage] = useState<File | null>(null);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
@@ -46,9 +53,12 @@ const Conversation = ({
   const [openEmotes, setOpenEmotes] = useState(false);
   const [openGifs, setOpenGifs] = useState(false);
   const [openFile, setOpenFile] = useState(false);
-  
+
   useEffect(() => {
-    lastMessageRef.current?.scrollIntoView();
+    lastMessageRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end',
+    });
   }, [chatOpen]);
 
   const sendTyping = () => {
@@ -222,15 +232,31 @@ const Conversation = ({
   };
 
   if (!chatOpen) {
-    return <div className={styles.container}></div>;
+    return (
+      <div className={`${styles.container} ${darkTheme && styles.dark}`}>
+        <div className={`${styles.startingBoard} ${darkTheme && styles.dark}`}>
+          <img src='./chat.png' alt='chat picture' />
+          <h2>What's upp</h2>
+          <p>
+            Ready to start connecting? You can kick off a conversation by either
+            creating a new one with a contact, initiate a group chat, or simply
+            click on an existing conversation to dive right in.
+          </p>
+          <p>
+            Feel free to explore and engage with your contacts effortlessly! If
+            you have any questions, don't hesitate to reach out. Happy chatting!
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div
-      className={`${styles.container} ${chatOpen && styles.open} ${
-        darkTheme && styles.dark
-      }`}
-    >
+      className={`${styles.container} ${darkTheme && styles.dark} ${
+        chatOpen && styles.open
+      } `}
+    > 
       <header className={`${styles.header} ${darkTheme && styles.dark}`}>
         <button className={styles.buttonBack} onClick={() => setChatOpen(null)}>
           <FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon>
@@ -266,7 +292,12 @@ const Conversation = ({
               group={chatOpen.group}
             />
           ))}
-        <p ref={lastMessageRef}>{otherUserIsTyping}</p>
+        {otherUserIsTyping && (
+          <div className={`${styles.userTyping} ${darkTheme && styles.dark}`}>
+            <p>{otherUserIsTyping}</p>
+          </div>
+        )}
+        <p ref={lastMessageRef}></p>
       </div>
       <div className={styles.footer}>
         <div className={styles.inputContainer}>
