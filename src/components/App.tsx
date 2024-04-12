@@ -20,27 +20,6 @@ export default function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const connectToSocket = async () => { 
-      try {
-        if (!socket || !socket.connected) {
-          const newSocket = io('http://localhost:4000', {
-            reconnectionDelayMax: 10000,
-            timeout: 5000,
-            reconnectionAttempts: 3,
-          });
-
-          newSocket.on('connect', () => {
-            console.log('joining');
-            user && newSocket.emit('join', user.name);
-          });
-          setSocket(newSocket);
-          console.log('Socket connected!');
-        }
-      } catch (error) {
-        console.error('Error connecting to socket:', error);
-      }
-    };
-
     const checkLoggedIn = async () => {
       const token = getToken();
 
@@ -58,25 +37,58 @@ export default function App() {
           },
         });
         setUser(response.data);
-        await connectToSocket();
       } catch (error) {
         navigate('/login');
         return;
       }
-
-      return () => {
-        socket.disconnect();
-      };
     };
 
     if (!user) checkLoggedIn();
-    else connectToSocket();
+  }, [navigate, setUser, user]);
 
-    if (socket && socket.connected) {
-      socket.on('test', (e) => {
-        console.log(e);
-      });
+  useEffect(() => {
+    const connectToSocket = async () => {
+      try {
+        if (!socket) {
+          const newSocket = io('http://localhost:4000', {
+            reconnectionDelayMax: 10000,
+            timeout: 5000,
+            reconnectionAttempts: 3,
+            autoConnect: false,
+            reconnection: false,
+          });
 
+       
+          setSocket(newSocket);
+        }
+      } catch (error) {
+        console.error('Error connecting to socket:', error);
+      }
+    };
+
+    if (user && !socket) connectToSocket();
+
+    return () => {
+      if (socket && socket.connected) {
+        socket.disconnect();
+      }
+      
+    };
+  }, [navigate, setUser, chatOpen, user, newGroup, socket]);
+
+  useEffect(() => {
+    if (socket && !socket.connected) {
+      socket.connect();
+       socket.on('connect', () => {
+    user && socket.emit('join', user.name);
+  })
+    }
+  }, [socket, user]);
+
+
+
+  useEffect(() => {
+    if (socket.connected) {
       socket.on('updatedUserDocument', (updatedUser: User) => {
         const newMessageAudio = new Audio('/audio/newConversation.wav');
         const volume = localStorage.getItem('volume');
@@ -85,9 +97,15 @@ export default function App() {
         setUser(updatedUser);
         newGroup && setNewGroup(false);
       });
+    }
+    return () => {
+      socket.off('updatedUserDocument');
+    };
+  }, [newGroup, setUser, socket]);
 
+  useEffect(() => {
+    if (socket.connected) {
       socket.on('message', (conversation: ConversationType) => {
-        console.log('first chat open', chatOpen)
         updateConversation(setUser, conversation, chatOpen, setChatOpen);
         if (
           conversation.messages[conversation.messages.length - 1].author !==
@@ -98,10 +116,12 @@ export default function App() {
           if (volume) newMessageAudio.volume = parseInt(volume) / 100;
           newMessageAudio.play();
         }
-        setTimeout(()=>{console.log('second chat open', chatOpen)}, 1000)
       });
     }
-  }, [navigate, setUser, chatOpen, user, newGroup]);
+    return () => {
+      socket.off('message');
+    };
+  }, [newGroup, setUser, socket, chatOpen, user?.name]);
 
   useEffect(() => {
     if (chatOpen) {
@@ -111,22 +131,20 @@ export default function App() {
 
   if (!user) return <></>;
   return (
-    <>
-      <div className={styles.container}>
-        <Dashboard
+    <div className={styles.container}>
+      <Dashboard
+        setChatOpen={setChatOpen}
+        socket={socket}
+        newGroup={newGroup}
+        openNewGroup={setNewGroup}
+      />
+      {socket && (
+        <Conversation
+          chatOpen={chatOpen}
           setChatOpen={setChatOpen}
           socket={socket}
-          newGroup={newGroup}
-          openNewGroup={setNewGroup}
         />
-        {socket && (
-          <Conversation
-            chatOpen={chatOpen}
-            setChatOpen={setChatOpen}
-            socket={socket}
-          />
-        )}
-      </div>
-    </>
+      )}
+    </div>
   );
 }
