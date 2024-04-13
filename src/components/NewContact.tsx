@@ -31,7 +31,10 @@ const NewContact = ({
   const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const navigate = useNavigate();
-  const { user, darkTheme } = useContext(UserContext) as { user: User, darkTheme:boolean };
+  const { user, darkTheme } = useContext(UserContext) as {
+    user: User;
+    darkTheme: boolean;
+  };
 
   useEffect(() => {
     const fetchContacts = async () => {
@@ -71,12 +74,22 @@ const NewContact = ({
       group: false,
       new: true,
     };
-    setChatOpen(newConversation);
+
+    const isAlreadyCreated = user.conversations.find((e) => {
+      return e.name.includes(name);
+    });
+    if (isAlreadyCreated) {
+      setChatOpen(isAlreadyCreated);
+      return;
+    }
+
     setChatOpen(newConversation);
   };
 
   return (
-    <div className={`${className} ${styles.container} ${darkTheme && styles.dark}`}>
+    <div
+      className={`${className} ${styles.container} ${darkTheme && styles.dark}`}
+    >
       <header className={`${styles.header} ${darkTheme && styles.dark}`}>
         <button
           className={styles.buttonBack}

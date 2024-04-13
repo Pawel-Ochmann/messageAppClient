@@ -101,6 +101,7 @@ const Conversation = ({
   }, [chatOpen, socket, user]);
 
   const sendMessage = (message: MessageParam) => {
+    console.log('socket', socket);
     const messageToSend: Message = {
       author: user.name,
       content: message.content,

@@ -13,7 +13,7 @@ import { updateLastRead } from '../utils/lastRead';
 import styles from './styles/app.module.css';
 
 export default function App() {
-  const [socket, setSocket] = useState<Socket>(io);
+  const [socket, setSocket] = useState<Socket | null>(null);
   const { user, setUser } = useContext(UserContext);
   const [chatOpen, setChatOpen] = useState<ConversationType | null>(null);
   const [newGroup, setNewGroup] = useState(false);
@@ -47,49 +47,27 @@ export default function App() {
   }, [navigate, setUser, user]);
 
   useEffect(() => {
-    const connectToSocket = async () => {
-      try {
-        if (!socket) {
-          const newSocket = io('http://localhost:4000', {
-            reconnectionDelayMax: 10000,
-            timeout: 5000,
-            reconnectionAttempts: 3,
-            autoConnect: false,
-            reconnection: false,
-          });
+    const newSocket = io('http://localhost:4000', {
+      reconnectionDelayMax: 10000,
+      timeout: 5000,
+      reconnectionAttempts: 3,
+      autoConnect: false,
+    });
 
-       
-          setSocket(newSocket);
-        }
-      } catch (error) {
-        console.error('Error connecting to socket:', error);
-      }
-    };
+     newSocket.on('message', (conversation: ConversationType) => {
+       updateConversation(setUser, conversation, chatOpen, setChatOpen);
+       if (
+         conversation.messages[conversation.messages.length - 1].author !==
+         user?.name
+       ) {
+         const newMessageAudio = new Audio('/audio/newMessage.wav');
+         const volume = localStorage.getItem('volume');
+         if (volume) newMessageAudio.volume = parseInt(volume) / 100;
+         newMessageAudio.play();
+       }
+     });
 
-    if (user && !socket) connectToSocket();
-
-    return () => {
-      if (socket && socket.connected) {
-        socket.disconnect();
-      }
-      
-    };
-  }, [navigate, setUser, chatOpen, user, newGroup, socket]);
-
-  useEffect(() => {
-    if (socket && !socket.connected) {
-      socket.connect();
-       socket.on('connect', () => {
-    user && socket.emit('join', user.name);
-  })
-    }
-  }, [socket, user]);
-
-
-
-  useEffect(() => {
-    if (socket.connected) {
-      socket.on('updatedUserDocument', (updatedUser: User) => {
+      newSocket.on('updatedUserDocument', (updatedUser: User) => {
         const newMessageAudio = new Audio('/audio/newConversation.wav');
         const volume = localStorage.getItem('volume');
         if (volume) newMessageAudio.volume = parseInt(volume) / 100;
@@ -97,31 +75,32 @@ export default function App() {
         setUser(updatedUser);
         newGroup && setNewGroup(false);
       });
-    }
-    return () => {
-      socket.off('updatedUserDocument');
-    };
-  }, [newGroup, setUser, socket]);
+
+    setSocket(newSocket);
+  }, [chatOpen, newGroup, setUser, user?.name]);
 
   useEffect(() => {
-    if (socket.connected) {
-      socket.on('message', (conversation: ConversationType) => {
-        updateConversation(setUser, conversation, chatOpen, setChatOpen);
-        if (
-          conversation.messages[conversation.messages.length - 1].author !==
-          user?.name
-        ) {
-          const newMessageAudio = new Audio('/audio/newMessage.wav');
-          const volume = localStorage.getItem('volume');
-          if (volume) newMessageAudio.volume = parseInt(volume) / 100;
-          newMessageAudio.play();
+    const connectToSocket = async () => {
+      try {
+        if (socket && !socket.connected) {
+          socket.on('connect', () => {
+            user && socket.emit('join', user.name);
+          });
+          socket.connect();
         }
-      });
-    }
-    return () => {
-      socket.off('message');
+      } catch (error) {
+        console.error('Error connecting to socket:', error);
+      }
     };
-  }, [newGroup, setUser, socket, chatOpen, user?.name]);
+
+    if (user) connectToSocket();
+
+    return () => {
+      if (socket && socket.connected) {
+        socket.disconnect();
+      }
+    };
+  }, [navigate, setUser, chatOpen, user, newGroup, socket]);
 
   useEffect(() => {
     if (chatOpen) {
@@ -132,12 +111,14 @@ export default function App() {
   if (!user) return <></>;
   return (
     <div className={styles.container}>
-      <Dashboard
-        setChatOpen={setChatOpen}
-        socket={socket}
-        newGroup={newGroup}
-        openNewGroup={setNewGroup}
-      />
+      {socket && (
+        <Dashboard
+          setChatOpen={setChatOpen}
+          socket={socket}
+          newGroup={newGroup}
+          openNewGroup={setNewGroup}
+        />
+      )}
       {socket && (
         <Conversation
           chatOpen={chatOpen}

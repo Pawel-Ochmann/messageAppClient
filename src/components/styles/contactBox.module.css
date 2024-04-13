@@ -31,7 +31,7 @@
 }
 
 .unread {
-    color: var(--active-theme-color);
+    color: var(--active-theme-color) !important;
 }
 
 .numberOfUnread {
@@ -41,7 +41,7 @@
     width: .8rem;
     height: .8rem;
     justify-self: center;
-    padding: .5rem;
+    padding: .7rem;
     display: flex;
     align-items: center;
     justify-content: center;
