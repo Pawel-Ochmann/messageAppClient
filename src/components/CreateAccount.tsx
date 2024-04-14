@@ -40,7 +40,7 @@ function CreateAccount() {
       if (data.done === false) {
         setError(data.message);
       } else {
-        navigate('/');
+        navigate('/login');
       }
     } catch (error) {
       console.error('Error creating account:', error);
