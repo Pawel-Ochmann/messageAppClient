@@ -13,7 +13,7 @@ import styles from './styles/app.module.css';
 import { Socket, io } from 'socket.io-client';
 
 export default function App() {
-  const [socket] = useState<Socket>(io(getAddress(''), {
+  const [socket] = useState<Socket>(io(getAddress(':3000'), {
       reconnectionDelayMax: 10000,
       timeout: 5000,
       reconnectionAttempts: 3,
