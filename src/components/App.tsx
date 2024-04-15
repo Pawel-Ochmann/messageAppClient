@@ -13,12 +13,14 @@ import styles from './styles/app.module.css';
 import { Socket, io } from 'socket.io-client';
 
 export default function App() {
-  const [socket] = useState<Socket>(io(getAddress(':3000'), {
+  const [socket] = useState<Socket>(
+    io(getAddress(''), {
       reconnectionDelayMax: 10000,
       timeout: 5000,
       reconnectionAttempts: 3,
       autoConnect: false,
-    }));
+    })
+  );
   const [socketConnected, setSocketConnected] = useState(false);
   const { user, setUser } = useContext(UserContext);
   const [chatOpen, setChatOpen] = useState<ConversationType | null>(null);
@@ -52,40 +54,38 @@ export default function App() {
     if (!user) checkLoggedIn();
   }, [navigate, setUser, user]);
 
-
   useEffect(() => {
-      socket.on('message', (conversation: ConversationType) => {
-        updateConversation(setUser, conversation, chatOpen, setChatOpen);
-        if (
-          conversation.messages[conversation.messages.length - 1].author !==
-          user?.name
-        ) {
-          const newMessageAudio = new Audio('/audio/newMessage.wav');
-          const volume = localStorage.getItem('volume');
-          if (volume) newMessageAudio.volume = parseInt(volume) / 100;
-          newMessageAudio.play();
-        }
-      });
-
-      socket.on('updatedUserDocument', (updatedUser: User) => {
-        const newMessageAudio = new Audio('/audio/newConversation.wav');
+    socket.on('message', (conversation: ConversationType) => {
+      updateConversation(setUser, conversation, chatOpen, setChatOpen);
+      if (
+        conversation.messages[conversation.messages.length - 1].author !==
+        user?.name
+      ) {
+        const newMessageAudio = new Audio('/audio/newMessage.wav');
         const volume = localStorage.getItem('volume');
         if (volume) newMessageAudio.volume = parseInt(volume) / 100;
         newMessageAudio.play();
-        setUser(updatedUser);
-        newGroup && setNewGroup(false);
-      });
+      }
+    });
 
-      socket.on('connect', () => {
-        user && socket.emit('join', user.name);
-        setSocketConnected(true);
-      });
+    socket.on('updatedUserDocument', (updatedUser: User) => {
+      const newMessageAudio = new Audio('/audio/newConversation.wav');
+      const volume = localStorage.getItem('volume');
+      if (volume) newMessageAudio.volume = parseInt(volume) / 100;
+      newMessageAudio.play();
+      setUser(updatedUser);
+      newGroup && setNewGroup(false);
+    });
+
+    socket.on('connect', () => {
+      user && socket.emit('join', user.name);
+      setSocketConnected(true);
+    });
 
     return () => {
       socket.off('message');
-       socket.off('updateUserDocument');
+      socket.off('updateUserDocument');
       socket.off('connect');
-
     };
   }, [chatOpen, newGroup, setUser, socket, user]);
 
