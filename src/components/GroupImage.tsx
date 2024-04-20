@@ -25,6 +25,7 @@ const GroupImage = ({ conversation }: { conversation:ConversationType }) => {
           style={{ width: '100px' }}
           onLoad={handleImageLoad}
           onError={() => setImageLoaded(false)}
+          crossOrigin=''
         />
       ) : (
         <FontAwesomeIcon icon={faUserGroup} />
