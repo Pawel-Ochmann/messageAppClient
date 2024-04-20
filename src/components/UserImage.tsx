@@ -20,6 +20,7 @@ const UserImage = ({ userName }: { userName: string }) => {
       {imageLoaded ? (
         <img
           src={getContactImage()}
+          crossOrigin=''
           alt=''
           onLoad={handleImageLoad}
           onError={() => setImageLoaded(false)}
