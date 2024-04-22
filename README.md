@@ -24,7 +24,7 @@ If you have any questions, or spot a bug, contact me via linked in - https://www
 
 ## Dark Mode
 
-![Dark Mode Screenshot](/screenshots//DarkMode.png)
+![Dark Mode Screenshot](/screenshots//darkMode.png)
 
 ## Technologies Used
 
