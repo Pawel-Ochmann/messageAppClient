@@ -54,6 +54,11 @@
   grid-template-columns: 100px 1fr;
   gap: 1.5rem;
   height: 100px;
+  transition: 0.3s;
+  cursor: pointer;
+  &:hover {
+    background-color: rgba(128, 111, 111, 0.322);
+  }
   h2 {
     display: flex;
     text-align: start;

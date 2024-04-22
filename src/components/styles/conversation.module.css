@@ -261,3 +261,11 @@
     }
   }
 }
+
+@-moz-document url-prefix() {
+  @media screen and (min-width: 700px) {
+    .container {
+      right: 0;
+    }
+  }
+}
