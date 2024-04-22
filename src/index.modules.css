@@ -181,6 +181,10 @@ html {
   color: var(--main-font-color);
 }
 
-button > svg, input[type='radio'], input[type='range'], input[type='checkbox'] {
+button:not([disabled]) > svg, input[type='radio'], input[type='range'], input[type='checkbox'] {
   cursor: pointer;
+  transition: .3s;
+  &:hover {
+    transform: scale(1.2);
+  }
 }

@@ -232,6 +232,13 @@ const Conversation = ({
     }
   };
 
+  const sendOnEnterHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      sendMessage({ type: 'text', content: newMessage });
+      setNewMessage('');
+    }
+  };
+
   if (!chatOpen) {
     return (
       <div className={`${styles.container} ${darkTheme && styles.dark}`}>
@@ -257,7 +264,7 @@ const Conversation = ({
       className={`${styles.container} ${darkTheme && styles.dark} ${
         chatOpen && styles.open
       } `}
-    > 
+    >
       <header className={`${styles.header} ${darkTheme && styles.dark}`}>
         <button className={styles.buttonBack} onClick={() => setChatOpen(null)}>
           <FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon>
@@ -387,6 +394,7 @@ const Conversation = ({
               placeholder='Message'
               value={newMessage}
               onChange={handleInputChange}
+              onKeyDown={sendOnEnterHandler}
             />
           </div>
           {newMessage ? (
