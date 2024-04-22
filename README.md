@@ -1,34 +1,68 @@
-======================================
-This is a frontend part of my main project - a message application. Allows users to send and receive messages, images, giphs etc, includes logging system, allows user to create groups.
-=======================================
+## Messaging App Project
 
-# React + TypeScript + Vite
+This is the parent repository for the Full Stack Messaging App Project built for the [Odin Project Curriculum](https://www.theodinproject.com/lessons/nodejs-messaging-app).
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The goal of the project was to build a messaging web app that allows users to send and receive real-time messages.
 
-Currently, two official plugins are available:
+Frontend part is using react/typescript, backend - Express.js/MongoDB. Both are written in typescript.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The Socket.IO library was used for the real-time communication functionality between the project's client and server.
 
-## Expanding the ESLint configuration
+- Project's Live Preview url - https://message-app-client.netlify.app
+- Project's Backend Repository - https://github.com/Pawel-Ochmann/messageAppServer.git
+- Project;s Backend Server Address - https://message-application.fly.dev
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+If you have any questions, or spot a bug, contact me via linked in - https://www.linkedin.com/in/paweł-ochmann-86418a2b5/ or email - pav.ochmann@gmail.com
 
-- Configure the top-level `parserOptions` property like this:
+## Homepage
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-};
+![Homepage Screenshot](/screenshots//mainPage.png)
+
+## Settings Page
+
+![Settings Screenshot](/screenshots//settings.png)
+
+## Dark Mode
+
+![Dark Mode Screenshot](/screenshots//DarkMode.png)
+
+## Technologies Used
+
+- NodeJS
+- ExpressJS
+- MongoDB
+- ReactJS
+- CSS Modules
+- Socket.IO
+
+## Key features
+
+- Real-time transmission of messages between users using WebSockets
+- Allows sending messages, emotes, images
+- Sending Giphs - dynamic search, using Giphy.com api
+- Allows recording and sending audio messages
+- Integration with RESTful backend API
+- Persistent Authentication using JWTs
+- Creating new accounts and customizing users profiles
+- Setting light/dark mode and store settings between sessions
+- Audio effects and setting volume level in settings
+- Creating groups, setting group image, adding users, sending group messages (images, audio etc.)
+- Displaying info about users activity - last time seen (or is active), if user is typing.
+
+## Installation
+
+To run the project locally :
+
+- Clone the repository and run the following command to install the project's dependencies
+
+```
+npm install
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+- Run the following command to spin up a local development server
+
+```
+npm run dev
+```
+
+- Open http://localhost:5173 with your browser to access a local version of the project's client
