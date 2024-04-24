@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react';
-import { UserContext } from '../Context';
+import { UserContext } from '../../Context';
 import { useNavigate } from 'react-router-dom';
-import { getAddress } from '../utils/serverAddress';
-import { saveToken } from '../utils/tokenHandler';
+import { getAddress } from '../../utils/serverAddress';
+import { saveToken } from '../../utils/tokenHandler';
 import axios from 'axios';
 import styles from './styles/login.module.css';
 

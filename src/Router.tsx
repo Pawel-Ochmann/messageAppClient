@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import App from './components/App';
-import Login from './components/Login';
-import CreateAccount from './components/CreateAccount';
+import App from './pages/app/App';
+import Login from './pages/login/Login';
+import CreateAccount from './pages/createAccount/CreateAccount';
 
 export const routes = [
   {
@@ -9,13 +9,13 @@ export const routes = [
     element: <App />,
   },
   {
-    path:'/login',
-    element: <Login />
+    path: '/login',
+    element: <Login />,
   },
   {
-    path:'sign',
-    element:<CreateAccount />
-  }
+    path: '/sign',
+    element: <CreateAccount />,
+  },
 ];
 
 const router = createBrowserRouter(routes);

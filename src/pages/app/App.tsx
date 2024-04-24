@@ -1,14 +1,14 @@
 import { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { getToken } from '../utils/tokenHandler';
-import { getAddress } from '../utils/serverAddress';
-import Conversation from './Conversation';
-import { UserContext } from '../Context';
-import Dashboard from './Dashboard';
-import { User, ConversationType } from '../types/index';
-import updateConversation from '../utils/updateConversations';
-import { updateLastRead } from '../utils/lastRead';
+import { getToken } from '../../utils/tokenHandler';
+import { getAddress } from '../../utils/serverAddress';
+import Conversation from '../../components/conversation/Conversation';
+import { UserContext } from '../../Context';
+import Dashboard from '../../components/dashboard/Dashboard';
+import { User, ConversationType } from '../../types/index';
+import updateConversation from '../../utils/updateConversations';
+import { updateLastRead } from '../../utils/lastRead';
 import styles from './styles/app.module.css';
 import { Socket, io } from 'socket.io-client';
 

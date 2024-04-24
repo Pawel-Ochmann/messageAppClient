@@ -1,12 +1,12 @@
-import Contacts from './Contacts';
-import UserImage from './UserImage';
+import Contacts from '../contacts/Contacts';
+import UserImage from '../userImage/UserImage';
 import { useState, Dispatch, SetStateAction, useContext } from 'react';
-import NewGroup from './NewGroup';
-import NewContact from './NewContact';
-import Settings from './Settings';
-import { ConversationType } from '../types';
+import NewGroup from '../newGroup/NewGroup';
+import NewContact from '../newContact/NewContact';
+import Settings from '../settings/Settings';
+import { ConversationType } from '../../types';
 import { Socket } from 'socket.io-client';
-import { UserContext } from '../Context';
+import { UserContext } from '../../Context';
 import styles from './styles/dashboard.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {

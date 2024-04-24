@@ -1,9 +1,9 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { getAddress } from '../utils/serverAddress';
+import { getAddress } from '../../utils/serverAddress';
 import styles from './styles/login.module.css';
-import { UserContext } from '../Context';
+import { UserContext } from '../../Context';
 
 function CreateAccount() {
   const [nickname, setNickname] = useState('');
