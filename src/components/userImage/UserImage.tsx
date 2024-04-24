@@ -1,33 +1,23 @@
-import { getAddress } from '../utils/serverAddress';
-import { useState } from 'react';
+import { getAddress } from '../../utils/serverAddress';
+import { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import styles from './styles/userImage.module.css';
+import {useUploadImage} from '../../hooks/useUploadImage'
+
+
 const UserImage = ({ userName }: { userName: string }) => {
-  const [imageLoaded, setImageLoaded] = useState(true);
+  const { imageData, isLoading, error, fetchImage } = useUploadImage();
 
-  const handleImageLoad = () => {
-    setImageLoaded(true);
-  };
-
-  const getContactImage = () => {
-    return getAddress(`/${userName}/avatar`);
-  };
+    useEffect(() => {
+      fetchImage(getAddress(`/${userName}/avatar`));
+    }, [fetchImage, userName]);
 
   return (
     <div className={styles.imageBox}>
-      {' '}
-      {imageLoaded ? (
-        <img
-          src={getContactImage()}
-          crossOrigin=''
-          alt=''
-          onLoad={handleImageLoad}
-          onError={() => setImageLoaded(false)}
-        />
-      ) : (
-        <FontAwesomeIcon icon={faUser} />
-      )}
+      {isLoading && <FontAwesomeIcon icon={faUser} />}
+      {error && <FontAwesomeIcon icon={faUser} />}
+      {imageData && <img src={imageData.url} crossOrigin='' alt='' />}
     </div>
   );
 };
