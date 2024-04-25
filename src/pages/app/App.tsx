@@ -1,7 +1,4 @@
 import { useEffect, useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { getToken } from '../../utils/tokenHandler';
 import { getAddress } from '../../utils/serverAddress';
 import Conversation from '../../components/conversation/Conversation';
 import { UserContext } from '../../Context';
@@ -11,6 +8,7 @@ import updateConversation from '../../utils/updateConversations';
 import { updateLastRead } from '../../utils/lastRead';
 import styles from './styles/app.module.css';
 import { Socket, io } from 'socket.io-client';
+import AuthorizationProvider from '../../components/AuthorizationProvider';
 
 export default function App() {
   const [socket] = useState<Socket>(
@@ -25,34 +23,8 @@ export default function App() {
   const { user, setUser } = useContext(UserContext);
   const [chatOpen, setChatOpen] = useState<ConversationType | null>(null);
   const [newGroup, setNewGroup] = useState(false);
-  const navigate = useNavigate();
+ 
 
-  useEffect(() => {
-    const checkLoggedIn = async () => {
-      const token = getToken();
-
-      if (!token) {
-        navigate('/login');
-        return;
-      }
-
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-      try {
-        const response = await axios.get(getAddress('/'), {
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-          },
-        });
-        setUser(response.data);
-      } catch (error) {
-        navigate('/login');
-        return;
-      }
-    };
-
-    if (!user) checkLoggedIn();
-  }, [navigate, setUser, user]);
 
   useEffect(() => {
     socket.on('message', (conversation: ConversationType) => {
@@ -112,22 +84,24 @@ export default function App() {
 
   if (!user) return <></>;
   return (
-    <div className={styles.container}>
-      {socket && (
-        <Dashboard
-          setChatOpen={setChatOpen}
-          socket={socket}
-          newGroup={newGroup}
-          openNewGroup={setNewGroup}
-        />
-      )}
-      {socket && (
-        <Conversation
-          chatOpen={chatOpen}
-          setChatOpen={setChatOpen}
-          socket={socket}
-        />
-      )}
-    </div>
+    <AuthorizationProvider>
+      <div className={styles.container}>
+        {socket && (
+          <Dashboard
+            setChatOpen={setChatOpen}
+            socket={socket}
+            newGroup={newGroup}
+            openNewGroup={setNewGroup}
+          />
+        )}
+        {socket && (
+          <Conversation
+            chatOpen={chatOpen}
+            setChatOpen={setChatOpen}
+            socket={socket}
+          />
+        )}
+      </div>
+    </AuthorizationProvider>
   );
 }

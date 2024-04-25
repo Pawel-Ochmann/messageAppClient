@@ -1,35 +1,27 @@
-import { getAddress } from '../utils/serverAddress';
-import { useState } from 'react';
-import { ConversationType } from '../types';
+import { getAddress } from '../../utils/serverAddress';
+import { useEffect } from 'react';
+import { ConversationType } from '../../types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import styles from './styles/userImage.module.css';
-const GroupImage = ({ conversation }: { conversation:ConversationType }) => {
-  const [imageLoaded, setImageLoaded] = useState(true);
+import { useUploadImage } from '../../hooks/useUploadImage';
 
-  const handleImageLoad = () => {
-    setImageLoaded(true);
-  };
+interface Props {
+  conversation: ConversationType;
+}
 
-  const getGroupImage = () => {
-     return getAddress(`/group/${conversation.key}`);
-  };
+const GroupImage = ({ conversation }: Props) => {
+  const { imageData, isLoading, error, fetchImage } = useUploadImage();
+
+  useEffect(() => {
+    fetchImage(getAddress(`/group/${conversation.key}`));
+  }, [conversation.key, fetchImage]);
 
   return (
     <div className={styles.imageBox}>
-      {' '}
-      {imageLoaded ? (
-        <img
-          src={getGroupImage()}
-          alt=''
-          style={{ width: '100px' }}
-          onLoad={handleImageLoad}
-          onError={() => setImageLoaded(false)}
-          crossOrigin=''
-        />
-      ) : (
-        <FontAwesomeIcon icon={faUserGroup} />
-      )}
+      {isLoading && <FontAwesomeIcon icon={faUserGroup} />}
+      {error && <FontAwesomeIcon icon={faUserGroup} />}
+      {imageData && <img src={imageData.url} crossOrigin='' alt='' />}
     </div>
   );
 };

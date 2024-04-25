@@ -15,17 +15,14 @@ import {
   faEllipsisVertical,
 } from '@fortawesome/free-solid-svg-icons';
 
-const Dashboard = ({
-  setChatOpen,
-  socket,
-  newGroup,
-  openNewGroup,
-}: {
+interface Props {
   setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>;
   socket: Socket;
   newGroup: boolean;
   openNewGroup: Dispatch<SetStateAction<boolean>>;
-}) => {
+}
+
+const Dashboard = ({ setChatOpen, socket, newGroup, openNewGroup }: Props) => {
   const { user, darkTheme } = useContext(UserContext);
   const [newContact, setNewContact] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);

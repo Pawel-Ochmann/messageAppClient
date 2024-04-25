@@ -5,6 +5,6 @@ import './index.modules.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <Context>
-    <Router />
+      <Router />
   </Context>
 );

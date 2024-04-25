@@ -5,8 +5,9 @@ import { faUser } from '@fortawesome/free-solid-svg-icons';
 import styles from './styles/userImage.module.css';
 import {useUploadImage} from '../../hooks/useUploadImage'
 
+interface Props {userName:string}
 
-const UserImage = ({ userName }: { userName: string }) => {
+const UserImage = ({ userName }: Props) => {
   const { imageData, isLoading, error, fetchImage } = useUploadImage();
 
     useEffect(() => {
