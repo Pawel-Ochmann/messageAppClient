@@ -1,80 +1,47 @@
 import { useEffect, useState, useContext } from 'react';
-import { getAddress } from '../../utils/serverAddress';
 import Conversation from '../../components/conversation/Conversation';
 import { UserContext } from '../../Context';
 import Dashboard from '../../components/dashboard/Dashboard';
-import { User, ConversationType } from '../../types/index';
-import updateConversation from '../../utils/updateConversations';
+import { ConversationType } from '../../types/index';
 import { updateLastRead } from '../../utils/lastRead';
 import styles from './styles/app.module.css';
-import { Socket, io } from 'socket.io-client';
 import AuthorizationProvider from '../../components/AuthorizationProvider';
+import { useSocket } from '../../hooks/useSocket';
 
 export default function App() {
-  const [socket] = useState<Socket>(
-    io(getAddress(''), {
-      reconnectionDelayMax: 10000,
-      timeout: 5000,
-      reconnectionAttempts: 3,
-      autoConnect: false,
-    })
-  );
-  const [socketConnected, setSocketConnected] = useState(false);
-  const { user, setUser } = useContext(UserContext);
-  const [chatOpen, setChatOpen] = useState<ConversationType | null>(null);
-  const [newGroup, setNewGroup] = useState(false);
  
 
+  const { user } = useContext(UserContext);
+  const [chatOpen, setChatOpen] = useState<ConversationType | null>(null);
+  const [newGroup, setNewGroup] = useState(false);
+  const {
+    socket,
+    connectToSocket,
+    handleIncomingMessage,
+    handleUpdatedUserDocument,
+    handleSocketConnect,
+  } = useSocket({ chatOpen, setChatOpen, newGroup, setNewGroup });
 
   useEffect(() => {
-    socket.on('message', (conversation: ConversationType) => {
-      updateConversation(setUser, conversation, chatOpen, setChatOpen);
-      if (
-        conversation.messages[conversation.messages.length - 1].author !==
-        user?.name
-      ) {
-        const newMessageAudio = new Audio('/audio/newMessage.wav');
-        const volume = localStorage.getItem('volume');
-        if (volume) newMessageAudio.volume = parseInt(volume) / 100;
-        newMessageAudio.play();
-      }
-    });
+    if (user) connectToSocket();
+  }, [connectToSocket, user]);
 
-    socket.on('updatedUserDocument', (updatedUser: User) => {
-      const newMessageAudio = new Audio('/audio/newConversation.wav');
-      const volume = localStorage.getItem('volume');
-      if (volume) newMessageAudio.volume = parseInt(volume) / 100;
-      newMessageAudio.play();
-      setUser(updatedUser);
-      newGroup && setNewGroup(false);
-    });
-
-    socket.on('connect', () => {
-      user && socket.emit('join', user.name);
-      setSocketConnected(true);
-    });
+  useEffect(() => {
+    socket.on('message', handleIncomingMessage);
+    socket.on('updatedUserDocument', handleUpdatedUserDocument);
+    socket.on('connect', handleSocketConnect);
 
     return () => {
-      socket.off('message');
-      socket.off('updateUserDocument');
-      socket.off('connect');
+      socket.off('message', handleIncomingMessage);
+      socket.off('updateUserDocument', handleUpdatedUserDocument);
+      socket.off('connect', handleSocketConnect);
     };
-  }, [chatOpen, newGroup, setUser, socket, user]);
-
-  useEffect(() => {
-    const connectToSocket = async () => {
-      try {
-        if (socket && !socketConnected) {
-          console.log('connecting to socket');
-          socket.connect();
-        }
-      } catch (error) {
-        console.error('Error connecting to socket:', error);
-      }
-    };
-
-    if (user) connectToSocket();
-  }, [user, socket, socketConnected]);
+  }, [
+    handleIncomingMessage,
+    handleSocketConnect,
+    handleUpdatedUserDocument,
+    socket,
+  ]);
 
   useEffect(() => {
     if (chatOpen) {

@@ -5,14 +5,14 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
-import { UserContext } from '../Context';
-import Emotes from '../components/Emotes';
-import Gifs from '../components/Gifs';
-import AudioRecorder from './AudioInput';
-import MessageBox from './MessageBox';
+import { UserContext } from '../../Context';
+import Emotes from '../emotes/Emotes';
+import Gifs from '../gifs/Gifs';
+import AudioRecorder from '../audioInput/AudioInput';
+import MessageBox from '../messageBox/MessageBox';
 import { Socket } from 'socket.io-client';
-import { Message, MessageParam, User, ConversationType } from '../types/index';
-import getConversationName from '../utils/getConversationName';
+import { Message, MessageParam, User, ConversationType } from '../../types/index';
+import getConversationName from '../../utils/getConversationName';
 import styles from './styles/conversation.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -26,19 +26,21 @@ import {
   faImage,
   faCircleXmark,
 } from '@fortawesome/free-regular-svg-icons';
-import UserImage from './UserImage';
-import GroupImage from './GroupImage';
+import UserImage from '../userImage/UserImage';
+import GroupImage from '../groupImage/GroupImage';
 import moment from 'moment';
+
+interface Props {
+  chatOpen: ConversationType | null;
+  setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>;
+  socket: Socket;
+}
 
 const Conversation = ({
   chatOpen,
   setChatOpen,
   socket,
-}: {
-  chatOpen: ConversationType | null;
-  setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>;
-  socket: Socket;
-}) => {
+}:Props) => {
   const { user, darkTheme } = useContext(UserContext) as {
     user: User;
     darkTheme: boolean;
@@ -313,7 +315,6 @@ const Conversation = ({
             message={newMessage}
             setMessage={setNewMessage}
             isOpen={openEmotes}
-            setIsOpen={setOpenEmotes}
           />
           <Gifs sendGif={sendGif} isOpen={openGifs} />
           <div
