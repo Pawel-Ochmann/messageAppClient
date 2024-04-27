@@ -5,7 +5,7 @@ interface ImageData {
   url: string;
 }
 
-export const useUploadImage = () => {
+export const useGetImage = () => {
   const [imageData, setImageData] = useState<ImageData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);

@@ -4,14 +4,14 @@ import { ConversationType } from '../../types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import styles from './styles/userImage.module.css';
-import { useUploadImage } from '../../hooks/useUploadImage';
+import { useGetImage } from '../../hooks/useGetImage';
 
 interface Props {
   conversation: ConversationType;
 }
 
 const GroupImage = ({ conversation }: Props) => {
-  const { imageData, isLoading, error, fetchImage } = useUploadImage();
+  const { imageData, isLoading, error, fetchImage } = useGetImage();
 
   useEffect(() => {
     fetchImage(getAddress(`/group/${conversation.key}`));

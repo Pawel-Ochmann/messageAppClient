@@ -11,7 +11,12 @@ import Gifs from '../gifs/Gifs';
 import AudioRecorder from '../audioInput/AudioInput';
 import MessageBox from '../messageBox/MessageBox';
 import { Socket } from 'socket.io-client';
-import { Message, MessageParam, User, ConversationType } from '../../types/index';
+import {
+  Message,
+  MessageParam,
+  User,
+  ConversationType,
+} from '../../types/index';
 import getConversationName from '../../utils/getConversationName';
 import styles from './styles/conversation.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -29,6 +34,7 @@ import {
 import UserImage from '../userImage/UserImage';
 import GroupImage from '../groupImage/GroupImage';
 import moment from 'moment';
+import { useSending } from '../../hooks/useSending';
 
 interface Props {
   chatOpen: ConversationType | null;
@@ -36,11 +42,7 @@ interface Props {
   socket: Socket;
 }
 
-const Conversation = ({
-  chatOpen,
-  setChatOpen,
-  socket,
-}:Props) => {
+const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
   const { user, darkTheme } = useContext(UserContext) as {
     user: User;
     darkTheme: boolean;
@@ -55,13 +57,32 @@ const Conversation = ({
   const [openEmotes, setOpenEmotes] = useState(false);
   const [openGifs, setOpenGifs] = useState(false);
   const [openFile, setOpenFile] = useState(false);
+  const [firstRender, setFirstRender] = useState(true);
+  const { sendText, sendGif, sendImage, sendAudio } = useSending({
+    socket,
+    chatOpen,
+  });
+
+  const sendAndCreate = (callback: () => void) => {
+    socket.emit('createNewConversation', chatOpen, (confirmation: boolean) => {
+      if (confirmation) {
+        callback();
+      } else {
+        console.error('Error: New chat creation confirmation failed');
+      }
+    });
+  };
 
   useEffect(() => {
-    lastMessageRef.current?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'end',
-    });
-  }, [chatOpen]);
+    if (!firstRender) {
+      lastMessageRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end',
+      });
+    } else {
+      setFirstRender(false);
+    }
+  }, [chatOpen, firstRender]);
 
   const sendTyping = () => {
     if (isTyping) return;
@@ -103,15 +124,12 @@ const Conversation = ({
   }, [chatOpen, socket, user]);
 
   const sendMessage = (message: MessageParam) => {
-    console.log('socket', socket);
     const messageToSend: Message = {
       author: user.name,
       content: message.content,
       type: message.type,
       date: new Date(),
     };
-
-    console.log(message);
 
     if (message.type === 'image' || message.type === 'audio') {
       const formData = new FormData();
@@ -130,107 +148,52 @@ const Conversation = ({
     }
   };
 
-  const newMessageHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
+  const sendTextHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     if (chatOpen && chatOpen.new) {
-      socket.emit(
-        'createNewConversation',
-        chatOpen,
-        (confirmation: boolean) => {
-          if (confirmation) {
-            sendMessage({ type: 'text', content: newMessage });
-            setNewMessage('');
-          } else {
-            console.error('Error: New chat creation confirmation failed');
-          }
-        }
-      );
+      sendAndCreate(() => {
+        sendText(newMessage);
+        setNewMessage('');
+      });
     } else {
-      sendMessage({ type: 'text', content: newMessage });
+      sendText(newMessage);
       setNewMessage('');
     }
   };
 
-  const sendGif: MouseEventHandler<HTMLImageElement> = (e) => {
+  const sendGifHandler: MouseEventHandler<HTMLImageElement> = (e) => {
     const img = e.target as HTMLImageElement;
+    const address = img.src;
 
     if (chatOpen && chatOpen.new) {
-      socket.emit(
-        'createNewChatConfirmation',
-        chatOpen,
-        (confirmation: boolean) => {
-          if (confirmation) {
-            const address = img.src;
-            sendMessage({ type: 'gif', content: address });
-          } else {
-            console.error('Error: New chat creation confirmation failed');
-          }
-        }
-      );
+      sendAndCreate(() => {
+        sendGif(address);
+      });
     } else {
-      const address = img.src;
-      sendMessage({ type: 'gif', content: address });
+      sendGif(address);
     }
   };
 
-  const handleImageUpload: MouseEventHandler = (e) => {
+  const sendImageHandler: MouseEventHandler = (e) => {
     e.preventDefault();
-    const uploadImage = () => {
-      if (image) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          sendMessage({ type: 'image', content: image });
-        };
-        reader.readAsDataURL(image);
-      }
-    };
-
     if (chatOpen && chatOpen.new) {
-      socket.emit(
-        'createNewConversation',
-        chatOpen,
-        (confirmation: boolean) => {
-          if (confirmation) {
-            uploadImage();
-            setImage(null);
-          } else {
-            console.error('Error: New chat creation confirmation failed');
-          }
-        }
-      );
+      sendAndCreate(() => {
+        sendImage(image);
+      });
     } else {
-      uploadImage();
+      sendImage(image);
       setImage(null);
     }
   };
-  const audioHandler = () => {
-    const sendAudio = () => {
-      const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-      const audioFile = new File([audioBlob], 'audio_recording.webm', {
-        type: 'audio/webm',
-      });
-
-      const newMessage: MessageParam = {
-        type: 'audio',
-        content: audioFile,
-      };
-      sendMessage(newMessage);
-    };
-
+  const sendAudioHandler = () => {
     if (chatOpen && chatOpen.new) {
-      socket.emit(
-        'createNewChatConfirmation',
-        chatOpen,
-        (confirmation: boolean) => {
-          if (confirmation) {
-            sendAudio();
-          } else {
-            console.error('Error: New chat creation confirmation failed');
-          }
-        }
-      );
+      sendAndCreate(() => {
+        sendAudio(audioChunks);
+        setAudioChunks([]);
+      });
     } else {
-      sendAudio();
+      sendAudio(audioChunks);
+      setAudioChunks([]);
     }
   };
 
@@ -316,7 +279,7 @@ const Conversation = ({
             setMessage={setNewMessage}
             isOpen={openEmotes}
           />
-          <Gifs sendGif={sendGif} isOpen={openGifs} />
+          <Gifs sendGif={sendGifHandler} isOpen={openGifs} />
           <div
             className={`${styles.imageForm} ${openFile && styles.open} ${
               darkTheme && styles.dark
@@ -341,7 +304,7 @@ const Conversation = ({
                 className={`${image && styles.active}`}
                 type='submit'
                 onClick={(e) => {
-                  handleImageUpload(e);
+                  sendImageHandler(e);
                 }}
               >
                 <FontAwesomeIcon icon={faShare}></FontAwesomeIcon>
@@ -399,12 +362,12 @@ const Conversation = ({
             />
           </div>
           {newMessage ? (
-            <button className={styles.sendButton} onClick={newMessageHandler}>
+            <button className={styles.sendButton} onClick={sendTextHandler}>
               <FontAwesomeIcon icon={faLocationArrow}></FontAwesomeIcon>
             </button>
           ) : (
             <AudioRecorder
-              sendAudio={audioHandler}
+              sendAudio={sendAudioHandler}
               audioChunks={audioChunks}
               setAudioChunks={setAudioChunks}
             />

@@ -3,12 +3,12 @@ import { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import styles from './styles/userImage.module.css';
-import {useUploadImage} from '../../hooks/useUploadImage'
+import {useGetImage} from '../../hooks/useGetImage'
 
 interface Props {userName:string}
 
 const UserImage = ({ userName }: Props) => {
-  const { imageData, isLoading, error, fetchImage } = useUploadImage();
+  const { imageData, isLoading, error, fetchImage } = useGetImage();
 
     useEffect(() => {
       fetchImage(getAddress(`/${userName}/avatar`));
