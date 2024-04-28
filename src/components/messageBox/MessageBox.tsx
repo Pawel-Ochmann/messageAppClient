@@ -5,6 +5,7 @@ import { useContext, useCallback } from 'react';
 import { UserContext } from '../../Context';
 import { User } from '../../types/index';
 import moment from 'moment';
+import classNames from 'classnames';
 
 const MessageBox = ({ message, group }: { message: MessageBackend, group:boolean }) => {
   const { user, darkTheme } = useContext(UserContext) as { user: User, darkTheme:boolean };
@@ -36,15 +37,25 @@ const MessageBox = ({ message, group }: { message: MessageBackend, group:boolean
     }
   }, [message.type, message.content]);
 
+  const classes = {
+    messageContainer: classNames(
+      styles.messageContainer,
+      {
+        [styles.messageUser]: message.author === user.name,
+        [styles.messageOther]: message.author !== user.name,
+      },
+      { [styles.dark]: darkTheme }
+    ),
+    date:styles.date
+  };
+
   return (
     <div
-      className={`${styles.messageContainer} ${
-        message.author === user.name ? styles.messageUser : styles.messageOther
-      } ${darkTheme && styles.dark}`}
+      className={classes.messageContainer}
     >
       <h2>{group && message.author}</h2>
       {renderMessageContent()}
-      <p className={styles.date}>
+      <p className={classes.date}>
         {moment(message.date.toString()).format('MMMM Do YYYY, h:mm:ss a')}
       </p>
     </div>

@@ -27,6 +27,20 @@ export const useSending = ({ socket, chatOpen }: Props) => {
     socket ? socket.emit('newMessage', messageToSend, chatOpen?.key) : '';
   };
 
+    const sendAndCreate = (callback: () => void) => {
+      socket.emit(
+        'createNewConversation',
+        chatOpen,
+        (confirmation: boolean) => {
+          if (confirmation) {
+            callback();
+          } else {
+            console.error('Error: New chat creation confirmation failed');
+          }
+        }
+      );
+    };
+
   const sendText = (newMessage: string) => {
     sendMessage({ type: 'text', content: newMessage });
   };
@@ -58,5 +72,5 @@ export const useSending = ({ socket, chatOpen }: Props) => {
     sendMessage(newMessage);
   };
 
-  return { sendText, sendGif, sendImage, sendAudio };
+  return { sendAndCreate, sendText, sendGif, sendImage, sendAudio };
 };

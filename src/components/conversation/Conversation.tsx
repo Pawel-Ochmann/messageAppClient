@@ -11,12 +11,7 @@ import Gifs from '../gifs/Gifs';
 import AudioRecorder from '../audioInput/AudioInput';
 import MessageBox from '../messageBox/MessageBox';
 import { Socket } from 'socket.io-client';
-import {
-  Message,
-  MessageParam,
-  User,
-  ConversationType,
-} from '../../types/index';
+import { User, ConversationType } from '../../types/index';
 import getConversationName from '../../utils/getConversationName';
 import styles from './styles/conversation.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -35,6 +30,8 @@ import UserImage from '../userImage/UserImage';
 import GroupImage from '../groupImage/GroupImage';
 import moment from 'moment';
 import { useSending } from '../../hooks/useSending';
+import { useTypingInfo } from '../../hooks/useTypingInfo';
+import classNames from 'classnames';
 
 interface Props {
   chatOpen: ConversationType | null;
@@ -51,27 +48,16 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
   const [image, setImage] = useState<File | null>(null);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   const [lastTimeSeen, setLastTimeSeen] = useState<string>('');
-  const [isTyping, setIsTyping] = useState(false);
-  const [otherUserIsTyping, setOtherUserIsTyping] = useState('');
   const lastMessageRef = useRef<HTMLParagraphElement>(null);
   const [openEmotes, setOpenEmotes] = useState(false);
   const [openGifs, setOpenGifs] = useState(false);
   const [openFile, setOpenFile] = useState(false);
   const [firstRender, setFirstRender] = useState(true);
-  const { sendText, sendGif, sendImage, sendAudio } = useSending({
+  const { sendAndCreate, sendText, sendGif, sendImage, sendAudio } = useSending({
     socket,
     chatOpen,
   });
-
-  const sendAndCreate = (callback: () => void) => {
-    socket.emit('createNewConversation', chatOpen, (confirmation: boolean) => {
-      if (confirmation) {
-        callback();
-      } else {
-        console.error('Error: New chat creation confirmation failed');
-      }
-    });
-  };
+  const { sendTyping, otherUserIsTyping } = useTypingInfo({ socket, chatOpen });
 
   useEffect(() => {
     if (!firstRender) {
@@ -84,36 +70,6 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
     }
   }, [chatOpen, firstRender]);
 
-  const sendTyping = () => {
-    if (isTyping) return;
-    if (chatOpen) {
-      socket.emit('typing', getConversationName(user, chatOpen), user.name);
-      setIsTyping(true);
-      setTimeout(() => {
-        setIsTyping(false);
-      }, 2000);
-    }
-  };
-
-  useEffect(() => {
-    socket.on('typing', (userName: string) => {
-      if (chatOpen) {
-        const anotherUser = getConversationName(user, chatOpen);
-        if (anotherUser === userName) {
-          setOtherUserIsTyping(
-            `${getConversationName(user, chatOpen)} is typing...`
-          );
-          setTimeout(() => {
-            setOtherUserIsTyping('');
-          }, 2000);
-        }
-      }
-    });
-    return () => {
-      socket.off('typing');
-    };
-  }, [chatOpen, socket, user]);
-
   useEffect(() => {
     if (chatOpen && !chatOpen.group) {
       const otherParticipant = getConversationName(user, chatOpen);
@@ -122,22 +78,6 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
       });
     }
   }, [chatOpen, socket, user]);
-
-  const sendMessage = (message: MessageParam) => {
-    const messageToSend: Message = {
-      author: user.name,
-      content: message.content,
-      type: message.type,
-      date: new Date(),
-    };
-
-    if (message.type === 'image' || message.type === 'audio') {
-      const formData = new FormData();
-      formData.append('file', message.content);
-    }
-
-    socket ? socket.emit('newMessage', messageToSend, chatOpen?.key) : '';
-  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -199,15 +139,51 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
 
   const sendOnEnterHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      sendMessage({ type: 'text', content: newMessage });
-      setNewMessage('');
+      if (chatOpen && chatOpen.new) {
+        sendAndCreate(() => {
+          sendText(newMessage);
+          setNewMessage('');
+        });
+      } else {
+        sendText(newMessage);
+        setNewMessage('');
+      }
     }
   };
 
+  const classes = {
+    containerEmpty: classNames(styles.container, { [styles.dark]: darkTheme }),
+    startingBoardClass: classNames(styles.startingBoard, {
+      [styles.dark]: darkTheme,
+    }),
+    container: classNames(
+      styles.container,
+      { [styles.dark]: darkTheme },
+      { [styles.open]: chatOpen }
+    ),
+    header: classNames(styles.header, { [styles.dark]: darkTheme }),
+    buttonBack: styles.buttonBack,
+    info: styles.info,
+    messageContainer: styles.messageContainer,
+    userTyping: classNames(styles.userTyping, { [styles.dark]: darkTheme }),
+    footer: styles.footer,
+    inputContainer: styles.inputContainer,
+    imageForm: classNames(
+      styles.imageForm,
+      { [styles.open]: openFile },
+      { [styles.dark]: darkTheme }
+    ),
+    active: classNames({ [styles.active]: image }),
+    dashboard: classNames(styles.dashboard, { [styles.dark]: darkTheme }),
+    gifButton:styles.gifButton,
+    sendButton:styles.sendButton
+  };
+
+
   if (!chatOpen) {
     return (
-      <div className={`${styles.container} ${darkTheme && styles.dark}`}>
-        <div className={`${styles.startingBoard} ${darkTheme && styles.dark}`}>
+      <div className={classes.containerEmpty}>
+        <div className={classes.startingBoardClass}>
           <img src='./chat.png' alt='chat picture' />
           <h2>What's upp</h2>
           <p>
@@ -226,12 +202,10 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
 
   return (
     <div
-      className={`${styles.container} ${darkTheme && styles.dark} ${
-        chatOpen && styles.open
-      } `}
+      className={classes.container}
     >
-      <header className={`${styles.header} ${darkTheme && styles.dark}`}>
-        <button className={styles.buttonBack} onClick={() => setChatOpen(null)}>
+      <header className={classes.header}>
+        <button className={classes.buttonBack} onClick={() => setChatOpen(null)}>
           <FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon>
         </button>
         {chatOpen.group ? (
@@ -239,7 +213,7 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
         ) : (
           <UserImage userName={getConversationName(user, chatOpen)} />
         )}
-        <div className={styles.info}>
+        <div className={classes.info}>
           {chatOpen.new ? (
             <h2>Create new chat with {getConversationName(user, chatOpen)}</h2>
           ) : (
@@ -256,7 +230,7 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
           </p>
         </div>
       </header>
-      <div className={styles.messageContainer}>
+      <div className={classes.messageContainer}>
         {chatOpen.messages &&
           chatOpen.messages.map((message) => (
             <MessageBox
@@ -266,14 +240,14 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
             />
           ))}
         {otherUserIsTyping && (
-          <div className={`${styles.userTyping} ${darkTheme && styles.dark}`}>
+          <div className={classes.userTyping}>
             <p>{otherUserIsTyping}</p>
           </div>
         )}
         <p ref={lastMessageRef}></p>
       </div>
-      <div className={styles.footer}>
-        <div className={styles.inputContainer}>
+      <div className={classes.footer}>
+        <div className={classes.inputContainer}>
           <Emotes
             message={newMessage}
             setMessage={setNewMessage}
@@ -281,9 +255,7 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
           />
           <Gifs sendGif={sendGifHandler} isOpen={openGifs} />
           <div
-            className={`${styles.imageForm} ${openFile && styles.open} ${
-              darkTheme && styles.dark
-            }`}
+            className={classes.imageForm}
           >
             <form>
               <label htmlFor='image'>
@@ -301,7 +273,7 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
               />
               <button
                 disabled={!image}
-                className={`${image && styles.active}`}
+                className={classes.active}
                 type='submit'
                 onClick={(e) => {
                   sendImageHandler(e);
@@ -311,7 +283,7 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
               </button>
             </form>
           </div>
-          <div className={`${styles.dashboard} ${darkTheme && styles.dark}`}>
+          <div className={classes.dashboard}>
             <button
               onClick={() => {
                 setOpenGifs(false);
@@ -335,7 +307,7 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
               {openGifs ? (
                 <FontAwesomeIcon icon={faCircleXmark}></FontAwesomeIcon>
               ) : (
-                <button className={styles.gifButton}>gif</button>
+                <button className={classes.gifButton}>gif</button>
               )}
             </button>
             <button
@@ -362,7 +334,7 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
             />
           </div>
           {newMessage ? (
-            <button className={styles.sendButton} onClick={sendTextHandler}>
+            <button className={classes.sendButton} onClick={sendTextHandler}>
               <FontAwesomeIcon icon={faLocationArrow}></FontAwesomeIcon>
             </button>
           ) : (

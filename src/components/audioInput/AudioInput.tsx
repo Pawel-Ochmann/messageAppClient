@@ -1,6 +1,6 @@
 import { useState, MouseEventHandler, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { UserContext } from '../Context';
+import { UserContext } from '../../Context';
 import {
   faMicrophone,
   faLocationArrow,
@@ -8,6 +8,7 @@ import {
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import styles from './styles/audioRecorder.module.css';
+import classNames from 'classnames';
 
 const AudioRecorder = ({
   sendAudio,
@@ -69,10 +70,22 @@ const AudioRecorder = ({
     }${seconds}`;
   };
 
+  const classes = {
+    buttonMain: styles.buttonMain,
+    audioField: classNames(
+      styles.audioField,
+      { [styles.open]: audioChunks.length > 0 || recording },
+      { [styles.dark]: darkTheme }
+    ),
+    buttonSend: classNames(styles.buttonSend, {
+      [styles.buttonInactive]: audioChunks.length === 0,
+    }),
+  };
+
   return (
     <div>
       <button
-        className={styles.buttonMain}
+        className={classes.buttonMain}
         onClick={recording ? stopRecording : startRecording}
       >
         {recording ? (
@@ -83,9 +96,7 @@ const AudioRecorder = ({
       </button>
 
       <div
-        className={`${styles.audioField} ${
-          (audioChunks.length > 0 || recording) && styles.open
-        } ${darkTheme && styles.dark}`}
+        className={classes.audioField}
       >
         <>
           <button
@@ -100,9 +111,7 @@ const AudioRecorder = ({
           <p>{formatTime(timer)}</p>
           <button
             disabled={audioChunks.length === 0}
-            className={`${styles.buttonSend} ${
-              audioChunks.length === 0 && styles.buttonInactive
-            }`}
+            className={classes.buttonSend}
             onClick={sendAudio}
           >
             <FontAwesomeIcon icon={faLocationArrow}></FontAwesomeIcon>
