@@ -1,60 +1,46 @@
-import { ConversationType } from '../types';
-import { hasBeenRead, numberOfUnreadMessages } from '../utils/lastRead';
-import getConversationName from '../utils/getConversationName';
+import { ConversationType } from '../../types';
+import { hasBeenRead, numberOfUnreadMessages } from '../../utils/lastRead';
+import getConversationName from '../../utils/getConversationName';
 import { useContext } from 'react';
-import { UserContext } from '../Context';
-import UserImage from './UserImage';
-import GroupImage from './GroupImage';
+import { UserContext } from '../../Context';
+import UserImage from '../userImage/UserImage';
+import GroupImage from '../groupImage/GroupImage';
 import styles from './styles/contactBox.module.css';
-import moment from 'moment';
+import { getLastMessageContent, getLastMessageDate } from '../../utils/getLastMessageInfo';
+import classNames from 'classnames';
+
+interface Props {
+  conversation: ConversationType;
+  setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>;
+}
 
 const ContactBox = ({
   conversation,
   setChatOpen,
-}: {
-  conversation: ConversationType;
-  setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>;
-}) => {
+}:Props) => {
   const { user } = useContext(UserContext);
 
-  const getLastMessageContent = (conversation: ConversationType) => {
-    const lastMessage = conversation.messages[conversation.messages.length - 1];
-    if (!lastMessage) return '';
-    else {
-      switch (lastMessage.type) {
-        case 'text': {
-          const maxLength = 10;
-          if (lastMessage.content.length > maxLength) {
-            return lastMessage.content.substring(0, maxLength) + '...';
-          } else {
-            return lastMessage.content;
-          }
-        }
-
-        case 'gif':
-          return 'GIF';
-        case 'image':
-          return 'Image';
-        case 'audio':
-          return 'Audio';
-        default:
-          return '';
-      }
-    }
+  const classes = {
+    buttonWrapper: styles.buttonWrapper,
+    contactBox: styles.contactBox,
+    image: styles.image,
+    contactName: styles.contactName,
+    date: classNames(styles.date, {
+      [styles.unread]: !hasBeenRead(conversation),
+    }),
+    unread:styles.unread,
+    lastMessage: styles.lastMessage,
+    numberOfUnread: styles.numberOfUnread,
   };
 
-  const getLastMessageDate = (conversation: ConversationType) => {
-    const lastMessage = conversation.messages[conversation.messages.length - 1];
-    return lastMessage ? moment(lastMessage.date).fromNow() : '';
-  };
 
   return (
     <button
-      className={styles.buttonWrapper}
+      className={classes.buttonWrapper}
       onClick={() => setChatOpen(conversation)}
     >
-      <div className={styles.contactBox}>
-        <div className={styles.image}>
+      <div className={classes.contactBox}>
+        <div className={classes.image}>
           {conversation.group ? (
             <GroupImage conversation={conversation} />
           ) : (
@@ -63,23 +49,23 @@ const ContactBox = ({
             )
           )}
         </div>
-        <h3 className={styles.contactName}>
+        <h3 className={classes.contactName}>
           {user && getConversationName(user, conversation)}
         </h3>
         <p
-          className={`${styles.date} ${
-            !hasBeenRead(conversation) && styles.unread
+          className={`${classes.date} ${
+            !hasBeenRead(conversation) && classes.unread
           }`}
         >
           {getLastMessageDate(conversation)}
         </p>
         <p
-          className={`${styles.lastMessage}`}
+          className={classes.lastMessage}
         >
           {getLastMessageContent(conversation)}
         </p>
         {!hasBeenRead(conversation) && (
-          <p className={styles.numberOfUnread}>
+          <p className={classes.numberOfUnread}>
             {numberOfUnreadMessages(conversation)}
           </p>
         )}
