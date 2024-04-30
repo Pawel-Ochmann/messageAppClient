@@ -2,6 +2,7 @@ import styles from './styles/emotes.module.css';
 import { UserContext } from '../../Context';
 import { useContext } from 'react';
 import { emotesList } from './emotesList';
+import classNames from 'classnames';
 
 interface Props {
   message: string;
@@ -9,18 +10,23 @@ interface Props {
   isOpen: boolean;
 }
 
-export default function Emotes({ message, setMessage, isOpen }: Props) {
+export default function Emotes({ setMessage, isOpen }: Props) {
   const { darkTheme } = useContext(UserContext);
 
   const handleEmoteClick = (emote: string) => {
-    setMessage(message + emote);
+    setMessage((message)=>{ return message + emote});
+  };
+
+  const classes = {
+    emotesContainer: classNames(styles.emotesContainer, {
+      [styles.open]: isOpen,
+      [styles.dark]: darkTheme,
+    }),
   };
 
   return (
     <div
-      className={`${styles.emotesContainer} ${isOpen && styles.open} ${
-        darkTheme && styles.dark
-      }`}
+      className={classes.emotesContainer}
     >
       {emotesList.map((emote) => {
         return (

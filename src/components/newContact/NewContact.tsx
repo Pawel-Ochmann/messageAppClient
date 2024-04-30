@@ -1,32 +1,32 @@
 import { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
 import { Dispatch, SetStateAction } from 'react';
-import { getToken } from '../utils/tokenHandler';
-import { getAddress } from '../utils/serverAddress';
 import { useNavigate } from 'react-router-dom';
-import { UserContext } from '../Context';
-import { User } from '../types/index';
+import { UserContext } from '../../Context';
 import { v4 as uuid } from 'uuid';
-import { ConversationType } from '../types/index';
+import { ConversationType, User } from '../../types/index';
 import styles from './styles/newContact.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import UserImage from './UserImage';
+import UserImage from '../userImage/UserImage';
+import { fetchContactsApi } from '../../api/fetchContactsApi';
+import classNames from 'classnames';
 
 interface Contact {
   _id: string;
   name: string;
 }
 
+interface Props {
+  className: string;
+  setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>;
+  openHandler: Dispatch<SetStateAction<boolean>>;
+}
+
 const NewContact = ({
   className,
   setChatOpen,
   openHandler,
-}: {
-  className: string;
-  setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>;
-  openHandler: Dispatch<SetStateAction<boolean>>;
-}) => {
+}:Props) => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -36,27 +36,20 @@ const NewContact = ({
     darkTheme: boolean;
   };
 
-  useEffect(() => {
-    const fetchContacts = async () => {
-      const token = getToken();
+useEffect(() => {
+  const fetchContacts = async () => {
+    try {
+      const contactsData = await fetchContactsApi(user);
+      setContacts(contactsData);
+    } catch (error) {
+      console.error('Error fetching contacts:', error);
+      navigate('/login')
+      return
+    }
+  };
 
-      if (!token) {
-        navigate('/login');
-        return;
-      }
-
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-      try {
-        const response = await axios.get(getAddress(`/contacts/${user.name}`));
-        setContacts(response.data);
-      } catch (error) {
-        console.error('Error fetching contacts:', error);
-      }
-    };
-
-    fetchContacts();
-  }, [navigate, user.name]);
+  fetchContacts();
+}, [navigate, user]);
 
   useEffect(() => {
     const filtered = contacts.filter((contact) =>
@@ -86,40 +79,54 @@ const NewContact = ({
     setChatOpen(newConversation);
   };
 
+const classes = {
+  container: classNames(className, styles.container, {
+    [styles.dark]: darkTheme,
+  }),
+  header: classNames(styles.header, { [styles.dark]: darkTheme }),
+  buttonBack: styles.buttonBack,
+  info: styles.info,
+  searchInput: classNames(styles.searchInput, { [styles.dark]: darkTheme }),
+  contactsContainer: styles.contactsContainer,
+  contactBox: classNames(styles.contactBox, { [styles.dark]: darkTheme }),
+  contactName: styles.contactName,
+};
+
+
   return (
     <div
-      className={`${className} ${styles.container} ${darkTheme && styles.dark}`}
+      className={classes.container}
     >
-      <header className={`${styles.header} ${darkTheme && styles.dark}`}>
+      <header className={classes.header}>
         <button
-          className={styles.buttonBack}
+          className={classes.buttonBack}
           onClick={() => openHandler(false)}
         >
           <FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon>
         </button>
-        <div className={styles.info}>
+        <div className={classes.info}>
           <h2>Select contact</h2>
           <p>{filteredContacts.length}</p>
         </div>
       </header>
       <input
-        className={`${styles.searchInput} ${darkTheme && styles.dark}`}
+        className={classes.searchInput}
         type='text'
         placeholder='Find contacts'
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
-      <div className={styles.contactsContainer}>
+      <div className={classes.contactsContainer}>
         {filteredContacts.map((contact) => (
           <button
             key={contact._id}
-            className={`${styles.contactBox} ${darkTheme && styles.dark}`}
+            className={classes.contactBox}
             onClick={() => {
               createNewConversation(contact._id, contact.name);
             }}
           >
             <UserImage userName={contact.name} />
-            <h2 className={styles.contactName}>{contact.name}</h2>
+            <h2 className={classes.contactName}>{contact.name}</h2>
           </button>
         ))}
       </div>

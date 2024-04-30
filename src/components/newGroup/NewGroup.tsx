@@ -1,14 +1,14 @@
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { Dispatch, SetStateAction } from 'react';
-import { getToken } from '../utils/tokenHandler';
-import { getAddress } from '../utils/serverAddress';
+import { getToken } from '../../utils/tokenHandler';
+import { getAddress } from '../../utils/serverAddress';
 import { useNavigate } from 'react-router-dom';
-import { UserContext } from '../Context';
-import { User } from '../types/index';
-import UserImage from './UserImage';
+import { UserContext } from '../../Context';
+import { User } from '../../types/index';
+import UserImage from '../userImage/UserImage';
 import { v4 as uuid } from 'uuid';
-import { ConversationType } from '../types/index';
+import { ConversationType } from '../../types/index';
 import { Socket } from 'socket.io-client';
 import styles from './styles/newGroup.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -27,17 +27,14 @@ interface Contact {
   name: string;
 }
 
-const NewGroup = ({
-  setChatOpen,
-  openHandler,
-  socket,
-  className,
-}: {
+interface Props {
   setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>;
   openHandler: Dispatch<SetStateAction<boolean>>;
   socket: Socket;
   className: string;
-}) => {
+}
+
+const NewGroup = ({ setChatOpen, openHandler, socket, className }: Props) => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -142,7 +139,6 @@ const NewGroup = ({
   };
 
   const handleCheckboxChange = (contact: Contact) => {
-    console.log(contact, participants);
     if (participants.some((c) => c._id === contact._id)) {
       setParticipants([...participants.filter((c) => c.name !== contact.name)]);
     } else {
@@ -179,7 +175,9 @@ const NewGroup = ({
             <p>Return to previous page</p>
           </div>
 
-          <ul className={`${styles.participantsList} ${darkTheme && styles.dark}`}>
+          <ul
+            className={`${styles.participantsList} ${darkTheme && styles.dark}`}
+          >
             {participants.map((participant) => (
               <li key={participant.name}>
                 <UserImage userName={participant.name} />
@@ -195,7 +193,9 @@ const NewGroup = ({
             ))}
           </ul>
           {participants.length > 0 && (
-            <div className={`${styles.createButton} ${darkTheme && styles.dark}`}>
+            <div
+              className={`${styles.createButton} ${darkTheme && styles.dark}`}
+            >
               <p>Are you ready? Create new group</p>
               <button onClick={handleSubmit}>
                 <FontAwesomeIcon icon={faUsersViewfinder}></FontAwesomeIcon>
@@ -212,7 +212,10 @@ const NewGroup = ({
           />
           <div className={styles.contactsContainer}>
             {filteredContacts.map((contact) => (
-              <div key={contact.name} className={`${styles.contactBox} ${darkTheme && styles.dark}`}>
+              <div
+                key={contact.name}
+                className={`${styles.contactBox} ${darkTheme && styles.dark}`}
+              >
                 <input
                   type='checkbox'
                   checked={participants.some((c) => c._id === contact._id)}

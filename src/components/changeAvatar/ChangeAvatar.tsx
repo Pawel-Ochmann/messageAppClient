@@ -1,10 +1,10 @@
-import { getAddress } from '../utils/serverAddress';
+import { getAddress } from '../../utils/serverAddress';
 import { useState, useEffect, useContext } from 'react';
-import { UserContext } from '../Context';
-import { User } from '../types/index';
+import { UserContext } from '../../Context';
+import { User } from '../../types/index';
 import axios from 'axios';
 
-const UserImage = () => {
+const IsItUsed = () => {
   const [imageAvatar, setImageAvatar] = useState<File | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
   const { user } = useContext(UserContext) as { user: User };
@@ -112,4 +112,4 @@ const UserImage = () => {
   );
 };
 
-export default UserImage;
+export default IsItUsed;
