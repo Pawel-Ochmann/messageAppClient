@@ -1,9 +1,9 @@
-.giphsContainer {
+.gifContainer {
   padding: var(--main-padding);
   position: absolute;
   display: flex;
   flex-direction: column;
-  gap: .5rem;
+  gap: 0.5rem;
   overflow: scroll;
   width: 100%;
   left: 0;
@@ -21,7 +21,7 @@
 
   .searchContainer {
     align-self: center;
-    margin-bottom: .5rem;
+    margin-bottom: 0.5rem;
     display: flex;
     input {
       border: none;
@@ -32,7 +32,8 @@
         background-color: var(--secondary-font-color);
         color: var(--main-font-color-dark);
       }
-      svg, input::placeholder {
+      svg,
+      input::placeholder {
         color: var(--main-font-color-dark);
       }
     }
@@ -40,8 +41,8 @@
 
   .gifGrid {
     display: grid;
-    padding: 0 2rem 0 0 ;
-    gap: .5rem;
+    padding: 0 2rem 0 0;
+    gap: 0.5rem;
     grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
   }
   &.open {

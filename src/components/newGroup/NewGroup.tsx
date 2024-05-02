@@ -1,8 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
 import { Dispatch, SetStateAction } from 'react';
-import { getToken } from '../../utils/tokenHandler';
-import { getAddress } from '../../utils/serverAddress';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../Context';
 import { User } from '../../types/index';
@@ -12,6 +9,7 @@ import { ConversationType } from '../../types/index';
 import { Socket } from 'socket.io-client';
 import styles from './styles/newGroup.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { fetchContactsApi } from '../../api/fetchContactsApi';
 import {
   faArrowLeft,
   faCircleCheck,
@@ -50,25 +48,18 @@ const NewGroup = ({ setChatOpen, openHandler, socket, className }: Props) => {
 
   useEffect(() => {
     const fetchContacts = async () => {
-      const token = getToken();
-
-      if (!token) {
-        navigate('/login');
-        return;
-      }
-
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
       try {
-        const response = await axios.get(getAddress(`/contacts/${user.name}`));
-        setContacts(response.data);
+        const contactsData = await fetchContactsApi(user);
+        setContacts(contactsData);
       } catch (error) {
         console.error('Error fetching contacts:', error);
+        navigate('/login');
+        return;
       }
     };
 
     fetchContacts();
-  }, [navigate, user.name]);
+  }, [navigate, user]);
 
   useEffect(() => {
     const filtered = contacts.filter((contact) =>

@@ -1,54 +1,52 @@
-import {  useEffect, useState, useContext } from 'react';
-import axios from 'axios';
-import { Gif } from '../types';
-import styles from './styles/giphs.module.css'
+import { useEffect, useState, useContext } from 'react';
+import { Gif } from '../../types';
+import styles from './styles/giphs.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import { UserContext } from '../Context';
+import { UserContext } from '../../Context';
+import { fetchRandomGifs, searchGifs } from '../../api/giphyApi';
+import classNames from 'classnames';
 
-const GiphyAPIKey = 'yj95txvwzdxGDuFA4J2CeomczmxZRQ1D&s';
-
-export default function Gifs({
-  sendGif,
-  isOpen
-}: {
+interface Props {
   sendGif: React.MouseEventHandler<HTMLImageElement>;
-  isOpen:boolean
-}) {
+  isOpen: boolean;
+}
+
+export default function Gifs({ sendGif, isOpen }: Props) {
   const [gifs, setGifs] = useState([]);
   const [query, setQuery] = useState('');
   const { darkTheme } = useContext(UserContext);
 
   useEffect(() => {
-    const fetchRandomGifs = async () => {
-      try {
-        const response = await axios.get(
-          `https://api.giphy.com/v1/gifs/trending?api_key=${GiphyAPIKey}&limit=10`
-        );
-        setGifs(response.data.data);
-      } catch (error) {
-        console.error('Error fetching random gifs:', error);
-      }
+    const fetchRandom = async () => {
+      const randomGifs = await fetchRandomGifs();
+      setGifs(randomGifs);
     };
 
-    fetchRandomGifs();
+    fetchRandom();
   }, []);
 
   const handleSearch = async () => {
-    try {
-      const response = await axios.get(
-        `https://api.giphy.com/v1/gifs/search?api_key=${GiphyAPIKey}&q=${query}&limit=10`
-      );
-      setGifs(response.data.data);
-    } catch (error) {
-      console.error('Error fetching gifs:', error);
-    }
+    const searchedGifs = await searchGifs(query);
+    setGifs(searchedGifs);
   };
 
+  const classes = {
+    gifContainer: classNames(styles.gifContainer, {
+      [styles.open]: isOpen,
+      [styles.dark]: darkTheme,
+    }),
+    searchContainer: classNames(styles.searchContainer, {
+      [styles.dark]: darkTheme,
+    }),
+    gifGrid: styles.gifGrid,
+  };
 
   return (
-    <div className={`${styles.giphsContainer} ${isOpen && styles.open} ${darkTheme && styles.dark}`}>
-      <div className={`${styles.searchContainer} ${darkTheme && styles.dark}`}>
+    <div
+      className={classes.gifContainer}
+    >
+      <div className={classes.searchContainer}>
         <input
           type='text'
           value={query}
