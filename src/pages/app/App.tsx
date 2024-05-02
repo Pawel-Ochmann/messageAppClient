@@ -23,7 +23,7 @@ export default function App() {
   } = useSocket({ chatOpen, setChatOpen, newGroup, setNewGroup });
 
   useEffect(() => {
-    if (user) connectToSocket();
+    if (user.name !== '') connectToSocket();
   }, [connectToSocket, user]);
 
   useEffect(() => {
@@ -49,7 +49,6 @@ export default function App() {
     }
   }, [chatOpen]);
 
-  if (!user) return <></>;
   return (
     <AuthorizationProvider>
       <div className={styles.container}>

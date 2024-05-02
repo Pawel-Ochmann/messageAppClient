@@ -2,7 +2,6 @@ import { useState, useEffect, useContext } from 'react';
 import { Dispatch, SetStateAction } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../Context';
-import { User } from '../../types/index';
 import UserImage from '../userImage/UserImage';
 import { v4 as uuid } from 'uuid';
 import { ConversationType } from '../../types/index';
@@ -10,6 +9,8 @@ import { Socket } from 'socket.io-client';
 import styles from './styles/newGroup.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fetchContactsApi } from '../../api/fetchContactsApi';
+import { createNewGroup } from '../../utils/createNewGroup';
+import classNames from 'classnames';
 import {
   faArrowLeft,
   faCircleCheck,
@@ -37,10 +38,7 @@ const NewGroup = ({ setChatOpen, openHandler, socket, className }: Props) => {
   const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const navigate = useNavigate();
-  const { user, darkTheme } = useContext(UserContext) as {
-    user: User;
-    darkTheme: boolean;
-  };
+  const { user, darkTheme } = useContext(UserContext);
   const [groupName, setGroupName] = useState('');
   const [participants, setParticipants] = useState<Contact[]>([]);
   const [groupImage, setGroupImage] = useState<File | null>(null);
@@ -98,33 +96,7 @@ const NewGroup = ({ setChatOpen, openHandler, socket, className }: Props) => {
       group: true,
       name: [groupName],
     };
-    await socket.emit(
-      'createNewConversation',
-      newConversation,
-      async (confirmation: boolean) => {
-        if (confirmation && groupImage) {
-          const reader = new FileReader();
-          reader.onload = () => {
-            socket.emit(
-              'setGroupImage',
-              newConversation.key,
-              groupImage,
-              (confirmation: boolean) => {
-                if (!confirmation) {
-                  console.error('Error: Group image could not be set');
-                }
-              }
-            );
-          };
-
-          reader.readAsDataURL(groupImage);
-        } else if (confirmation) {
-          console.log('Group created');
-        } else {
-          console.error('Error: New chat creation confirmation failed');
-        }
-      }
-    );
+    await createNewGroup({ socket, newConversation, groupImage });
     setChatOpen(newConversation);
     openHandler(false);
   };
@@ -137,25 +109,50 @@ const NewGroup = ({ setChatOpen, openHandler, socket, className }: Props) => {
     }
   };
 
+  const classes = {
+    container: classNames(className, styles.container, {
+      [styles.dark]: darkTheme,
+    }),
+    header: classNames(styles.header, { [styles.dark]: darkTheme }),
+    buttonBack: styles.buttonBack,
+    info: styles.info,
+    secondStageContainer: classNames(styles.secondStageContainer, {
+      [styles.dark]: darkTheme,
+    }),
+    previousPage: classNames(styles.previousPage, { [styles.dark]: darkTheme }),
+    participantsList: classNames(styles.participantsList, {
+      [styles.dark]: darkTheme,
+    }),
+    createButton: classNames(styles.createButton, { [styles.dark]: darkTheme }),
+    searchInput: classNames(styles.searchInput, { [styles.dark]: darkTheme }),
+    contactsContainer: styles.contactsContainer,
+    contactBox: classNames(styles.contactBox, { [styles.dark]: darkTheme }),
+    contactName: styles.contactName,
+    mainForm: styles.mainForm,
+    imageLabel: styles.imageLabel,
+    backgroundIcon: styles.backgroundIcon,
+    imageBox: styles.imageBox,
+    dark: styles.dark,
+    goFurtherButton: styles.goFurtherButton,
+  };
+
   return (
-    <div
-      className={`${className} ${styles.container} ${darkTheme && styles.dark}`}
-    >
-      <header className={`${styles.header} ${darkTheme && styles.dark}`}>
+    <div className={classes.container}>
+      <header className={classes.header}>
         <button
-          className={styles.buttonBack}
+          className={classes.buttonBack}
           onClick={() => openHandler(false)}
         >
           <FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon>
         </button>
-        <div className={styles.info}>
+        <div className={classes.info}>
           <h2>Create new Group</h2>
         </div>
       </header>
 
       {goFurther ? (
-        <div className={styles.secondStageContainer}>
-          <div className={`${styles.previousPage} ${darkTheme && styles.dark}`}>
+        <div className={classes.secondStageContainer}>
+          <div className={classes.previousPage}>
             <button
               onClick={() => {
                 setGoFurther(false);
@@ -166,9 +163,7 @@ const NewGroup = ({ setChatOpen, openHandler, socket, className }: Props) => {
             <p>Return to previous page</p>
           </div>
 
-          <ul
-            className={`${styles.participantsList} ${darkTheme && styles.dark}`}
-          >
+          <ul className={classes.participantsList}>
             {participants.map((participant) => (
               <li key={participant.name}>
                 <UserImage userName={participant.name} />
@@ -184,9 +179,7 @@ const NewGroup = ({ setChatOpen, openHandler, socket, className }: Props) => {
             ))}
           </ul>
           {participants.length > 0 && (
-            <div
-              className={`${styles.createButton} ${darkTheme && styles.dark}`}
-            >
+            <div className={classes.createButton}>
               <p>Are you ready? Create new group</p>
               <button onClick={handleSubmit}>
                 <FontAwesomeIcon icon={faUsersViewfinder}></FontAwesomeIcon>
@@ -195,42 +188,39 @@ const NewGroup = ({ setChatOpen, openHandler, socket, className }: Props) => {
           )}
 
           <input
-            className={`${styles.searchInput} ${darkTheme && styles.dark}`}
+            className={classes.searchInput}
             type='text'
             placeholder='Find contacts'
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <div className={styles.contactsContainer}>
+          <div className={classes.contactsContainer}>
             {filteredContacts.map((contact) => (
-              <div
-                key={contact.name}
-                className={`${styles.contactBox} ${darkTheme && styles.dark}`}
-              >
+              <div key={contact.name} className={classes.contactBox}>
                 <input
                   type='checkbox'
                   checked={participants.some((c) => c._id === contact._id)}
                   onClick={() => handleCheckboxChange(contact)}
                 />
                 <UserImage userName={contact.name} />
-                <h2 className={styles.contactName}>{contact.name}</h2>
+                <h2 className={classes.contactName}>{contact.name}</h2>
               </div>
             ))}
           </div>
         </div>
       ) : (
         <div>
-          <form className={styles.mainForm}>
-            <label className={styles.imageLabel} htmlFor='groupImage'>
+          <form className={classes.mainForm}>
+            <label className={classes.imageLabel} htmlFor='groupImage'>
               {groupImage ? (
                 <img src={URL.createObjectURL(groupImage)} alt='' />
               ) : (
                 <>
                   <FontAwesomeIcon
-                    className={styles.backgroundIcon}
+                    className={classes.backgroundIcon}
                     icon={faPeopleGroup}
                   ></FontAwesomeIcon>
-                  <div className={styles.imageBox}>
+                  <div className={classes.imageBox}>
                     <FontAwesomeIcon icon={faCamera}></FontAwesomeIcon>
                     <p>Add group image</p>
                   </div>
@@ -247,7 +237,7 @@ const NewGroup = ({ setChatOpen, openHandler, socket, className }: Props) => {
 
             <label htmlFor='groupName'>
               <input
-                className={`${darkTheme && styles.dark}`}
+                className={classes.dark}
                 type='text'
                 id='groupName'
                 value={groupName}
@@ -259,7 +249,7 @@ const NewGroup = ({ setChatOpen, openHandler, socket, className }: Props) => {
 
             {groupName.trim() !== '' && (
               <button
-                className={styles.goFurtherButton}
+                className={classes.goFurtherButton}
                 disabled={groupName.trim() === ''}
                 onClick={() => {
                   setGoFurther(true);

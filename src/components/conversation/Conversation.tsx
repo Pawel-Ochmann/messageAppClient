@@ -11,7 +11,7 @@ import Gifs from '../gifs/Gifs';
 import AudioRecorder from '../audioInput/AudioInput';
 import MessageBox from '../messageBox/MessageBox';
 import { Socket } from 'socket.io-client';
-import { User, ConversationType } from '../../types/index';
+import { ConversationType } from '../../types/index';
 import getConversationName from '../../utils/getConversationName';
 import styles from './styles/conversation.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -40,10 +40,7 @@ interface Props {
 }
 
 const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
-  const { user, darkTheme } = useContext(UserContext) as {
-    user: User;
-    darkTheme: boolean;
-  };
+  const { user, darkTheme } = useContext(UserContext) 
   const [newMessage, setNewMessage] = useState('');
   const [image, setImage] = useState<File | null>(null);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);

@@ -1,14 +1,14 @@
 import { User, ConversationType } from '../types/index';
 
 export type UpdateConversationHandler = (
-  setUser: React.Dispatch<React.SetStateAction<User | null>>,
+  setUser: React.Dispatch<React.SetStateAction<User>>,
   updatedConversation: ConversationType,
   chatOpen: ConversationType | null,
   setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>
 ) => void;
 
 const updateConversation: UpdateConversationHandler = (
-  setUser: React.Dispatch<React.SetStateAction<User | null>>,
+  setUser: React.Dispatch<React.SetStateAction<User>>,
   updatedConversation: ConversationType,
   chatOpen: ConversationType | null,
   setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>

@@ -45,7 +45,7 @@ export const useSocket = ({
     updateConversation(setUser, conversation, chatOpen, setChatOpen);
     if (
       conversation.messages[conversation.messages.length - 1].author !==
-      user?.name
+      user.name
     ) {
       playAudio('newMessage');
     }
@@ -58,7 +58,7 @@ export const useSocket = ({
   };
 
   const handleSocketConnect = () => {
-    user && socket.emit('join', user.name);
+    socket.emit('join', user.name);
     setSocketConnected(true);
   };
 

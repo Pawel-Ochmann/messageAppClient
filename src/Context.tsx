@@ -2,14 +2,23 @@ import React, { createContext, ReactNode, useState, useEffect } from 'react';
 import { User } from './types/index';
 
 interface UserContextType {
-  user: User | null;
-  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  user: User;
+  setUser: React.Dispatch<React.SetStateAction<User>>;
   darkTheme: boolean; 
   setDarkTheme: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+const initialUser = {
+  name: '',
+  password:'',
+  _id:'',
+  lastVisited: new Date(),
+  conversations:[],
+  groupConversations:[]
+}
+
 const initialUserContextValue: UserContextType = {
-  user: null,
+  user: initialUser,
   setUser: () => {},
   darkTheme: false, 
   setDarkTheme: () => {},
@@ -21,7 +30,7 @@ export const UserContext = createContext<UserContextType>(
 
 
 const Context = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User>(initialUser);
   const [darkTheme, setDarkTheme] = useState<boolean>(() => {
   const localStorageDarkTheme = localStorage.getItem('darkTheme');
     if (localStorageDarkTheme !== null) {
