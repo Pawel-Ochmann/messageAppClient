@@ -1,24 +1,30 @@
-import { getAddress } from '../../utils/serverAddress';
-import { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import styles from './userImage.module.css';
-import {useGetImage} from '../../hooks/useGetImage'
+import { useGetImage } from '../../hooks/useGetImage';
+import { useEffect } from 'react';
 
-interface Props {userName:string}
+interface Props {
+  userName: string;
+}
 
 const UserImage = ({ userName }: Props) => {
-  const { imageData, isLoading, error, fetchImage } = useGetImage();
+  const { imageSrc, isLoading, error, fetchImage } = useGetImage(
+    `/${userName}/avatar`
+  );
 
-    useEffect(() => {
-      fetchImage(getAddress(`/${userName}/avatar`));
-    }, [fetchImage, userName]);
+  useEffect(()=>{
+    fetchImage()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className={styles.imageBox}>
       {isLoading && <FontAwesomeIcon icon={faUser} />}
       {error && <FontAwesomeIcon icon={faUser} />}
-      {imageData && <img src={imageData.url} crossOrigin='' alt='' />}
+      {imageSrc && (
+        <img src={imageSrc} crossOrigin='' alt='' />
+      )}
     </div>
   );
 };

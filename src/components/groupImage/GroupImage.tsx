@@ -1,9 +1,8 @@
-import { getAddress } from '../../utils/serverAddress';
 import { useEffect } from 'react';
 import { ConversationType } from '../../types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
-import styles from './userImage.module.css';
+import styles from '../userImage/userImage.module.css';
 import { useGetImage } from '../../hooks/useGetImage';
 
 interface Props {
@@ -11,17 +10,22 @@ interface Props {
 }
 
 const GroupImage = ({ conversation }: Props) => {
-  const { imageData, isLoading, error, fetchImage } = useGetImage();
+  const { imageSrc, isLoading, error, fetchImage } = useGetImage(
+    `/group/${conversation.key}`
+  );
 
   useEffect(() => {
-    fetchImage(getAddress(`/group/${conversation.key}`));
-  }, [conversation.key, fetchImage]);
+    fetchImage();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+
 
   return (
     <div className={styles.imageBox}>
       {isLoading && <FontAwesomeIcon icon={faUserGroup} />}
       {error && <FontAwesomeIcon icon={faUserGroup} />}
-      {imageData && <img src={imageData.url} crossOrigin='' alt='' />}
+      {imageSrc && <img src={imageSrc} crossOrigin='' alt='' />}
     </div>
   );
 };

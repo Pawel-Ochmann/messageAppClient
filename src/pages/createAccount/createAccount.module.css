@@ -54,6 +54,9 @@
         color: var(--main-font-color-dark);
       }
     }
+     button {
+      color: var(--background-color-dark);
+    }
   }
 
   .buttonMain {

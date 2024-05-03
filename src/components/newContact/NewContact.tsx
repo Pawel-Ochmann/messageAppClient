@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../Context';
 import { v4 as uuid } from 'uuid';
-import { ConversationType, User } from '../../types/index';
+import { ConversationType} from '../../types/index';
 import styles from './newContact.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
@@ -31,10 +31,7 @@ const NewContact = ({
   const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const navigate = useNavigate();
-  const { user, darkTheme } = useContext(UserContext) as {
-    user: User;
-    darkTheme: boolean;
-  };
+  const { user, darkTheme } = useContext(UserContext) 
 
 useEffect(() => {
   const fetchContacts = async () => {
@@ -96,6 +93,7 @@ const classes = {
   return (
     <div
       className={classes.container}
+      aria-hidden={className === ''}
     >
       <header className={classes.header}>
         <button

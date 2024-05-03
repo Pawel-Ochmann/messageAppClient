@@ -6,6 +6,6 @@ export function saveToken(token: string): void {
   localStorage.setItem('token', token);
 }
 
-export function deleteToken():void {
+export function deleteToken(): void {
   localStorage.removeItem('token');
 }

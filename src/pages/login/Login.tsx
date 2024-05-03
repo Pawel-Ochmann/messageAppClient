@@ -25,12 +25,12 @@ const Login = () => {
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     try {
-      const data = await loginApi({ name, password });
 
-      if (!data.done) {
-        setError(data.message);
+      const success = await loginApi({ name, password });
+   
+      if (!success) {
+        throw new Error('failed to login');
       } else {
         navigate('/');
       }

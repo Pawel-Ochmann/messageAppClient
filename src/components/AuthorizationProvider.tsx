@@ -15,7 +15,9 @@ export default function AuthorizationProvider({ children }: Props) {
     const checkLoggedIn = async () => {
       try {
         const data = await fetchUserData();
-        setUser(data);
+        setUser(() => {
+          return data;
+        });
       } catch (error) {
         navigate('/login');
         return;

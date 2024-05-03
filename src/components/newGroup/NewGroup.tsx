@@ -137,7 +137,7 @@ const NewGroup = ({ setChatOpen, openHandler, socket, className }: Props) => {
   };
 
   return (
-    <div className={classes.container}>
+    <div className={classes.container} aria-hidden={className === ''}>
       <header className={classes.header}>
         <button
           className={classes.buttonBack}

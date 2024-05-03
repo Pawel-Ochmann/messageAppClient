@@ -23,6 +23,7 @@ export const fetchUserData = async () => {
     const response = await axiosInstance.get('/');
     return response.data;
   } catch (error) {
+    console.log('error white fetching: ', error)
     throw new Error('Failed to fetch user data');
   }
 };

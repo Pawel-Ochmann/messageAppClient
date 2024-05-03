@@ -91,6 +91,7 @@ const Settings = ({ className, openHandler }: Props) => {
 
   return (
     <div
+    aria-hidden={className === ''}
       className={classes.container}
     >
       <header className={classes.header}>

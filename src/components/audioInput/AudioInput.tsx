@@ -52,7 +52,10 @@ const AudioRecorder = ({ sendAudio, audioChunks, setAudioChunks }: Props) => {
         )}
       </button>
 
-      <div className={classes.audioField}>
+      <div
+        className={classes.audioField}
+        aria-hidden={audioChunks.length === 0 && !recording}
+      >
         <>
           <button
             onClick={() => {
