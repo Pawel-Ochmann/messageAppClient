@@ -38,6 +38,9 @@
     font-size: 1.4rem;
     padding: 0.7rem 1rem;
     border-radius: 10rem;
+    &:hover {
+      cursor: pointer;
+    }
   }
 
   &.dark {

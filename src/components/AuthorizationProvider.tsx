@@ -22,7 +22,7 @@ export default function AuthorizationProvider({ children }: Props) {
       }
     };
 
-    if (!user) checkLoggedIn();
+    if (user.name === '') checkLoggedIn();
   }, [navigate, setUser, user]);
 
   return <>{children}</>;

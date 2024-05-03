@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import { Gif } from '../../types';
-import styles from './styles/giphs.module.css';
+import styles from './gifs.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { UserContext } from '../../Context';

@@ -2,7 +2,7 @@ import React, { useContext, useCallback } from 'react';
 import { UserContext } from '../../Context';
 import { ConversationType } from '../../types';
 import ContactBox from '../contactBox/ContactBox';
-import styles from './styles/contacts.module.css';
+import styles from './contacts.module.css';
 import { sortContacts } from '../../utils/sortContacts';
 import classNames from 'classnames';
 

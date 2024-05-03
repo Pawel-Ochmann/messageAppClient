@@ -1,14 +1,19 @@
 import { MessageBackend } from '../../types/index';
 import { getAddress } from '../../utils/serverAddress';
-import styles from './styles/messageBox.module.css';
+import styles from './messageBox.module.css';
 import { useContext, useCallback } from 'react';
 import { UserContext } from '../../Context';
-import { User } from '../../types/index';
 import moment from 'moment';
 import classNames from 'classnames';
 
-const MessageBox = ({ message, group }: { message: MessageBackend, group:boolean }) => {
-  const { user, darkTheme } = useContext(UserContext) as { user: User, darkTheme:boolean };
+const MessageBox = ({
+  message,
+  group,
+}: {
+  message: MessageBackend;
+  group: boolean;
+}) => {
+  const { user, darkTheme } = useContext(UserContext);
 
   const renderMessageContent = useCallback(() => {
     switch (message.type) {
@@ -46,13 +51,11 @@ const MessageBox = ({ message, group }: { message: MessageBackend, group:boolean
       },
       { [styles.dark]: darkTheme }
     ),
-    date:styles.date
+    date: styles.date,
   };
 
   return (
-    <div
-      className={classes.messageContainer}
-    >
+    <div className={classes.messageContainer}>
       <h2>{group && message.author}</h2>
       {renderMessageContent()}
       <p className={classes.date}>

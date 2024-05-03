@@ -2,7 +2,7 @@ import { getAddress } from '../../utils/serverAddress';
 import { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
-import styles from './styles/userImage.module.css';
+import styles from './userImage.module.css';
 import {useGetImage} from '../../hooks/useGetImage'
 
 interface Props {userName:string}

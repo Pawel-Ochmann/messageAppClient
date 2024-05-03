@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { ConversationType } from '../../types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
-import styles from './styles/userImage.module.css';
+import styles from './userImage.module.css';
 import { useGetImage } from '../../hooks/useGetImage';
 
 interface Props {

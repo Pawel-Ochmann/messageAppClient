@@ -7,7 +7,7 @@ import Settings from '../settings/Settings';
 import { ConversationType } from '../../types';
 import { Socket } from 'socket.io-client';
 import { UserContext } from '../../Context';
-import styles from './styles/dashboard.module.css';
+import styles from './dashboard.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlus,

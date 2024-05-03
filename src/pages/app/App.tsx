@@ -4,13 +4,11 @@ import { UserContext } from '../../Context';
 import Dashboard from '../../components/dashboard/Dashboard';
 import { ConversationType } from '../../types/index';
 import { updateLastRead } from '../../utils/lastRead';
-import styles from './styles/app.module.css';
+import styles from './app.module.css';
 import AuthorizationProvider from '../../components/AuthorizationProvider';
 import { useSocket } from '../../hooks/useSocket';
 
 export default function App() {
- 
-
   const { user } = useContext(UserContext);
   const [chatOpen, setChatOpen] = useState<ConversationType | null>(null);
   const [newGroup, setNewGroup] = useState(false);

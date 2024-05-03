@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { UserContext } from '../../Context';
 import { useNavigate } from 'react-router-dom';
-import styles from './styles/login.module.css';
+import styles from './login.module.css';
 import classNames from 'classnames';
 import { loginApi } from '../../api/loginApi';
 import { AxiosError } from 'axios';

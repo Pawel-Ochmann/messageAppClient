@@ -1,4 +1,4 @@
-import styles from './styles/emotes.module.css';
+import styles from './emotes.module.css';
 import { UserContext } from '../../Context';
 import { useContext } from 'react';
 import { emotesList } from './emotesList';

@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { UserContext } from '../../Context';
 import UserImage from '../userImage/UserImage';
 import GroupImage from '../groupImage/GroupImage';
-import styles from './styles/contactBox.module.css';
+import styles from './contactBox.module.css';
 import { getLastMessageContent, getLastMessageDate } from '../../utils/getLastMessageInfo';
 import classNames from 'classnames';
 

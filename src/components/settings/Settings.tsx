@@ -1,4 +1,4 @@
-import styles from './styles/settings.module.css';
+import styles from './settings.module.css';
 import { useNavigate } from 'react-router-dom';
 import { deleteToken } from '../../utils/tokenHandler';
 import axios from 'axios';

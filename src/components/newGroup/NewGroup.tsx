@@ -6,7 +6,7 @@ import UserImage from '../userImage/UserImage';
 import { v4 as uuid } from 'uuid';
 import { ConversationType } from '../../types/index';
 import { Socket } from 'socket.io-client';
-import styles from './styles/newGroup.module.css';
+import styles from './newGroup.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fetchContactsApi } from '../../api/fetchContactsApi';
 import { createNewGroup } from '../../utils/createNewGroup';

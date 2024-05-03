@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../Context';
 import { v4 as uuid } from 'uuid';
 import { ConversationType, User } from '../../types/index';
-import styles from './styles/newContact.module.css';
+import styles from './newContact.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import UserImage from '../userImage/UserImage';

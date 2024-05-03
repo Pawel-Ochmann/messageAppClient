@@ -7,7 +7,7 @@ import {
   faPause,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
-import styles from './styles/audioRecorder.module.css';
+import styles from './audioRecorder.module.css';
 import classNames from 'classnames';
 import { formatTime } from '../../utils/formatTime';
 import { useAudioRecord } from '../../hooks/useAudioRecord';
