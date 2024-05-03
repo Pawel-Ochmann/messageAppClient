@@ -3,7 +3,7 @@ import App from './pages/app/App';
 import Login from './pages/login/Login';
 import CreateAccount from './pages/createAccount/CreateAccount';
 
-export const routes = [
+const routes = [
   {
     path: '/',
     element: <App />,

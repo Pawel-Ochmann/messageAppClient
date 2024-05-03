@@ -13,7 +13,7 @@ export const useTypingInfo = ({socket,chatOpen}:Props) => {
 
   const sendTyping = () => {
     if (isTyping) return;
-    if (chatOpen && user) {
+    if (chatOpen) {
       socket.emit('typing', getConversationName(user, chatOpen), user.name);
       setIsTyping(true);
       setTimeout(() => {
@@ -24,7 +24,7 @@ export const useTypingInfo = ({socket,chatOpen}:Props) => {
 
   useEffect(() => {
     const handleTyping = (userName: string) => {
-      if (chatOpen && user) {
+      if (chatOpen) {
         const anotherUser = getConversationName(user, chatOpen);
         if (anotherUser === userName) {
           setOtherUserIsTyping(`${anotherUser} is typing...`);

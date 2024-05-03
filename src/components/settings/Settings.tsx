@@ -1,9 +1,9 @@
 import styles from './styles/settings.module.css';
 import { useNavigate } from 'react-router-dom';
-import { deleteToken } from '../utils/tokenHandler';
+import { deleteToken } from '../../utils/tokenHandler';
 import axios from 'axios';
 import { useContext, Dispatch, SetStateAction, useState } from 'react';
-import { UserContext } from '../Context';
+import { UserContext } from '../../Context';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowLeft,
@@ -16,22 +16,18 @@ import {
   faVolumeXmark,
   faVolumeHigh,
 } from '@fortawesome/free-solid-svg-icons';
-import UserImage from './UserImage';
-import { User } from '../types';
-import { getAddress } from '../utils/serverAddress';
+import UserImage from '../userImage/UserImage';
+import classNames from 'classnames';
+import { uploadAvatar } from '../../api/uploadAvatarApi';
 
-const Settings = ({
-  className,
-  openHandler,
-}: {
+interface Props {
   className: string;
   openHandler: Dispatch<SetStateAction<boolean>>;
-}) => {
+}
+
+const Settings = ({ className, openHandler }: Props) => {
   const navigate = useNavigate();
-  const { user, setUser } = useContext(UserContext) as {
-    user: User;
-    setUser: Dispatch<SetStateAction<User | null>>;
-  };
+  const { user } = useContext(UserContext)
 
   const { darkTheme, setDarkTheme } = useContext(UserContext);
   const [file, setFile] = useState<File | null>(null);
@@ -49,24 +45,13 @@ const Settings = ({
     event.preventDefault();
 
     try {
-      if (file) {
-        const formData = new FormData();
-        formData.append('avatar', file);
-        console.log(file);
-        await axios.post(getAddress(`/${user.name}/avatar`), formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+      const success = await uploadAvatar({user, file});
+      if (success) {
+        setFile(null);
         location.reload();
-      } else {
-        await axios.post(getAddress(`/${user.name}/avatar`), null);
       }
-
-      setFile(null);
-      location.reload();
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('Error handling form submit:', error);
     }
   };
 
@@ -84,25 +69,42 @@ const Settings = ({
   const logOut = () => {
     deleteToken();
     delete axios.defaults.headers.common['Authorization'];
-    setUser(null);
     navigate('/login');
   };
+
+  const classes = {
+    container: classNames(className, styles.container, {
+      [styles.dark]: darkTheme,
+    }),
+    header: classNames(styles.header, { [styles.dark]: darkTheme }),
+    buttonBack: styles.buttonBack,
+    userInfo: styles.userInfo,
+    imageInput: styles.imageInput,
+    settingsContainer: styles.settingsContainer,
+    audio: styles.audio,
+    audioTitle: styles.audioTitle,
+    theme: styles.theme,
+    themeTitle: styles.themeTitle,
+    logout: styles.logout,
+  };
+
+
   return (
     <div
-      className={`${className} ${styles.container} ${darkTheme && styles.dark}`}
+      className={classes.container}
     >
-      <header className={`${styles.header} ${darkTheme && styles.dark}`}>
+      <header className={classes.header}>
         <button
-          className={styles.buttonBack}
+          className={classes.buttonBack}
           onClick={() => openHandler(false)}
         >
           <FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon>
         </button>
         <h2>Settings</h2>
       </header>
-      <div className={styles.userInfo}>
+      <div className={classes.userInfo}>
         <h1>{user.name}</h1>
-        <div className={styles.imageInput}>
+        <div className={classes.imageInput}>
           {file ? (
             <img src={URL.createObjectURL(file)} alt='' />
           ) : (
@@ -137,9 +139,9 @@ const Settings = ({
           )}
         </form>
       </div>
-      <div className={styles.settingsContainer}>
-        <div className={styles.audio}>
-          <div className={styles.audioTitle}>
+      <div className={classes.settingsContainer}>
+        <div className={classes.audio}>
+          <div className={classes.audioTitle}>
             <FontAwesomeIcon icon={faMusic}></FontAwesomeIcon> <p>Audio</p>
           </div>
           <span>
@@ -156,8 +158,8 @@ const Settings = ({
             <FontAwesomeIcon icon={faVolumeHigh}></FontAwesomeIcon>
           </span>
         </div>
-        <div className={styles.theme}>
-          <div className={styles.themeTitle}>
+        <div className={classes.theme}>
+          <div className={classes.themeTitle}>
             <FontAwesomeIcon icon={faCircleHalfStroke}></FontAwesomeIcon>
             <p>Theme</p>
           </div>
@@ -184,7 +186,7 @@ const Settings = ({
             </label>
           </form>
         </div>
-        <div className={styles.logout}>
+        <div className={classes.logout}>
           <button onClick={logOut}>
             <FontAwesomeIcon icon={faRightFromBracket}></FontAwesomeIcon>Log out
           </button>

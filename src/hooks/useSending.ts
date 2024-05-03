@@ -13,7 +13,7 @@ export const useSending = ({ socket, chatOpen }: Props) => {
 
   const sendMessage = (message: MessageParam) => {
     const messageToSend: Message = {
-      author: user?.name || '',
+      author: user.name || '',
       content: message.content,
       type: message.type,
       date: new Date(),
