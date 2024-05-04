@@ -53,4 +53,7 @@
     line-height: 2;
     border-radius: 100rem;
     font-weight: 800;
+    &.dark {
+        color: var(--active-font-color-dark) !important;
+    }
 }

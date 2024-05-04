@@ -14,7 +14,9 @@ export default function Emotes({ setMessage, isOpen }: Props) {
   const { darkTheme } = useContext(UserContext);
 
   const handleEmoteClick = (emote: string) => {
-    setMessage((message)=>{ return message + emote});
+    setMessage((message) => {
+      return message + emote;
+    });
   };
 
   const classes = {
@@ -25,12 +27,11 @@ export default function Emotes({ setMessage, isOpen }: Props) {
   };
 
   return (
-    <div
-      className={classes.emotesContainer}
-    >
-      {emotesList.map((emote) => {
+    <div className={classes.emotesContainer}>
+      {emotesList.map((emote, index) => {
         return (
           <button
+            key={index}
             onClick={() => {
               handleEmoteClick(emote);
             }}

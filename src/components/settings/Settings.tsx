@@ -27,7 +27,7 @@ interface Props {
 
 const Settings = ({ className, openHandler }: Props) => {
   const navigate = useNavigate();
-  const { user } = useContext(UserContext)
+  const { user } = useContext(UserContext);
 
   const { darkTheme, setDarkTheme } = useContext(UserContext);
   const [file, setFile] = useState<File | null>(null);
@@ -45,7 +45,7 @@ const Settings = ({ className, openHandler }: Props) => {
     event.preventDefault();
 
     try {
-      const success = await uploadAvatar({user, file});
+      const success = await uploadAvatar({ user, file });
       if (success) {
         setFile(null);
         location.reload();
@@ -88,12 +88,8 @@ const Settings = ({ className, openHandler }: Props) => {
     logout: styles.logout,
   };
 
-
   return (
-    <div
-    aria-hidden={className === ''}
-      className={classes.container}
-    >
+    <div aria-hidden={className === ''} className={classes.container}>
       <header className={classes.header}>
         <button
           className={classes.buttonBack}

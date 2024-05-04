@@ -6,7 +6,10 @@ import { UserContext } from '../../Context';
 import UserImage from '../userImage/UserImage';
 import GroupImage from '../groupImage/GroupImage';
 import styles from './contactBox.module.css';
-import { getLastMessageContent, getLastMessageDate } from '../../utils/getLastMessageInfo';
+import {
+  getLastMessageContent,
+  getLastMessageDate,
+} from '../../utils/getLastMessageInfo';
 import classNames from 'classnames';
 
 interface Props {
@@ -14,11 +17,8 @@ interface Props {
   setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>;
 }
 
-const ContactBox = ({
-  conversation,
-  setChatOpen,
-}:Props) => {
-  const { user } = useContext(UserContext);
+const ContactBox = ({ conversation, setChatOpen }: Props) => {
+  const { user, darkTheme } = useContext(UserContext);
 
   const classes = {
     buttonWrapper: styles.buttonWrapper,
@@ -28,11 +28,11 @@ const ContactBox = ({
     date: classNames(styles.date, {
       [styles.unread]: !hasBeenRead(conversation),
     }),
-    unread:styles.unread,
     lastMessage: styles.lastMessage,
-    numberOfUnread: styles.numberOfUnread,
+    numberOfUnread: classNames(styles.numberOfUnread, {
+      [styles.dark]: darkTheme,
+    }),
   };
-
 
   return (
     <button
@@ -44,24 +44,14 @@ const ContactBox = ({
           {conversation.group ? (
             <GroupImage conversation={conversation} />
           ) : (
-            user && (
-              <UserImage userName={getConversationName(user, conversation)} />
-            )
+            <UserImage userName={getConversationName(user, conversation)} />
           )}
         </div>
         <h3 className={classes.contactName}>
-          {user && getConversationName(user, conversation)}
+          {getConversationName(user, conversation)}
         </h3>
-        <p
-          className={`${classes.date} ${
-            !hasBeenRead(conversation) && classes.unread
-          }`}
-        >
-          {getLastMessageDate(conversation)}
-        </p>
-        <p
-          className={classes.lastMessage}
-        >
+        <p className={classes.date}>{getLastMessageDate(conversation)}</p>
+        <p className={classes.lastMessage}>
           {getLastMessageContent(conversation)}
         </p>
         {!hasBeenRead(conversation) && (

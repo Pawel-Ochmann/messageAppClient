@@ -43,6 +43,7 @@ export default function App() {
 
   useEffect(() => {
     if (chatOpen) {
+      console.log('updating...')
       updateLastRead(chatOpen);
     }
   }, [chatOpen]);

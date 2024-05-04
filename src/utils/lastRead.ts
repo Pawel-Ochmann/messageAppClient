@@ -13,7 +13,7 @@ export const updateLastRead = (chatOpen: ConversationType | null) => {
     localStorage.getItem('lastRead') || '{}'
   );
   if (typeof lastMessageDate === 'string')
-    lastRead[chatOpen.key] = lastMessageDate;
+  lastRead[chatOpen.key] = lastMessageDate;
   localStorage.setItem('lastRead', JSON.stringify(lastRead));
 };
 
@@ -26,6 +26,7 @@ export const hasBeenRead = (chatOpen: ConversationType) => {
   const lastReadDate = lastRead[chatOpen.key];
   const latestMessageDateAsString =
   chatOpen.messages[chatOpen.messages.length - 1]?.date.toString();
+  console.log('was it read: ', lastReadDate === latestMessageDateAsString);
   return lastReadDate === latestMessageDateAsString;
 };
 

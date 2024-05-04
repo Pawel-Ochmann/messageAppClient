@@ -1,4 +1,5 @@
 import { User, ConversationType } from '../types/index';
+import { updateLastRead } from './lastRead';
 
 export type UpdateConversationHandler = (
   setUser: React.Dispatch<React.SetStateAction<User>>,
@@ -14,7 +15,6 @@ const updateConversation: UpdateConversationHandler = (
   setChatOpen: React.Dispatch<React.SetStateAction<ConversationType | null>>
 ) => {
   setUser((prevUser) => {
-    if (!prevUser) return prevUser;
     const updatedConversations = prevUser.conversations.map((conversation) => {
       if (conversation.key === updatedConversation.key) {
         return updatedConversation;
@@ -27,6 +27,7 @@ const updateConversation: UpdateConversationHandler = (
     };
   });
   if (chatOpen && chatOpen.key === updatedConversation.key) {
+    updateLastRead(updatedConversation);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     setChatOpen((_e) => {
       return updatedConversation;
