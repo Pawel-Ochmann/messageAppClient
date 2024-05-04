@@ -28,7 +28,7 @@ const AudioRecorder = ({ sendAudio, audioChunks, setAudioChunks }: Props) => {
     });
 
   const classes = {
-    buttonMain: styles.buttonMain,
+    buttonMain: classNames(styles.buttonMain, {[styles.dark]:darkTheme}),
     audioField: classNames(
       styles.audioField,
       { [styles.open]: audioChunks.length > 0 || recording },

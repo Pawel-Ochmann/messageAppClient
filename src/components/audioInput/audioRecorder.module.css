@@ -46,6 +46,9 @@
   background-color: var(--active-theme-color);
   color: var(--main-font-color-header);
   z-index: 300;
+  &.dark {
+    color: var(--active-font-color-dark);
+  }
 }
 
 .open {

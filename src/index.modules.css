@@ -169,7 +169,7 @@ h6 {
   --main-font-color-dark: rgb(192, 192, 192);
   --background-color-dark: rgb(17, 27, 33);
   --message-color-dark: rgb(0, 92, 75);
-  --active-font-color-dark:rgb(34, 46, 53);
+  --active-font-color-dark: rgb(34, 46, 53);
 }
 
 @font-face {
@@ -182,10 +182,17 @@ html {
   color: var(--main-font-color);
 }
 
-button:not([disabled]) > svg, input[type='radio'], input[type='range'], input[type='checkbox'] {
+button:not([disabled]) > svg,
+input[type='radio'],
+input[type='range'],
+input[type='checkbox'] {
   cursor: pointer;
-  transition: .3s;
+  transition: 0.3s;
   &:hover {
     transform: scale(1.2);
   }
+}
+
+button:not([disabled]):focus {
+  outline: -webkit-focus-ring-color auto 5px;
 }

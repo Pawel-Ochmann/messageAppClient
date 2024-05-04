@@ -37,7 +37,8 @@
   }
   &.dark {
     color: var(--main-font-color-dark);
-    p, h2 {
+    p,
+    h2 {
       color: var(--main-font-color-dark);
     }
   }
@@ -156,6 +157,9 @@
     margin-right: 0.2rem;
     margin-top: 0.2rem;
   }
+  &.dark {
+    color:var(--active-font-color-dark)
+  }
 }
 
 .imageForm {
@@ -209,6 +213,10 @@
 
 .gifButton {
   cursor: pointer;
+  transition: 0.3s;
+  &:hover {
+    transform: scale(1.2);
+  }
 }
 
 .userTyping {
@@ -220,6 +228,7 @@
   font-weight: 700;
   background-color: white;
   border-radius: 0 1rem 1rem 1rem;
+
   &.dark {
     background-color: var(--main-theme-color-dark);
     & p {

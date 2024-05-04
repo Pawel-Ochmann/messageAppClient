@@ -45,6 +45,7 @@ const Dashboard = ({ setChatOpen, socket, newGroup, openNewGroup }: Props) => {
         {user && <UserImage userName={user.name} />}
         <div className={classes.menu}>
           <button
+            aria-label='Add new chat'
             onClick={() => {
               setNewContact(true);
             }}
@@ -53,6 +54,7 @@ const Dashboard = ({ setChatOpen, socket, newGroup, openNewGroup }: Props) => {
             <span>Add new chat</span>
           </button>
           <button
+            aria-label='Create new group'
             onClick={() => {
               openNewGroup(true);
             }}
@@ -61,6 +63,7 @@ const Dashboard = ({ setChatOpen, socket, newGroup, openNewGroup }: Props) => {
             <span>Create new group</span>
           </button>
           <button
+            aria-label='Settings'
             onClick={() => {
               setSettingsOpen(true);
             }}
@@ -85,10 +88,7 @@ const Dashboard = ({ setChatOpen, socket, newGroup, openNewGroup }: Props) => {
       />
 
       <Contacts setChatOpen={setChatOpen} />
-      <Settings
-        className={classes.settings}
-        openHandler={setSettingsOpen}
-      />
+      <Settings className={classes.settings} openHandler={setSettingsOpen} />
     </div>
   );
 };

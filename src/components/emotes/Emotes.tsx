@@ -27,7 +27,7 @@ export default function Emotes({ setMessage, isOpen }: Props) {
   };
 
   return (
-    <div className={classes.emotesContainer}>
+    <div className={classes.emotesContainer} aria-hidden={!isOpen}>
       {emotesList.map((emote, index) => {
         return (
           <button

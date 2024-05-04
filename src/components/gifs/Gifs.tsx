@@ -43,9 +43,7 @@ export default function Gifs({ sendGif, isOpen }: Props) {
   };
 
   return (
-    <div
-      className={classes.gifContainer}
-    >
+    <div className={classes.gifContainer} aria-hidden={!isOpen}>
       <div className={classes.searchContainer}>
         <input
           type='text'
@@ -53,7 +51,7 @@ export default function Gifs({ sendGif, isOpen }: Props) {
           onChange={(e) => setQuery(e.target.value)}
           placeholder='Find gifs'
         />
-        <button onClick={handleSearch}>
+        <button aria-label='Search gif' onClick={handleSearch}>
           <FontAwesomeIcon icon={faMagnifyingGlass}></FontAwesomeIcon>
         </button>
       </div>
@@ -61,6 +59,8 @@ export default function Gifs({ sendGif, isOpen }: Props) {
         {gifs.length > 0 &&
           gifs.map((gif: Gif) => (
             <img
+              aria-label='Send gif'
+              tabIndex={0}
               onClick={sendGif}
               key={gif.id}
               src={gif.images.original.url}

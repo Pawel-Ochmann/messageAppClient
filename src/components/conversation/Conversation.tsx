@@ -40,7 +40,7 @@ interface Props {
 }
 
 const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
-  const { user, darkTheme } = useContext(UserContext) 
+  const { user, darkTheme } = useContext(UserContext);
   const [newMessage, setNewMessage] = useState('');
   const [image, setImage] = useState<File | null>(null);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
@@ -50,10 +50,12 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
   const [openGifs, setOpenGifs] = useState(false);
   const [openFile, setOpenFile] = useState(false);
   const [firstRender, setFirstRender] = useState(true);
-  const { sendAndCreate, sendText, sendGif, sendImage, sendAudio } = useSending({
-    socket,
-    chatOpen,
-  });
+  const { sendAndCreate, sendText, sendGif, sendImage, sendAudio } = useSending(
+    {
+      socket,
+      chatOpen,
+    }
+  );
   const { sendTyping, otherUserIsTyping } = useTypingInfo({ socket, chatOpen });
 
   useEffect(() => {
@@ -172,10 +174,9 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
     ),
     active: classNames({ [styles.active]: image }),
     dashboard: classNames(styles.dashboard, { [styles.dark]: darkTheme }),
-    gifButton:styles.gifButton,
-    sendButton:styles.sendButton
+    gifButton: styles.gifButton,
+    sendButton: classNames(styles.sendButton, { [styles.dark]: darkTheme }),
   };
-
 
   if (!chatOpen) {
     return (
@@ -198,11 +199,13 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
   }
 
   return (
-    <div
-      className={classes.container}
-    >
+    <div className={classes.container}>
       <header className={classes.header}>
-        <button className={classes.buttonBack} onClick={() => setChatOpen(null)}>
+        <button
+          aria-label='Close this chat'
+          className={classes.buttonBack}
+          onClick={() => setChatOpen(null)}
+        >
           <FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon>
         </button>
         {chatOpen.group ? (
@@ -216,11 +219,7 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
           ) : (
             <h2>{getConversationName(user, chatOpen)}</h2>
           )}
-          <p
-            onClick={() => {
-              console.log(lastTimeSeen);
-            }}
-          >
+          <p>
             {lastTimeSeen === 'active'
               ? 'active'
               : moment(new Date(lastTimeSeen)).fromNow()}
@@ -251,9 +250,7 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
             isOpen={openEmotes}
           />
           <Gifs sendGif={sendGifHandler} isOpen={openGifs} />
-          <div
-            className={classes.imageForm}
-          >
+          <div className={classes.imageForm} aria-hidden={!openFile}>
             <form>
               <label htmlFor='image'>
                 Add <FontAwesomeIcon icon={faFileImage}></FontAwesomeIcon>
@@ -269,6 +266,7 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
                 }}
               />
               <button
+                aria-label='Send image'
                 disabled={!image}
                 className={classes.active}
                 type='submit'
@@ -282,6 +280,7 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
           </div>
           <div className={classes.dashboard}>
             <button
+              aria-label={!openEmotes ? 'Open emotes pop-up' : 'Close emotes pop-up'}
               onClick={() => {
                 setOpenGifs(false);
                 setOpenFile(false);
@@ -295,6 +294,7 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
               )}
             </button>
             <button
+              aria-label={!openGifs ? 'Open gif pop-up': 'Close gif pop-up'}
               onClick={() => {
                 setOpenEmotes(false);
                 setOpenFile(false);
@@ -308,7 +308,7 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
               )}
             </button>
             <button
-              type='submit'
+              aria-label={!openFile ? 'Open sending image pop-up': 'Close sending image pop-up'}
               onClick={() => {
                 setOpenEmotes(false);
                 setOpenGifs(false);
@@ -331,7 +331,7 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
             />
           </div>
           {newMessage ? (
-            <button className={classes.sendButton} onClick={sendTextHandler}>
+            <button aria-label='Send a message' className={classes.sendButton} onClick={sendTextHandler}>
               <FontAwesomeIcon icon={faLocationArrow}></FontAwesomeIcon>
             </button>
           ) : (
