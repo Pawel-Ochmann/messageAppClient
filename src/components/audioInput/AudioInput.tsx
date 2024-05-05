@@ -44,6 +44,7 @@ const AudioRecorder = ({ sendAudio, audioChunks, setAudioChunks }: Props) => {
       <button
         className={classes.buttonMain}
         onClick={recording ? stopRecording : startRecording}
+        aria-label={recording ? 'Pause recording' : 'Start recording'}
       >
         {recording ? (
           <FontAwesomeIcon icon={faPause}></FontAwesomeIcon>
@@ -63,6 +64,7 @@ const AudioRecorder = ({ sendAudio, audioChunks, setAudioChunks }: Props) => {
               setRecording(false);
               setTimer(0);
             }}
+            aria-label='Delete the audio'
           >
             <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
           </button>
@@ -71,6 +73,7 @@ const AudioRecorder = ({ sendAudio, audioChunks, setAudioChunks }: Props) => {
             disabled={audioChunks.length === 0}
             className={classes.buttonSend}
             onClick={sendAudio}
+            aria-label='Send audio message'
           >
             <FontAwesomeIcon icon={faLocationArrow}></FontAwesomeIcon>
           </button>

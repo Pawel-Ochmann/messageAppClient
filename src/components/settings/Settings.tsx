@@ -73,9 +73,14 @@ const Settings = ({ className, openHandler }: Props) => {
   };
 
   const classes = {
-    container: classNames(className, styles.container, {
-      [styles.dark]: darkTheme,
-    }),
+    container: classNames(
+      className,
+      styles.container,
+      {
+        [styles.dark]: darkTheme,
+      },
+      { [styles.hidden]: className === '' }
+    ),
     header: classNames(styles.header, { [styles.dark]: darkTheme }),
     buttonBack: styles.buttonBack,
     userInfo: styles.userInfo,
@@ -94,6 +99,7 @@ const Settings = ({ className, openHandler }: Props) => {
         <button
           className={classes.buttonBack}
           onClick={() => openHandler(false)}
+          aria-label='Go back'
         >
           <FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon>
         </button>
@@ -107,7 +113,7 @@ const Settings = ({ className, openHandler }: Props) => {
           ) : (
             <UserImage userName={user.name} />
           )}
-          <label htmlFor='avatar'>
+          <label htmlFor='avatar' aria-label='Change image of the user'>
             <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
           </label>
         </div>
@@ -126,10 +132,11 @@ const Settings = ({ className, openHandler }: Props) => {
                   setFile(null);
                 }}
                 type='reset'
+                aria-label='Remove image'
               >
                 <FontAwesomeIcon icon={faRotateLeft}></FontAwesomeIcon>
               </button>
-              <button type='submit'>
+              <button type='submit' aria-label='Set image'>
                 <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
               </button>
             </>
@@ -151,6 +158,7 @@ const Settings = ({ className, openHandler }: Props) => {
               max='100'
               value={volume}
               onChange={handleVolumeChange}
+              aria-label='Set volume'
             />
             <FontAwesomeIcon icon={faVolumeHigh}></FontAwesomeIcon>
           </span>

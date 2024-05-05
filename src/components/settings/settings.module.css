@@ -10,6 +10,9 @@
   transform: translateX(-100%);
   transition: 0.5s;
   min-height: 100vh;
+  &.hidden {
+    visibility: hidden;
+  }
   &.dark {
     background-color: var(--background-color-dark);
     button,

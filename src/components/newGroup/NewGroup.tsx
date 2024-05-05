@@ -112,7 +112,7 @@ const NewGroup = ({ setChatOpen, openHandler, socket, className }: Props) => {
   const classes = {
     container: classNames(className, styles.container, {
       [styles.dark]: darkTheme,
-    }),
+    },{[styles.hidden]:className === ''}),
     header: classNames(styles.header, { [styles.dark]: darkTheme }),
     buttonBack: styles.buttonBack,
     info: styles.info,
@@ -142,6 +142,7 @@ const NewGroup = ({ setChatOpen, openHandler, socket, className }: Props) => {
         <button
           className={classes.buttonBack}
           onClick={() => openHandler(false)}
+          aria-label='Close the creation of new group'
         >
           <FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon>
         </button>
@@ -157,6 +158,7 @@ const NewGroup = ({ setChatOpen, openHandler, socket, className }: Props) => {
               onClick={() => {
                 setGoFurther(false);
               }}
+              aria-label='Return'
             >
               <FontAwesomeIcon icon={faReply}></FontAwesomeIcon>
             </button>
@@ -172,6 +174,7 @@ const NewGroup = ({ setChatOpen, openHandler, socket, className }: Props) => {
                   onClick={() => {
                     handleCheckboxChange(participant);
                   }}
+                  aria-label={`Remove ${participant.name}`}
                 >
                   <FontAwesomeIcon icon={faCircleXmark}></FontAwesomeIcon>
                 </button>
@@ -181,7 +184,7 @@ const NewGroup = ({ setChatOpen, openHandler, socket, className }: Props) => {
           {participants.length > 0 && (
             <div className={classes.createButton}>
               <p>Are you ready? Create new group</p>
-              <button onClick={handleSubmit}>
+              <button onClick={handleSubmit} aria-label='Create group'>
                 <FontAwesomeIcon icon={faUsersViewfinder}></FontAwesomeIcon>
               </button>
             </div>
@@ -201,6 +204,7 @@ const NewGroup = ({ setChatOpen, openHandler, socket, className }: Props) => {
                   type='checkbox'
                   checked={participants.some((c) => c._id === contact._id)}
                   onClick={() => handleCheckboxChange(contact)}
+                  aria-label={`Add user ${contact.name}`}
                 />
                 <UserImage userName={contact.name} />
                 <h2 className={classes.contactName}>{contact.name}</h2>
@@ -232,7 +236,6 @@ const NewGroup = ({ setChatOpen, openHandler, socket, className }: Props) => {
               id='groupImage'
               accept='image/*'
               onChange={handleImageChange}
-              required
             />
 
             <label htmlFor='groupName'>
@@ -254,6 +257,7 @@ const NewGroup = ({ setChatOpen, openHandler, socket, className }: Props) => {
                 onClick={() => {
                   setGoFurther(true);
                 }}
+                aria-label='Go further'
               >
                 <FontAwesomeIcon icon={faCircleCheck}></FontAwesomeIcon>
               </button>

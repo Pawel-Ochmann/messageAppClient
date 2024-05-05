@@ -79,7 +79,7 @@ useEffect(() => {
 const classes = {
   container: classNames(className, styles.container, {
     [styles.dark]: darkTheme,
-  }),
+  },{[styles.hidden]:className === ''}),
   header: classNames(styles.header, { [styles.dark]: darkTheme }),
   buttonBack: styles.buttonBack,
   info: styles.info,
