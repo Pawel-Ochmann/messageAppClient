@@ -28,11 +28,12 @@ const AudioRecorder = ({ sendAudio, audioChunks, setAudioChunks }: Props) => {
     });
 
   const classes = {
-    buttonMain: classNames(styles.buttonMain, {[styles.dark]:darkTheme}),
+    buttonMain: classNames(styles.buttonMain, { [styles.dark]: darkTheme }),
     audioField: classNames(
       styles.audioField,
       { [styles.open]: audioChunks.length > 0 || recording },
-      { [styles.dark]: darkTheme }
+      { [styles.dark]: darkTheme },
+      { [styles.hidden]: audioChunks.length === 0 && !recording }
     ),
     buttonSend: classNames(styles.buttonSend, {
       [styles.buttonInactive]: audioChunks.length === 0,

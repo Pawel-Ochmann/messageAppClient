@@ -23,6 +23,7 @@ export default function Emotes({ setMessage, isOpen }: Props) {
     emotesContainer: classNames(styles.emotesContainer, {
       [styles.open]: isOpen,
       [styles.dark]: darkTheme,
+      [styles.hidden]:!isOpen
     }),
   };
 

@@ -24,7 +24,7 @@ const ContactBox = ({ conversation, setChatOpen }: Props) => {
     buttonWrapper: styles.buttonWrapper,
     contactBox: styles.contactBox,
     image: styles.image,
-    contactName: styles.contactName,
+    contactName: classNames(styles.contactName, {[styles.dark]:darkTheme}),
     date: classNames(styles.date, {
       [styles.unread]: !hasBeenRead(conversation),
     }),
@@ -38,6 +38,10 @@ const ContactBox = ({ conversation, setChatOpen }: Props) => {
     <button
       className={classes.buttonWrapper}
       onClick={() => setChatOpen(conversation)}
+      aria-label={`Open conversation with ${getConversationName(
+        user,
+        conversation
+      )}`}
     >
       <div className={classes.contactBox}>
         <div className={classes.image}>
@@ -47,9 +51,9 @@ const ContactBox = ({ conversation, setChatOpen }: Props) => {
             <UserImage userName={getConversationName(user, conversation)} />
           )}
         </div>
-        <h3 className={classes.contactName}>
+        <h2 className={classes.contactName}>
           {getConversationName(user, conversation)}
-        </h3>
+        </h2>
         <p className={classes.date}>{getLastMessageDate(conversation)}</p>
         <p className={classes.lastMessage}>
           {getLastMessageContent(conversation)}

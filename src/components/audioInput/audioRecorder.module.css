@@ -13,7 +13,9 @@
   align-items: center;
   justify-content: center;
   gap: 1rem;
-
+  &.hidden {
+    visibility: hidden;
+  }
   &.dark {
     background-color: var(--main-theme-color-dark);
     button,

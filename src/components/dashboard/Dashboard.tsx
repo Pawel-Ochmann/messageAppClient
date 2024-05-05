@@ -41,7 +41,11 @@ const Dashboard = ({ setChatOpen, socket, newGroup, openNewGroup }: Props) => {
   return (
     <div className={classes.container}>
       <header className={classes.header}>
-        <h1 className={classes.title}>WhatsUp</h1>
+        <h1
+          className={classes.title}
+        >
+          WhatsUp
+        </h1>
         {user && <UserImage userName={user.name} />}
         <div className={classes.menu}>
           <button

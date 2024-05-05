@@ -36,10 +36,9 @@
     font-size: 1.2rem;
   }
   &.dark {
-    color: var(--main-font-color-dark);
     p,
     h2 {
-      color: var(--main-font-color-dark);
+      color: white;
     }
   }
 }
@@ -176,6 +175,9 @@
   transform: translateY(100%);
   transition: 0.3s linear;
   transform-origin: bottom;
+  &.hidden {
+    visibility: hidden;
+  }
 
   &.dark {
     background-color: var(--main-theme-color-dark);

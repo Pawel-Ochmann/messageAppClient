@@ -35,6 +35,7 @@ export default function Gifs({ sendGif, isOpen }: Props) {
     gifContainer: classNames(styles.gifContainer, {
       [styles.open]: isOpen,
       [styles.dark]: darkTheme,
+      [styles.hidden]:!isOpen
     }),
     searchContainer: classNames(styles.searchContainer, {
       [styles.dark]: darkTheme,

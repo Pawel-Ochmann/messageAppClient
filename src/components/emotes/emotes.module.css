@@ -13,6 +13,9 @@
     transform: translateY(100%);
     transition: .3s linear;
     transform-origin: bottom;
+    &.hidden{
+        visibility: hidden;
+    }
     &.open {
         transform: translateY(0);
         z-index: 0;

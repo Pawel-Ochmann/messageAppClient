@@ -14,7 +14,9 @@
   z-index: 0;
   transition: 0.5s;
   transform-origin: bottom;
-
+  &.hidden {
+    visibility: hidden;
+  }
   &.dark {
     background-color: var(--main-theme-color-dark);
   }

@@ -49,7 +49,6 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
   const [openEmotes, setOpenEmotes] = useState(false);
   const [openGifs, setOpenGifs] = useState(false);
   const [openFile, setOpenFile] = useState(false);
-  const [firstRender, setFirstRender] = useState(true);
   const { sendAndCreate, sendText, sendGif, sendImage, sendAudio } = useSending(
     {
       socket,
@@ -59,15 +58,10 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
   const { sendTyping, otherUserIsTyping } = useTypingInfo({ socket, chatOpen });
 
   useEffect(() => {
-    if (!firstRender) {
-      lastMessageRef.current?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'end',
-      });
-    } else {
-      setFirstRender(false);
-    }
-  }, [chatOpen, firstRender]);
+    lastMessageRef.current?.scrollIntoView({
+      block: 'end',
+    });
+  }, [chatOpen]);
 
   useEffect(() => {
     if (chatOpen && !chatOpen.group) {
@@ -169,6 +163,7 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
     inputContainer: styles.inputContainer,
     imageForm: classNames(
       styles.imageForm,
+      { [styles.hidden]: !openFile },
       { [styles.open]: openFile },
       { [styles.dark]: darkTheme }
     ),
@@ -280,7 +275,9 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
           </div>
           <div className={classes.dashboard}>
             <button
-              aria-label={!openEmotes ? 'Open emotes pop-up' : 'Close emotes pop-up'}
+              aria-label={
+                !openEmotes ? 'Open emotes pop-up' : 'Close emotes pop-up'
+              }
               onClick={() => {
                 setOpenGifs(false);
                 setOpenFile(false);
@@ -294,7 +291,7 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
               )}
             </button>
             <button
-              aria-label={!openGifs ? 'Open gif pop-up': 'Close gif pop-up'}
+              aria-label={!openGifs ? 'Open gif pop-up' : 'Close gif pop-up'}
               onClick={() => {
                 setOpenEmotes(false);
                 setOpenFile(false);
@@ -308,7 +305,11 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
               )}
             </button>
             <button
-              aria-label={!openFile ? 'Open sending image pop-up': 'Close sending image pop-up'}
+              aria-label={
+                !openFile
+                  ? 'Open sending image pop-up'
+                  : 'Close sending image pop-up'
+              }
               onClick={() => {
                 setOpenEmotes(false);
                 setOpenGifs(false);
@@ -331,7 +332,11 @@ const Conversation = ({ chatOpen, setChatOpen, socket }: Props) => {
             />
           </div>
           {newMessage ? (
-            <button aria-label='Send a message' className={classes.sendButton} onClick={sendTextHandler}>
+            <button
+              aria-label='Send a message'
+              className={classes.sendButton}
+              onClick={sendTextHandler}
+            >
               <FontAwesomeIcon icon={faLocationArrow}></FontAwesomeIcon>
             </button>
           ) : (
