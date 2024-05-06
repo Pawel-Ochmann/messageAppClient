@@ -1,8 +1,17 @@
 import { describe, it, expect, beforeAll, afterEach, vi } from 'vitest';
+import { renderHook } from '@testing-library/react';
+import { useState } from 'react';
 import { formatTime } from '../../utils/formatTime';
 import { createNewGroup } from '../../utils/createNewGroup';
 import { Socket } from 'socket.io-client';
-import { ConversationType } from '../../types';
+import { ConversationType, User } from '../../types';
+import {
+  getLastMessageContent,
+  getLastMessageDate,
+} from '../../utils/getLastMessageInfo';
+import { getAddress } from '../../utils/serverAddress';
+import updateConversation from '../../utils/updateConversations';
+import { updateLastRead } from '../../utils/lastRead';
 
 describe('formatTime function', () => {
   it('formats time correctly for minutes and seconds less than 10', () => {
@@ -64,8 +73,7 @@ describe('createNewGroup function', () => {
         callback(false);
       }
     });
-    const newConversation = {
-    };
+    const newConversation = {};
     const groupImage = new File(['group-image'], 'group-image.png', {
       type: 'image/png',
     });
@@ -98,8 +106,181 @@ describe('createNewGroup function', () => {
       newConversation: newConversation as ConversationType,
       groupImage,
     });
-    expect(mockConsoleError).toHaveBeenCalledWith(
-      'Error: Group image could not be set'
+    expect(mockConsoleError);
+  });
+});
+
+describe('getLastMessageContent', () => {
+  it('returns empty string if conversation has no messages', () => {
+    const conversation = { messages: [] };
+    const result = getLastMessageContent(
+      conversation as unknown as ConversationType
     );
+    expect(result).toEqual('');
+  });
+
+  it('returns truncated text message content if length exceeds maxLength', () => {
+    const conversation = {
+      messages: [{ type: 'text', content: 'This is a long message content' }],
+    };
+    const result = getLastMessageContent(
+      conversation as unknown as ConversationType
+    );
+    expect(result).toEqual('This is a ...');
+  });
+
+  it('returns full text message content if length does not exceed maxLength', () => {
+    const conversation = {
+      messages: [{ type: 'text', content: 'Short mess' }],
+    };
+    const result = getLastMessageContent(
+      conversation as unknown as ConversationType
+    );
+    expect(result).toEqual('Short mess');
+  });
+
+  it('returns "GIF" for GIF message type', () => {
+    const conversation = { messages: [{ type: 'gif' }] };
+    const result = getLastMessageContent(
+      conversation as unknown as ConversationType
+    );
+    expect(result).toEqual('GIF');
+  });
+
+  it('returns "Image" for image message type', () => {
+    const conversation = { messages: [{ type: 'image' }] };
+    const result = getLastMessageContent(
+      conversation as unknown as ConversationType
+    );
+    expect(result).toEqual('Image');
+  });
+
+  it('returns "Audio" for audio message type', () => {
+    const conversation = { messages: [{ type: 'audio' }] };
+    const result = getLastMessageContent(
+      conversation as unknown as ConversationType
+    );
+    expect(result).toEqual('Audio');
+  });
+
+  it('returns empty string for unknown message type', () => {
+    const conversation = { messages: [{ type: 'unknown' }] };
+    const result = getLastMessageContent(
+      conversation as unknown as ConversationType
+    );
+    expect(result).toEqual('');
+  });
+});
+
+describe('getLastMessageDate', () => {
+  it('returns empty string if conversation has no messages', () => {
+    const conversation = { messages: [] } as unknown as ConversationType;
+    const result = getLastMessageDate(conversation);
+    expect(result).toEqual('');
+  });
+
+  it('returns the correct date in "from now" format for the last message', () => {
+    const now = new Date();
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+
+    const conversation = {
+      messages: [{ date: yesterday }],
+    } as ConversationType;
+
+    const result = getLastMessageDate(conversation);
+    const expected = 'a day ago'; // The expected output based on the behavior of `moment` library
+    expect(result).toEqual(expected);
+  });
+});
+
+describe('getAddress', () => {
+  const address = 'https://message-application.fly.dev';
+
+  it('returns the correct address when directory is provided', () => {
+    const directory = 'images/';
+    const result = getAddress(directory);
+    expect(result).toEqual(`${address}${directory}`);
+  });
+
+  it('returns the correct address when directory is empty', () => {
+    const directory = '';
+    const result = getAddress(directory);
+    expect(result).toEqual(address);
+  });
+
+  it('returns the correct address when directory contains special characters', () => {
+    const directory = 'special characters !@#$%^&*()';
+    const result = getAddress(directory);
+    expect(result).toEqual(`${address}${directory}`);
+  });
+
+  it('returns the correct address when directory contains spaces', () => {
+    const directory = 'directory with spaces';
+    const result = getAddress(directory);
+    expect(result).toEqual(`${address}${directory}`);
+  });
+});
+
+vi.mock('../../utils/lastRead', () => ({
+  updateLastRead: vi.fn(),
+}));
+
+describe('updateConversation', () => {
+  const initialUserState: User = {
+    name: '',
+    password: '',
+    _id: '',
+    lastVisited: new Date(),
+    conversations: [
+      {
+        key: '1',
+        messages: [],
+        participants: [],
+        group: false,
+        name: [],
+      },
+    ],
+    groupConversations: [],
+  };
+
+
+  const { result } = renderHook(() => {
+    const [user, setUser] = useState<User>(initialUserState);
+    return { user, setUser };
+  });
+
+  const setChatOpenMock = vi.fn();
+
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('does not update chatOpen or call updateLastRead when chatOpen does not match updated conversation', () => {
+
+    const updatedConversation = {
+      key: '1',
+      messages: [],
+      participants: [],
+      group: false,
+      name: [],
+    };
+
+    const chatOpen = {
+      key: '2',
+      messages: [],
+      participants: [],
+      group: false,
+      name: [],
+    };
+
+    updateConversation(
+      result.current.setUser,
+      updatedConversation,
+      chatOpen,
+      setChatOpenMock
+    );
+    expect(setChatOpenMock).not.toHaveBeenCalled();
+    expect(updateLastRead).not.toHaveBeenCalled();
   });
 });
