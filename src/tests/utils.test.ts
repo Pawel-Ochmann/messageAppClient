@@ -1,17 +1,19 @@
 import { describe, it, expect, beforeAll, afterEach, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useState } from 'react';
-import { formatTime } from '../../utils/formatTime';
-import { createNewGroup } from '../../utils/createNewGroup';
+import { formatTime } from '../utils/formatTime';
+import { createNewGroup } from '../utils/createNewGroup';
 import { Socket } from 'socket.io-client';
-import { ConversationType, User } from '../../types';
+import { ConversationType, User } from '../types';
 import {
   getLastMessageContent,
   getLastMessageDate,
-} from '../../utils/getLastMessageInfo';
-import { getAddress } from '../../utils/serverAddress';
-import updateConversation from '../../utils/updateConversations';
-import { updateLastRead } from '../../utils/lastRead';
+} from '../utils/getLastMessageInfo';
+import { getAddress } from '../utils/serverAddress';
+import updateConversation from '../utils/updateConversations';
+import { updateLastRead } from '../utils/lastRead';
+import { sortContacts } from '../utils/sortContacts';
+import { getConversationName } from '../utils/getConversationName';
 
 describe('formatTime function', () => {
   it('formats time correctly for minutes and seconds less than 10', () => {
@@ -222,7 +224,7 @@ describe('getAddress', () => {
   });
 });
 
-vi.mock('../../utils/lastRead', () => ({
+vi.mock('../utils/lastRead', () => ({
   updateLastRead: vi.fn(),
 }));
 
@@ -282,5 +284,81 @@ describe('updateConversation', () => {
     );
     expect(setChatOpenMock).not.toHaveBeenCalled();
     expect(updateLastRead).not.toHaveBeenCalled();
+  });
+});
+
+
+const conversations: ConversationType[] = [
+  {
+    key: '1',
+    participants: [],
+    group: false,
+    name: [],
+    messages: [
+      {
+        date: new Date('2024-05-06T12:00:00Z'),
+        author: '',
+        content: '',
+        type: 'text',
+        _id: '',
+      },
+      {
+        date: new Date('2024-05-07T12:00:00Z'),
+        author: '',
+        content: '',
+        type: 'text',
+        _id: '',
+      },
+    ],
+  },
+  {
+    key: '2',
+    participants: [],
+    group: false,
+    name: [],
+    messages: [
+      {
+        date: new Date('2024-05-05T12:00:00Z'),
+        author: '',
+        content: '',
+        type: 'text',
+        _id: '',
+      },
+    ],
+  },
+  {
+    key: '3',
+    participants: [],
+    group: false,
+    name: [],
+    messages: [],
+  },
+];
+
+describe('sortContacts', () => {
+  it('should sort conversations based on the last message date', () => {
+    const sortedConversations = sortContacts(conversations);
+    expect(sortedConversations[0].key).toEqual('1');
+    expect(sortedConversations[1].key).toEqual('2');
+    expect(sortedConversations[2].key).toEqual('3');
+  });
+});
+
+describe('getConversationName', () => {
+  it('should return the conversation name if it has only one name', () => {
+    const user = { _id: '1', name: 'John' } as User;
+    const conversation = {
+      _id: '1',
+      name: ['Conversation Name'],
+    } as unknown as ConversationType;
+    const result = getConversationName(user, conversation);
+    expect(result).toEqual('Conversation Name');
+  });
+
+  it("should return the other participant's name if there are multiple names", () => {
+    const user = { _id: '1', name: 'John' } as User;
+    const conversation = { id: '1', name: ['John', 'Alice'] } as unknown as ConversationType;
+    const result = getConversationName(user, conversation);
+    expect(result).toEqual('Alice');
   });
 });

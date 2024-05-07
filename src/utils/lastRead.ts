@@ -25,7 +25,7 @@ export const hasBeenRead = (chatOpen: ConversationType) => {
   );
   const lastReadDate = lastRead[chatOpen.key];
   const latestMessageDateAsString =
-    chatOpen.messages[chatOpen.messages.length - 1]?.date.toString();
+    chatOpen.messages[chatOpen.messages.length - 1]?.date.toString()
   return lastReadDate === latestMessageDateAsString;
 };
 
