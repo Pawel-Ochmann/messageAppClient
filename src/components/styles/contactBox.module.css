@@ -1,0 +1,56 @@
+.buttonWrapper {
+    width: 100%;
+    transition: .3s;
+    cursor: pointer;
+    &:hover {
+        background-color: rgba(128, 111, 111, 0.322);
+    }
+}
+.contactBox {
+    display: grid;
+    grid-template-columns: min-content 1fr max-content;
+    grid-template-rows: 1fr 1fr;
+    padding:.5rem;
+}
+.image {
+    grid-row: span 2;
+    height: 60px;
+    aspect-ratio: 1;
+}
+
+.contactName {
+    font-size: 1.3rem;
+    text-align: start;
+    padding-left: 2rem;
+}
+
+.lastMessage {
+    font-size: 1rem;
+    text-align: start;
+    padding-left: 2rem;
+}
+
+.date {
+    font-size: 1rem;
+    text-align: end;
+}
+
+.unread {
+    color: var(--active-theme-color) !important;
+}
+
+.numberOfUnread {
+    font-size: 1rem;
+    color: var(--main-font-color-header);
+    background-color: var(--active-theme-color);
+    width: .8rem;
+    height: .8rem;
+    justify-self: center;
+    padding: .7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 2;
+    border-radius: 100rem;
+    font-weight: 800;
+}

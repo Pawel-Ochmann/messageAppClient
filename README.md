@@ -1,6 +1,6 @@
 ## Messaging App Project
 
-This is the parent repository for the Full Stack Messaging App Project built for the [Odin Project Curriculum](https://www.theodinproject.com/lessons/nodejs-messaging-app).
+This is the frontend repository for the Full Stack Messaging App Project built for the [Odin Project Curriculum](https://www.theodinproject.com/lessons/nodejs-messaging-app).
 
 The goal of the project was to build a messaging web app that allows users to send and receive real-time messages.
 
@@ -24,7 +24,7 @@ If you have any questions, or spot a bug, contact me via linked in - https://www
 
 ## Dark Mode
 
-![Dark Mode Screenshot](/screenshots//DarkMode.png)
+![Dark Mode Screenshot](/screenshots//darkMode.png)
 
 ## Technologies Used
 
