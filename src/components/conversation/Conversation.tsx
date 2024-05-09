@@ -12,7 +12,7 @@ import AudioRecorder from '../audioInput/AudioInput';
 import MessageBox from '../messageBox/MessageBox';
 import { Socket } from 'socket.io-client';
 import { ConversationType } from '../../types/index';
-import getConversationName from '../../utils/getConversationName';
+import {getConversationName} from '../../utils/getConversationName';
 import styles from './conversation.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {

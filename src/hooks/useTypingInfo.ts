@@ -1,12 +1,15 @@
 import { useEffect, useState, useContext } from 'react';
-import getConversationName from '../utils/getConversationName';
+import { getConversationName } from '../utils/getConversationName';
 import { UserContext } from '../Context';
 import { Socket } from 'socket.io-client';
 import { ConversationType } from '../types';
 
-interface Props{socket:Socket, chatOpen:ConversationType | null}
+interface Props {
+  socket: Socket;
+  chatOpen: ConversationType | null;
+}
 
-export const useTypingInfo = ({socket,chatOpen}:Props) => {
+export const useTypingInfo = ({ socket, chatOpen }: Props) => {
   const { user } = useContext(UserContext);
   const [isTyping, setIsTyping] = useState(false);
   const [otherUserIsTyping, setOtherUserIsTyping] = useState('');
@@ -47,4 +50,3 @@ export const useTypingInfo = ({socket,chatOpen}:Props) => {
     otherUserIsTyping,
   };
 };
-

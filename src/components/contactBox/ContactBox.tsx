@@ -1,6 +1,6 @@
 import { ConversationType } from '../../types';
 import { hasBeenRead, numberOfUnreadMessages } from '../../utils/lastRead';
-import getConversationName from '../../utils/getConversationName';
+import {getConversationName} from '../../utils/getConversationName';
 import { useContext } from 'react';
 import { UserContext } from '../../Context';
 import UserImage from '../userImage/UserImage';

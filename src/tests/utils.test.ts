@@ -70,7 +70,7 @@ describe('createNewGroup function', () => {
   });
 
   it('handles error if new chat creation confirmation fails', async () => {
-    mockSocket.emit.mockImplementation((event, data, callback) => {
+    mockSocket.emit.mockImplementation((event, _data, callback) => {
       if (event === 'createNewConversation') {
         callback(false);
       }
@@ -91,7 +91,7 @@ describe('createNewGroup function', () => {
   });
 
   it('handles error if group image could not be set', async () => {
-    mockSocket.emit.mockImplementation((event, data, callback) => {
+    mockSocket.emit.mockImplementation((event, _data, callback) => {
       if (event === 'createNewConversation') {
         callback(true);
       } else if (event === 'setGroupImage') {

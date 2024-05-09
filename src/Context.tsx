@@ -29,7 +29,7 @@ export const UserContext = createContext<UserContextType>(
 );
 
 
-const Context = ({ children }: { children: ReactNode }) => {
+export const Context = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User>(initialUser);
   const [darkTheme, setDarkTheme] = useState<boolean>(() => {
   const localStorageDarkTheme = localStorage.getItem('darkTheme');
@@ -54,4 +54,3 @@ const Context = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export default Context;
